@@ -4,8 +4,8 @@ export const siteConfig = {
     slogan: 'Precision Hatching for Rural Entrepreneurs',
     email: 'serefy.connect@gmail.com',
     address: 'Mahindra University, bahadurpally, 500043, Hyderabad',
-    phone: '+91 98765 43210',
-    whatsapp: '919876543210', // Replace with real number
+    phone: '+91 77569 87398',
+    whatsapp: '917756987398',
   },
   home: {
     hero: {

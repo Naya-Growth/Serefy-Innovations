@@ -1,4 +1,6 @@
-export const SERE_PUBLIC_LEAD_KEY = "lead_SERE_innovations";
+export const SERE_NAYA_CONNECTOR_KEY = "src_serefy_live_20260605";
+export const SERE_NAYA_API_BASE = "https://api.nayagrowth.com";
+export const SERE_NAYA_INTAKE_URL = `${SERE_NAYA_API_BASE}/api/landing/intake/${SERE_NAYA_CONNECTOR_KEY}`;
 
 export type SERELeadInput = {
   firstName: string;
@@ -22,6 +24,18 @@ export type NayaLeadPayload = {
   companyName: string;
   message: string;
   consent: true;
+  sourceKind: "WEB_FORM";
+  source: {
+    pageUrl: string;
+    referrer: string;
+    formName: string;
+    sourceCta: string;
+  };
+  runtime: {
+    originHost: string;
+    userAgent: string;
+    connectorKey: string;
+  };
 };
 
 const labels: Record<string, string> = {
@@ -70,6 +84,11 @@ export function buildNayaLeadPayload(input: SERELeadInput): NayaLeadPayload {
     input.message ? `Message: ${clean(input.message)}` : null,
   ].filter(Boolean);
 
+  const pageUrl = typeof window === "undefined" ? "" : window.location.href;
+  const originHost = typeof window === "undefined" ? "" : window.location.host;
+  const referrer = typeof document === "undefined" ? "" : document.referrer;
+  const userAgent = typeof navigator === "undefined" ? "" : navigator.userAgent;
+
   return {
     fullName: buildFullName(input),
     email: clean(input.email),
@@ -77,15 +96,28 @@ export function buildNayaLeadPayload(input: SERELeadInput): NayaLeadPayload {
     companyName: "SERE Enquiry",
     message: messageParts.join("\n"),
     consent: true,
+    sourceKind: "WEB_FORM",
+    source: {
+      pageUrl,
+      referrer,
+      formName: "Serefy Innovations website enquiry",
+      sourceCta: input.sourceCta,
+    },
+    runtime: {
+      originHost,
+      userAgent,
+      connectorKey: SERE_NAYA_CONNECTOR_KEY,
+    },
   };
 }
 
 export async function submitSERELead(input: SERELeadInput) {
-  const response = await fetch(`/api/landing/public/${SERE_PUBLIC_LEAD_KEY}/leads`, {
+  const response = await fetch(SERE_NAYA_INTAKE_URL, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
     },
+    credentials: "omit",
     body: JSON.stringify(buildNayaLeadPayload(input)),
   });
 

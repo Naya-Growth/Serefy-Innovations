@@ -32,8 +32,12 @@ if (!indexHtml.includes("og:image")) {
   throw new Error("index.html is missing the open graph image metadata");
 }
 
-if (!indexHtml.includes("serefy-innovations.preview.nayagrowth.com")) {
-  throw new Error("index.html is missing the canonical preview URL metadata");
+if (!indexHtml.includes("https://serefyinnovations.com/")) {
+  throw new Error("index.html is missing the live canonical URL metadata");
+}
+
+if (!indexHtml.includes('data-naya-connector="src_serefy_live_20260605"')) {
+  throw new Error("index.html is missing the Naya Growth lead connector script");
 }
 
 console.log("serefy innovations public asset checks passed");

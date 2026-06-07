@@ -2,13 +2,13 @@ name: Deploy Production
 
 on:
   push:
-    branches: ["production"]
+    branches: ["main"]
   workflow_dispatch:
     inputs:
       ref:
         description: "Branch or SHA to deploy"
         required: false
-        default: "production"
+        default: "main"
 
 concurrency:
   group: deploy-production
@@ -45,7 +45,18 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Deploy to nivi
+      - name: Upload static release to nivi
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          port: ${{ secrets.VPS_SSH_PORT || '22' }}
+          source: "dist,nginx.conf"
+          target: "/home/nivi/apps/serefy-innovations-preview/incoming/${{ github.sha }}"
+          rm: true
+
+      - name: Switch static release on nivi
         uses: appleboy/ssh-action@v1.2.0
         with:
           host: ${{ secrets.VPS_HOST }}
@@ -57,16 +68,25 @@ jobs:
           script: |
             set -euo pipefail
             TARGET_DIR="$HOME/apps/serefy-innovations-preview"
+            SERVICE="serefy-innovations-preview"
+            CONTAINER="serefy-innovations-preview"
+            RELEASE="main-${{ github.sha }}"
+            INCOMING="$TARGET_DIR/incoming/${{ github.sha }}"
+            RELEASE_DIR="$TARGET_DIR/releases/$RELEASE"
 
-            if [ ! -d "$TARGET_DIR/.git" ]; then
-              git clone https://github.com/${{ github.repository }}.git "$TARGET_DIR"
-            fi
+            test -d "$INCOMING/dist"
+            test -f "$INCOMING/nginx.conf"
+            rm -rf "$RELEASE_DIR"
+            mkdir -p "$RELEASE_DIR"
+            cp -a "$INCOMING/dist/." "$RELEASE_DIR/"
+            cp "$INCOMING/nginx.conf" "$TARGET_DIR/nginx.conf"
+            test -f "$RELEASE_DIR/index.html"
+            grep -q 'src_serefy_live_20260605' "$RELEASE_DIR/index.html"
+            grep -q 'serefyinnovations.com' "$RELEASE_DIR/index.html"
+            grep -q 'api.nayagrowth.com' "$TARGET_DIR/nginx.conf"
 
+            ln -sfn "$RELEASE_DIR" "$TARGET_DIR/current"
             cd "$TARGET_DIR"
-            git fetch origin --prune
-            git checkout production
-            git reset --hard "origin/production"
-            docker compose -f docker-compose.prod.yml down --remove-orphans || true
-            docker compose -f docker-compose.prod.yml up -d --build
+            docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate --pull never "$SERVICE"
             docker compose -f docker-compose.prod.yml ps
-            docker exec serefy-innovations-preview wget -q -O - http://127.0.0.1/healthz
+            docker exec "$CONTAINER" wget -q -O - http://127.0.0.1/healthz

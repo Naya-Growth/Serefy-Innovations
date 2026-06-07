@@ -1,13 +1,40 @@
 import { useState, FormEvent } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { submitSERELead } from '../lib/naya-lead';
 
 export default function Contact() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const { t } = useLanguage();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
-    // ... logic remains same ...
+    e.preventDefault();
+    const form = e.currentTarget;
+    const formData = new FormData(form);
+
+    setLoading(true);
+    setSubmitError('');
+
+    try {
+      await submitSERELead({
+        firstName: String(formData.get('name') ?? ''),
+        email: String(formData.get('email') ?? ''),
+        phone: String(formData.get('phone') ?? ''),
+        message: String(formData.get('message') ?? ''),
+        sourceCta: 'contact_page_form',
+      });
+      form.reset();
+      setSubmitted(true);
+    } catch (error) {
+      setSubmitError(
+        error instanceof Error && error.message
+          ? error.message
+          : 'Lead capture is temporarily unavailable. Please try again or contact us on WhatsApp.',
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
   if (submitted) {
@@ -58,9 +85,25 @@ export default function Contact() {
             </div>
 
             <div>
+              <label htmlFor="phone" className="block text-sm font-bold text-on-surface mb-2">{t('form.phone')}</label>
+              <input type="tel" id="phone" name="phone" className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="+91 98765 43210" />
+            </div>
+
+            <div>
               <label htmlFor="message" className="block text-sm font-bold text-on-surface mb-2">{t('form.message')}</label>
               <textarea id="message" name="message" rows={4} required className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none" placeholder="How can we help you?"></textarea>
             </div>
+
+            <label className="flex items-start gap-3 rounded-2xl bg-surface-container-low px-4 py-3 text-left text-sm text-on-surface-variant">
+              <input className="mt-1 h-4 w-4 rounded border-outline-variant accent-primary" required type="checkbox" name="consent" />
+              <span>{t('form.consent')}</span>
+            </label>
+
+            {submitError ? (
+              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                {submitError}
+              </p>
+            ) : null}
 
             <button
               type="submit"

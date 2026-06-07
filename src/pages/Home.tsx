@@ -576,7 +576,7 @@ export default function Home() {
                 <span>{t('form.consent')}</span>
               </label>
               {leadError && !isWizardOpen ? (
-                <p className="md:col-span-2 rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm font-semibold text-green-700">
+                <p className="md:col-span-2 rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
                   {leadError}
                 </p>
               ) : null}
