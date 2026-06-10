@@ -211,7 +211,10 @@ const translations: Record<Language, Record<string, string>> = {
     'section.gallery.step3': "Lab Testing",
     'section.gallery.step4': "Scale & Impact",
     'share.copied': "Link copied to clipboard!",
-    'share.text': "Check out Serefy Innovations!"
+    'share.text': "Check out Serefy Innovations!",
+    'contact.phone.label': "Phone Number",
+    'contact.email.label': "Email Address",
+    'contact.address.label': "Office Address"
   },
   Hindi: {
     'hero.title': "भारत का सबसे कुशल और स्मार्ट अंडा इनक्यूबेटर।",
@@ -414,7 +417,10 @@ const translations: Record<Language, Record<string, string>> = {
     'section.gallery.step3': "प्रयोगशाला परीक्षण",
     'section.gallery.step4': "पैमाना और प्रभाव",
     'share.copied': "लिंक क्लिपबोर्ड पर कॉपी की गई!",
-    'share.text': "सेरेफी इनोवेशन देखें!"
+    'share.text': "सेरेफी इनोवेशन देखें!",
+    'contact.phone.label': "फ़ोन नंबर",
+    'contact.email.label': "ईमेल पता",
+    'contact.address.label': "कार्यालय का पता"
   },
   Marathi: {
     'hero.title': "भारतातील सर्वात कार्यक्षम आणि स्मार्ट अंडी इनक्यूबेटर.",
@@ -617,7 +623,10 @@ const translations: Record<Language, Record<string, string>> = {
     'section.gallery.step3': "प्रयोगशाळा चाचणी",
     'section.gallery.step4': "व्याप्ती आणि प्रभाव",
     'share.copied': "लिंक क्लिपबोर्डवर कॉपी केली!",
-    'share.text': "सेरेफी इनोव्हेशन्स पहा!"
+    'share.text': "सेरेफी इनोव्हेशन्स पहा!",
+    'contact.phone.label': "फोन नंबर",
+    'contact.email.label': "ईमेल पत्ता",
+    'contact.address.label': "कार्यालयाचा पत्ता"
   }
 };
 

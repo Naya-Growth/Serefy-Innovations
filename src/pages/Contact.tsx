@@ -1,5 +1,6 @@
 import { useState, FormEvent } from 'react';
 import { useLanguage } from '../context/LanguageContext';
+import { siteConfig } from '../config/siteConfig';
 import { submitSERELead } from '../lib/naya-lead';
 
 export default function Contact() {
@@ -71,13 +72,64 @@ export default function Contact() {
           <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-black text-black tracking-tighter leading-tight mb-6">
             {t('contact.title')}
           </h1>
-          <p className="text-black/70 text-base sm:text-lg mb-8 sm:mb-12 max-w-md sm:max-w-lg lg:max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
+          <p className="text-black/70 text-base sm:text-lg mb-6 sm:mb-8 max-w-md sm:max-w-lg lg:max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
             {t('contact.desc')}
           </p>
+          
+          {/* Contact Details */}
+          <div className="flex flex-col gap-6 mt-4 items-start text-black mb-12 lg:mb-0 w-fit mx-auto lg:mx-0">
+            <div className="flex items-center gap-4 group">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-green-50 flex items-center justify-center border border-green-100 group-hover:scale-105 transition-transform shrink-0">
+                <span className="material-symbols-outlined text-green-700 text-xl sm:text-2xl">call</span>
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest leading-none mb-1">
+                  {t('contact.phone.label')}
+                </p>
+                <a 
+                  href={`tel:${siteConfig.brand.phone.replace(/\s+/g, '')}`} 
+                  className="text-base sm:text-lg font-black hover:text-green-700 transition-colors"
+                >
+                  {siteConfig.brand.phone}
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 group">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-green-50 flex items-center justify-center border border-green-100 group-hover:scale-105 transition-transform shrink-0">
+                <span className="material-symbols-outlined text-green-700 text-xl sm:text-2xl">mail</span>
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest leading-none mb-1">
+                  {t('contact.email.label')}
+                </p>
+                <a 
+                  href={`mailto:${siteConfig.brand.email}`} 
+                  className="text-base sm:text-lg font-black hover:text-green-700 transition-colors break-all"
+                >
+                  {siteConfig.brand.email}
+                </a>
+              </div>
+            </div>
+
+            <div className="flex items-center gap-4 group">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-green-50 flex items-center justify-center border border-green-100 group-hover:scale-105 transition-transform shrink-0">
+                <span className="material-symbols-outlined text-green-700 text-xl sm:text-2xl">location_on</span>
+              </div>
+              <div className="text-left">
+                <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest leading-none mb-1">
+                  {t('contact.address.label')}
+                </p>
+                <p className="text-sm sm:text-base font-black text-black/70 max-w-xs md:max-w-sm">
+                  {siteConfig.brand.address}
+                </p>
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Form Column */}
-        <div className="bg-surface p-6 sm:p-8 md:p-10 rounded-3xl shadow-xl border border-outline-variant/15 w-full max-w-xl mx-auto lg:mx-0 lg:max-w-none">
+        <div className="bg-surface p-5 sm:p-8 md:p-10 rounded-3xl shadow-xl border border-outline-variant/15 w-full max-w-xl mx-auto lg:mx-0 lg:max-w-none">
           <h2 className="font-headline text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center lg:text-left">{t('contact.form.title')}</h2>
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             <div>
