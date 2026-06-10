@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import WizardModal, { type WizardFormData } from '../components/WizardModal';
 import ThankYouModal from '../components/ThankYouModal';
+import { Link } from 'react-router-dom';
 
 import AnimatedTags from '../components/AnimatedTags';
 import SectionWrapper from '../components/SectionWrapper';
@@ -146,6 +147,9 @@ export default function Home() {
                 <a className="btn-primary w-full sm:w-auto justify-center text-on-primary font-label font-black px-8 py-4 rounded-2xl hover:bg-primary-container hover:scale-[1.02] transition-all shadow-xl hover:shadow-primary/30 hover:-translate-y-1 cursor-pointer flex items-center gap-3 text-base" onClick={(e) => handleOpenWizard(e, 'hero_cta')}>
                   {t('hero.cta')} <ArrowRight size={20} />
                 </a>
+                <Link to="/technology" className="w-full sm:w-auto justify-center text-slate-800 bg-white border border-slate-200 font-label font-black px-8 py-4 rounded-2xl hover:bg-slate-50 hover:scale-[1.02] transition-all shadow-md hover:-translate-y-1 cursor-pointer flex items-center gap-3 text-base">
+                  {t('tech.hero.cta')} <ArrowRight size={20} />
+                </Link>
               </div>
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-2 text-primary font-black text-xs">
