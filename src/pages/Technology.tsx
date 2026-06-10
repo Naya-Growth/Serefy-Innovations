@@ -20,7 +20,10 @@ export default function Technology() {
                   <p className="text-base text-black font-black max-w-lg mb-6 leading-relaxed opacity-80">
                      {t('tech.hero.desc')}
                   </p>
-                  <button className="bg-green-700 text-white px-10 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-green-700/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95">
+                  <button 
+                     onClick={() => document.getElementById('explore-tech')?.scrollIntoView({ behavior: 'smooth' })}
+                     className="bg-green-700 text-white px-10 py-4 rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-green-700/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 cursor-pointer"
+                  >
                      {t('tech.hero.cta')} <span className="material-symbols-outlined text-sm">arrow_forward</span>
                   </button>
                </div>
@@ -43,7 +46,7 @@ export default function Technology() {
          </section>
 
          {/* Mission Section */}
-         <section className="max-w-7xl mx-auto px-6 py-16 border-t border-green-100">
+         <section id="explore-tech" className="max-w-7xl mx-auto px-6 py-16 border-t border-green-100">
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
                <div>
                   <p className="text-green-700 text-[10px] font-black uppercase tracking-[0.3em] mb-4">{t('tech.mission.badge')}</p>
