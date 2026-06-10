@@ -230,7 +230,16 @@ export default function Layout() {
             <h5 className="text-green-500 font-black uppercase text-xs tracking-[0.4em] mb-8">{t('footer.contact')}</h5>
             <div className="flex flex-col gap-4 text-white/80 text-sm font-medium">
               <p>{siteConfig.brand.address}</p>
-              <p>{siteConfig.brand.email}</p>
+              <p>
+                <a href={`mailto:${siteConfig.brand.email}`} className="hover:text-green-400 transition-colors">
+                  {siteConfig.brand.email}
+                </a>
+              </p>
+              <p>
+                <a href={`tel:${siteConfig.brand.phone.replace(/\s+/g, '')}`} className="hover:text-green-400 transition-colors">
+                  {siteConfig.brand.phone}
+                </a>
+              </p>
             </div>
           </div>
         </div>
