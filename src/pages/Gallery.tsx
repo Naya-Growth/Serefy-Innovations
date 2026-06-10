@@ -1,7 +1,5 @@
-import { useState } from 'react';
 
 export default function Gallery() {
-  const [activeTab, setActiveTab] = useState<'photos' | 'videos'>('photos');
 
   const photos = [
     { id: 1, title: 'Expert Meetups', description: 'Collaborating with industry experts to refine technology.', url: '/media/gallery-expert-meetups.jpg' },
@@ -37,60 +35,35 @@ export default function Gallery() {
         <div className="w-16 h-1 bg-green-500 mx-auto mt-8 rounded-full opacity-20"></div>
       </header>
 
-      {/* Modern Compact Switcher */}
-      <div className="flex justify-center mb-16 px-6">
-        <div className="bg-green-50/50 p-1.5 rounded-3xl flex gap-1 border border-green-100 shadow-sm">
-          <button
-            onClick={() => setActiveTab('photos')}
-            className={`px-6 md:px-10 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-all ${activeTab === 'photos' ? 'bg-black text-white shadow-xl' : 'text-black/40 hover:text-black/60'}`}
-          >
-            Photos
-          </button>
-          <button
-            onClick={() => setActiveTab('videos')}
-            className={`px-6 md:px-10 py-3 rounded-2xl text-[10px] font-black uppercase tracking-widest hover:scale-[1.02] transition-all ${activeTab === 'videos' ? 'bg-black text-white shadow-xl' : 'text-black/40 hover:text-black/60'}`}
-          >
-            Videos
-          </button>
-        </div>
-      </div>
-
       {/* 3x3 Equal Grid */}
       <main className="max-w-7xl mx-auto px-6">
-        {activeTab === 'photos' ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {photos.map((photo, i) => (
-              <div
-                key={photo.id}
-                className="group relative animate-in fade-in slide-in-from-bottom-8 duration-700"
-                style={{ animationDelay: `${i * 100}ms` }}
-              >
-                <div className="aspect-square rounded-[2rem] overflow-hidden bg-green-50 border border-green-100 shadow-xl shadow-green-200/50 transform group-hover:-translate-y-2 transition-all duration-700">
-                  <img
-                    src={photo.url}
-                    alt={photo.title}
-                    className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000"
-                  />
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {photos.map((photo, i) => (
+            <div
+              key={photo.id}
+              className="group relative animate-in fade-in slide-in-from-bottom-8 duration-700"
+              style={{ animationDelay: `${i * 100}ms` }}
+            >
+              <div className="aspect-square rounded-[2rem] overflow-hidden bg-green-50 border border-green-100 shadow-xl shadow-green-200/50 transform group-hover:-translate-y-2 transition-all duration-700">
+                <img
+                  src={photo.url}
+                  alt={photo.title}
+                  className="w-full h-full object-cover transform group-hover:scale-105 transition-transform duration-1000"
+                />
 
-                  <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
-                    <h3 className="text-white text-xl font-black mb-2 tracking-tight">{photo.title}</h3>
-                    <p className="text-white text-xs font-black leading-relaxed opacity-90">{photo.description}</p>
-                  </div>
-                </div>
-
-                <div className="mt-4 px-4 group-hover:opacity-0 transition-opacity duration-300 text-center lg:text-left">
-                  <p className="text-green-600 text-[10px] font-black uppercase tracking-widest mb-1">{photo.title}</p>
-                  <p className="text-black text-xs font-black line-clamp-1">{photo.description}</p>
+                <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex flex-col justify-end p-8">
+                  <h3 className="text-white text-xl font-black mb-2 tracking-tight">{photo.title}</h3>
+                  <p className="text-white text-xs font-black leading-relaxed opacity-90">{photo.description}</p>
                 </div>
               </div>
-            ))}
-          </div>
-        ) : (
-          <div className="flex flex-col items-center justify-center py-40 text-center bg-green-50/30 rounded-[4rem] border-2 border-dashed border-green-200">
-            <span className="material-symbols-outlined text-green-200 text-4xl mb-4">play_circle</span>
-            <h3 className="text-xl font-black text-black">Videos coming soon</h3>
-          </div>
-        )}
+
+              <div className="mt-4 px-4 group-hover:opacity-0 transition-opacity duration-300 text-center lg:text-left">
+                <p className="text-green-600 text-[10px] font-black uppercase tracking-widest mb-1">{photo.title}</p>
+                <p className="text-black text-xs font-black line-clamp-1">{photo.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
       </main>
     </div>
   );

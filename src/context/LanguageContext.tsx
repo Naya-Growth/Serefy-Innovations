@@ -22,6 +22,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.technology': "Technology",
     'nav.metrics': "Metrics",
     'nav.gallery': "Gallery",
+    'nav.contact': "Contact",
     'nav.getStarted': "Get Started",
     'footer.partner': "Supported by",
     'footer.devBy': "Developed by",
@@ -208,7 +209,9 @@ const translations: Record<Language, Record<string, string>> = {
     'section.gallery.step1': "Field Research",
     'section.gallery.step2': "Local Setup",
     'section.gallery.step3': "Lab Testing",
-    'section.gallery.step4': "Scale & Impact"
+    'section.gallery.step4': "Scale & Impact",
+    'share.copied': "Link copied to clipboard!",
+    'share.text': "Check out Serefy Innovations!"
   },
   Hindi: {
     'hero.title': "भारत का सबसे कुशल और स्मार्ट अंडा इनक्यूबेटर।",
@@ -222,6 +225,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.technology': "तकनीक",
     'nav.metrics': "मेट्रिक्स",
     'nav.gallery': "गैलरी",
+    'nav.contact': "संपर्क",
     'nav.getStarted': "शुरू करें",
     'footer.partner': "समर्थन",
     'footer.devBy': "द्वारा विकसित",
@@ -408,7 +412,9 @@ const translations: Record<Language, Record<string, string>> = {
     'section.gallery.step1': "क्षेत्र अनुसंधान",
     'section.gallery.step2': "स्थानीय सेटअप",
     'section.gallery.step3': "प्रयोगशाला परीक्षण",
-    'section.gallery.step4': "पैमाना और प्रभाव"
+    'section.gallery.step4': "पैमाना और प्रभाव",
+    'share.copied': "लिंक क्लिपबोर्ड पर कॉपी की गई!",
+    'share.text': "सेरेफी इनोवेशन देखें!"
   },
   Marathi: {
     'hero.title': "भारतातील सर्वात कार्यक्षम आणि स्मार्ट अंडी इनक्यूबेटर.",
@@ -422,6 +428,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.technology': "तंत्रज्ञान",
     'nav.metrics': "मेट्रिक्स",
     'nav.gallery': "गॅलरी",
+    'nav.contact': "संपर्क",
     'nav.getStarted': "सुरू करा",
     'footer.partner': "द्वारे समर्थित",
     'footer.devBy': "द्वारे विकसित",
@@ -608,7 +615,9 @@ const translations: Record<Language, Record<string, string>> = {
     'section.gallery.step1': "क्षेत्र संशोधन",
     'section.gallery.step2': "स्थानिक सेटअप",
     'section.gallery.step3': "प्रयोगशाळा चाचणी",
-    'section.gallery.step4': "व्याप्ती आणि प्रभाव"
+    'section.gallery.step4': "व्याप्ती आणि प्रभाव",
+    'share.copied': "लिंक क्लिपबोर्डवर कॉपी केली!",
+    'share.text': "सेरेफी इनोव्हेशन्स पहा!"
   }
 };
 
