@@ -60,28 +60,48 @@ export default function Contact() {
   }
 
   return (
-    <div className="pt-24 pb-24 md:pb-0 px-6 max-w-7xl mx-auto">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
-        <div>
-          <h1 className="font-headline text-4xl md:text-5xl font-extrabold text-on-surface tracking-tight mb-6">{t('contact.title')}</h1>
-          <p className="text-on-surface-variant text-lg mb-12 max-w-md leading-relaxed">
+    <div className="pt-28 md:pt-36 pb-20 md:pb-32 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto flex items-center justify-center min-h-[85vh]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center w-full">
+        {/* Text Column */}
+        <div className="flex flex-col justify-center text-center lg:text-left lg:pr-6">
+          <div className="inline-flex items-center self-center lg:self-start gap-2 px-3.5 py-1.5 mb-6 text-[9px] font-black tracking-[0.3em] uppercase bg-black text-white rounded-xl shadow-xl w-fit">
+             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+             Get In Touch
+          </div>
+          <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-black text-black tracking-tighter leading-tight mb-6">
+            {t('contact.title')}
+          </h1>
+          <p className="text-black/70 text-base sm:text-lg mb-8 sm:mb-12 max-w-md sm:max-w-lg lg:max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
             {t('contact.desc')}
           </p>
         </div>
 
-        <div className="bg-surface p-8 md:p-10 rounded-3xl shadow-xl border border-outline-variant/15">
-          <h2 className="font-headline text-2xl font-bold mb-8">{t('contact.form.title')}</h2>
-          <form onSubmit={handleSubmit} className="space-y-5">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
-              <div>
-                <label htmlFor="name" className="block text-sm font-bold text-on-surface mb-2">{t('form.firstName')}</label>
-                <input type="text" id="name" name="name" required className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="Your name" />
-              </div>
+        {/* Form Column */}
+        <div className="bg-surface p-6 sm:p-8 md:p-10 rounded-3xl shadow-xl border border-outline-variant/15 w-full max-w-xl mx-auto lg:mx-0 lg:max-w-none">
+          <h2 className="font-headline text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center lg:text-left">{t('contact.form.title')}</h2>
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+            <div>
+              <label htmlFor="name" className="block text-sm font-bold text-on-surface mb-2">{t('form.firstName')}</label>
+              <input 
+                type="text" 
+                id="name" 
+                name="name" 
+                required 
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base" 
+                placeholder="Your name" 
+              />
             </div>
             
             <div>
               <label htmlFor="email" className="block text-sm font-bold text-on-surface mb-2">{t('form.email')}</label>
-              <input type="email" id="email" name="email" required className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="you@example.com" />
+              <input 
+                type="email" 
+                id="email" 
+                name="email" 
+                required 
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base" 
+                placeholder="you@example.com" 
+              />
             </div>
 
             <div>
@@ -91,7 +111,14 @@ export default function Contact() {
 
             <div>
               <label htmlFor="message" className="block text-sm font-bold text-on-surface mb-2">{t('form.message')}</label>
-              <textarea id="message" name="message" rows={4} required className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none" placeholder="How can we help you?"></textarea>
+              <textarea 
+                id="message" 
+                name="message" 
+                rows={4} 
+                required 
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none text-sm sm:text-base" 
+                placeholder="How can we help you?"
+              ></textarea>
             </div>
 
             <label className="flex items-start gap-3 rounded-2xl bg-surface-container-low px-4 py-3 text-left text-sm text-on-surface-variant">
@@ -108,7 +135,7 @@ export default function Contact() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-on-primary font-bold py-4 rounded-2xl hover:brightness-110 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.02] transition-all duration-300 active:scale-[0.98] disabled:opacity-50 flex items-center justify-center gap-2"
+              className="w-full bg-primary text-on-primary font-bold py-3.5 sm:py-4 rounded-2xl hover:brightness-110 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.01] transition-all duration-300 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base"
             >
               {loading ? t('contact.form.sending') : t('contact.form.submit')}
             </button>

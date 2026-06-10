@@ -3,7 +3,7 @@ import { siteConfig } from '../config/siteConfig';
 import LanguageSelection from './LanguageSelection';
 import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, X, Globe } from 'lucide-react';
 
 export default function Layout() {
@@ -11,6 +11,39 @@ export default function Layout() {
   const { t, language: selectedLang } = useLanguage();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isLangModalOpen, setIsLangModalOpen] = useState(false);
+  const [toastMessage, setToastMessage] = useState<string | null>(null);
+
+  const handleShare = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    const shareData = {
+      title: siteConfig.brand.name,
+      text: t('share.text'),
+      url: window.location.href,
+    };
+
+    if (navigator.share && navigator.canShare && navigator.canShare(shareData)) {
+      try {
+        await navigator.share(shareData);
+        return;
+      } catch (err) {
+        console.log('Web Share failed or cancelled, falling back to copy:', err);
+      }
+    }
+
+    try {
+      await navigator.clipboard.writeText(window.location.href);
+      setToastMessage(t('share.copied'));
+      setTimeout(() => {
+        setToastMessage(null);
+      }, 3000);
+    } catch (err) {
+      console.error('Could not copy text: ', err);
+      setToastMessage('Could not copy link');
+      setTimeout(() => {
+        setToastMessage(null);
+      }, 3000);
+    }
+  };
 
   // Open language modal on mount (refresh)
   useEffect(() => {
@@ -22,7 +55,7 @@ export default function Layout() {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  const navItems = ['Technology', 'Metrics', 'Gallery'];
+  const navItems = ['Technology', 'Metrics', 'Gallery', 'Contact'];
 
   return (
     <div className="min-h-screen flex flex-col bg-white selection:bg-green-500/10 overflow-x-hidden">
@@ -164,11 +197,20 @@ export default function Layout() {
               {t('footer.desc')}
             </p>
             <div className="flex gap-4">
-              {['share', 'rss_feed'].map(icon => (
-                <a key={icon} href="#" className="w-10 h-10 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-green-600 hover:border-green-600 hover:scale-[1.02] transition-all duration-300">
-                  <span className="material-symbols-outlined text-xl">{icon}</span>
-                </a>
-              ))}
+              <button
+                onClick={handleShare}
+                className="w-10 h-10 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-green-600 hover:border-green-600 hover:scale-[1.02] transition-all duration-300 cursor-pointer"
+                aria-label="Share"
+              >
+                <span className="material-symbols-outlined text-xl">share</span>
+              </button>
+              <a
+                href="#"
+                className="w-10 h-10 rounded-2xl bg-white/10 border border-white/20 flex items-center justify-center text-white hover:bg-green-600 hover:border-green-600 hover:scale-[1.02] transition-all duration-300"
+                aria-label="RSS Feed"
+              >
+                <span className="material-symbols-outlined text-xl">rss_feed</span>
+              </a>
             </div>
           </div>
 
@@ -242,6 +284,23 @@ export default function Layout() {
       </a>
 
       <LanguageSelection isOpen={isLangModalOpen} onClose={() => setIsLangModalOpen(false)} />
+
+      <AnimatePresence>
+        {toastMessage && (
+          <motion.div
+            initial={{ opacity: 0, y: -50, scale: 0.9 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: -20, scale: 0.9 }}
+            transition={{ type: 'spring', damping: 25, stiffness: 350 }}
+            className="fixed top-24 left-1/2 -translate-x-1/2 z-[10000] bg-black/90 text-white px-6 py-3.5 rounded-2xl border border-white/10 shadow-2xl flex items-center gap-3 backdrop-blur-md"
+          >
+            <div className="w-6 h-6 rounded-full bg-green-500/20 flex items-center justify-center border border-green-500/30">
+              <span className="material-symbols-outlined text-green-400 text-sm font-bold">check</span>
+            </div>
+            <span className="text-xs md:text-sm font-black tracking-wide uppercase">{toastMessage}</span>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
