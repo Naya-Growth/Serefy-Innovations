@@ -42,6 +42,22 @@ jobs:
       - name: Typecheck
         run: npm run lint
 
+      - name: Validate traefik routing hosts
+        run: |
+          set -euo pipefail
+
+          if ! grep -Fq 'traefik.http.routers.serefy-innovations-preview.rule:' docker-compose.prod.yml; then
+            echo "::error::serefy-innovations-preview router rule is missing in docker-compose.prod.yml"
+            exit 1
+          fi
+
+          for host in 'serefyinnovations.com' 'www.serefyinnovations.com' 'serefy-innovations.preview.nayagrowth.com'; do
+            if ! grep -q "Host(\`$host\`)" docker-compose.prod.yml; then
+              echo "::error::Missing traefik host mapping for $host in docker-compose.prod.yml"
+              exit 1
+            fi
+          done
+
       - name: Build site
         run: npm run build
 
@@ -80,6 +96,12 @@ jobs:
             mkdir -p "$RELEASE_DIR"
             cp -a "$INCOMING/dist/." "$RELEASE_DIR/"
             cp "$INCOMING/nginx.conf" "$TARGET_DIR/nginx.conf"
+
+            sed -i -E 's#^([[:space:]]*)traefik\.http\.routers\.serefy-innovations-preview\.rule:.*#      traefik.http.routers.serefy-innovations-preview.rule: Host(`serefyinnovations.com`) || Host(`www.serefyinnovations.com`) || Host(`serefy-innovations.preview.nayagrowth.com`)#' "$TARGET_DIR/docker-compose.prod.yml"
+            if ! grep -q 'Host(`serefyinnovations.com`)' "$TARGET_DIR/docker-compose.prod.yml" || ! grep -q 'Host(`www.serefyinnovations.com`)' "$TARGET_DIR/docker-compose.prod.yml" || ! grep -q 'Host(`serefy-innovations.preview.nayagrowth.com`)' "$TARGET_DIR/docker-compose.prod.yml"; then
+              echo "Deployment aborted: traefik router rule does not include required hosts."
+              exit 1
+            fi
             test -f "$RELEASE_DIR/index.html"
             grep -q 'src_serefy_live_20260605' "$RELEASE_DIR/index.html"
             grep -q 'serefyinnovations.com' "$RELEASE_DIR/index.html"

@@ -16,7 +16,7 @@ services:
       traefik.enable: "true"
       traefik.docker.network: proxy_net
       traefik.http.routers.serefy-innovations-preview.entrypoints: websecure
-      traefik.http.routers.serefy-innovations-preview.rule: Host(`serefy-innovations.preview.nayagrowth.com`)
+      traefik.http.routers.serefy-innovations-preview.rule: Host(`serefyinnovations.com`) || Host(`www.serefyinnovations.com`) || Host(`serefy-innovations.preview.nayagrowth.com`)
       traefik.http.routers.serefy-innovations-preview.tls.certresolver: letsencrypt
       traefik.http.services.serefy-innovations-preview.loadbalancer.server.port: "80"
 

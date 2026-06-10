@@ -17,6 +17,7 @@ assertFile("src/components/ThankYouModal.tsx");
 assertFile("src/components/GallerySection.tsx");
 assertFile("src/lib/naya-lead.ts");
 assertFile("public/favicon.svg");
+assertFile("public/favicon.ico");
 assertFile("public/site.webmanifest");
 assertFile("public/robots.txt");
 assertFile("public/sitemap.xml");
