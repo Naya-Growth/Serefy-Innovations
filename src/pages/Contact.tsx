@@ -62,7 +62,7 @@ export default function Contact() {
 
   return (
     <div className="pt-28 md:pt-36 pb-20 md:pb-32 px-4 sm:px-6 md:px-8 max-w-7xl mx-auto flex items-center justify-center min-h-[85vh]">
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-center w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 lg:gap-16 items-start w-full">
         {/* Text Column */}
         <div className="flex flex-col justify-center text-center lg:text-left lg:pr-6">
           <div className="inline-flex items-center self-center lg:self-start gap-2 px-3.5 py-1.5 mb-6 text-[9px] font-black tracking-[0.3em] uppercase bg-black text-white rounded-xl shadow-xl w-fit">
@@ -72,12 +72,12 @@ export default function Contact() {
           <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-black text-black tracking-tighter leading-tight mb-6">
             {t('contact.title')}
           </h1>
-          <p className="text-black/70 text-base sm:text-lg mb-6 sm:mb-8 max-w-md sm:max-w-lg lg:max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
+          <p className="text-black/70 text-base sm:text-lg mb-4 max-w-md sm:max-w-lg lg:max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
             {t('contact.desc')}
           </p>
           
           {/* Contact Details */}
-          <div className="flex flex-col gap-6 mt-4 items-start text-black mb-12 lg:mb-0 w-fit mx-auto lg:mx-0">
+          <div className="flex flex-col gap-5 mt-2 items-start text-black mb-12 lg:mb-0 w-fit mx-auto lg:mx-0">
             <div className="flex items-center gap-4 group">
               <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-2xl bg-green-50 flex items-center justify-center border border-green-100 group-hover:scale-105 transition-transform shrink-0">
                 <span className="material-symbols-outlined text-green-700 text-xl sm:text-2xl">call</span>
