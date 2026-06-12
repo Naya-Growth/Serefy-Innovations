@@ -10,7 +10,8 @@
     "clean": "rm -rf dist",
     "lint": "tsc --noEmit",
     "test": "node --test --import tsx src/lib/naya-lead.test.ts",
-    "verify:assets": "node scripts/verify-public-assets.mjs"
+    "verify:assets": "node scripts/verify-public-assets.mjs",
+    "deploy:webdev": "node scripts/deploy-webdev.mjs"
   },
   "dependencies": {
     "@google/genai": "^1.29.0",

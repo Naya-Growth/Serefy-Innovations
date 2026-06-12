@@ -58,6 +58,16 @@ jobs:
             fi
           done
 
+          if ! grep -Fq 'image: nginx:1.27-alpine' docker-compose.prod.yml; then
+            echo "::error::Production compose must use the static nginx image, not a per-deploy build."
+            exit 1
+          fi
+
+          if ! grep -Fq './current:/usr/share/nginx/html:ro' docker-compose.prod.yml; then
+            echo "::error::Production compose must mount ./current so release switches are served."
+            exit 1
+          fi
+
       - name: Build site
         run: npm run build
 
@@ -106,9 +116,18 @@ jobs:
             grep -q 'src_serefy_live_20260605' "$RELEASE_DIR/index.html"
             grep -q 'serefyinnovations.com' "$RELEASE_DIR/index.html"
             grep -q 'api.nayagrowth.com' "$TARGET_DIR/nginx.conf"
+            grep -q 'image: nginx:1.27-alpine' "$TARGET_DIR/docker-compose.prod.yml"
+            grep -q './current:/usr/share/nginx/html:ro' "$TARGET_DIR/docker-compose.prod.yml"
 
             ln -sfn "$RELEASE_DIR" "$TARGET_DIR/current"
             cd "$TARGET_DIR"
             docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate --pull never "$SERVICE"
             docker compose -f docker-compose.prod.yml ps
-            docker exec "$CONTAINER" wget -q -O - http://127.0.0.1/healthz
+            for attempt in $(seq 1 20); do
+              if docker exec "$CONTAINER" wget -q -O - http://127.0.0.1/healthz >/dev/null 2>&1; then
+                exit 0
+              fi
+              sleep 1
+            done
+            docker logs --tail=80 "$CONTAINER"
+            exit 1
