@@ -82,7 +82,7 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Package static release
+      - name: Prepare static release checks
         run: |
           set -euo pipefail
           node --input-type=module <<'NODE'
@@ -114,7 +114,6 @@ jobs:
             })}\n`,
           );
           NODE
-          tar -czf serefy-static-release.tar.gz dist
           cat serefy-release-assets.txt
 
       - name: Upload static release to nivi
@@ -124,7 +123,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_SSH_PORT || '22' }}
-          source: "serefy-static-release.tar.gz,nginx.conf,docker-compose.prod.yml"
+          source: "dist,nginx.conf,docker-compose.prod.yml"
           target: "/home/nivi/apps/serefy-innovations-preview/incoming/${{ steps.deploy_ref.outputs.sha }}"
           rm: true
 
@@ -143,7 +142,7 @@ jobs:
             INCOMING="$TARGET_DIR/incoming/${{ steps.deploy_ref.outputs.sha }}"
             RELEASE_PREFIX="actions-${{ steps.deploy_ref.outputs.short_sha }}"
 
-            test -f "$INCOMING/serefy-static-release.tar.gz"
+            test -d "$INCOMING/dist"
             test -f "$INCOMING/nginx.conf"
             test -f "$INCOMING/docker-compose.prod.yml"
             cp "$INCOMING/nginx.conf" "$TARGET_DIR/nginx.conf"
@@ -159,7 +158,7 @@ jobs:
             grep -q './current:/usr/share/nginx/html:ro' "$TARGET_DIR/docker-compose.prod.yml"
 
             /usr/local/sbin/serefy-static-deploy \
-              --archive "$INCOMING/serefy-static-release.tar.gz" \
+              --dist-dir "$INCOMING/dist" \
               --release-prefix "$RELEASE_PREFIX"
 
       - name: Verify public release
