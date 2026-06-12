@@ -116,50 +116,43 @@ jobs:
           NODE
           cat serefy-release-assets.txt
 
-      - name: Upload static release to nivi
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_SSH_PORT || '22' }}
-          source: "dist,nginx.conf,docker-compose.prod.yml"
-          target: "/home/nivi/apps/serefy-innovations-preview/incoming/${{ steps.deploy_ref.outputs.sha }}"
-          rm: true
+      - name: Deploy static release over SSH stream
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+          VPS_SSH_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
+        run: |
+          set -euo pipefail
+          TARGET_DIR="/home/nivi/apps/serefy-innovations-preview"
+          REMOTE="$VPS_USER@$VPS_HOST"
+          SSH_KEY="$RUNNER_TEMP/serefy-actions-key"
+          SSH_OPTS=(-i "$SSH_KEY" -p "$VPS_SSH_PORT" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes)
+          SCP_OPTS=(-i "$SSH_KEY" -P "$VPS_SSH_PORT" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes)
 
-      - name: Switch static release on nivi
-        uses: appleboy/ssh-action@v1.2.0
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          port: ${{ secrets.VPS_SSH_PORT || '22' }}
-          timeout: 90s
-          command_timeout: 15m
-          script: |
-            set -euo pipefail
-            TARGET_DIR="$HOME/apps/serefy-innovations-preview"
-            INCOMING="$TARGET_DIR/incoming/${{ steps.deploy_ref.outputs.sha }}"
-            RELEASE_PREFIX="actions-${{ steps.deploy_ref.outputs.short_sha }}"
+          install -m 700 -d ~/.ssh
+          printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > "$SSH_KEY"
+          chmod 600 "$SSH_KEY"
+          ssh-keyscan -p "$VPS_SSH_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts
 
-            test -d "$INCOMING/dist"
-            test -f "$INCOMING/nginx.conf"
-            test -f "$INCOMING/docker-compose.prod.yml"
-            cp "$INCOMING/nginx.conf" "$TARGET_DIR/nginx.conf"
-            cp "$INCOMING/docker-compose.prod.yml" "$TARGET_DIR/docker-compose.prod.yml"
+          ssh "${SSH_OPTS[@]}" "$REMOTE" "mkdir -p '$TARGET_DIR/incoming/$DEPLOY_SHA'"
+          scp "${SCP_OPTS[@]}" nginx.conf docker-compose.prod.yml "$REMOTE:$TARGET_DIR/incoming/$DEPLOY_SHA/"
 
-            sed -i -E 's#^([[:space:]]*)traefik\.http\.routers\.serefy-innovations-preview\.rule:.*#      traefik.http.routers.serefy-innovations-preview.rule: Host(`serefyinnovations.com`) || Host(`www.serefyinnovations.com`) || Host(`serefy-innovations.preview.nayagrowth.com`)#' "$TARGET_DIR/docker-compose.prod.yml"
-            if ! grep -q 'Host(`serefyinnovations.com`)' "$TARGET_DIR/docker-compose.prod.yml" || ! grep -q 'Host(`www.serefyinnovations.com`)' "$TARGET_DIR/docker-compose.prod.yml" || ! grep -q 'Host(`serefy-innovations.preview.nayagrowth.com`)' "$TARGET_DIR/docker-compose.prod.yml"; then
-              echo "Deployment aborted: traefik router rule does not include required hosts."
-              exit 1
-            fi
-            grep -q 'api.nayagrowth.com' "$TARGET_DIR/nginx.conf"
-            grep -q 'image: nginx:1.27-alpine' "$TARGET_DIR/docker-compose.prod.yml"
-            grep -q './current:/usr/share/nginx/html:ro' "$TARGET_DIR/docker-compose.prod.yml"
+          ssh "${SSH_OPTS[@]}" "$REMOTE" "set -euo pipefail
+            INCOMING='$TARGET_DIR/incoming/$DEPLOY_SHA'
+            cp \"\$INCOMING/nginx.conf\" '$TARGET_DIR/nginx.conf'
+            cp \"\$INCOMING/docker-compose.prod.yml\" '$TARGET_DIR/docker-compose.prod.yml'
+            sed -i -E 's#^([[:space:]]*)traefik\.http\.routers\.serefy-innovations-preview\.rule:.*#      traefik.http.routers.serefy-innovations-preview.rule: Host(\`serefyinnovations.com\`) || Host(\`www.serefyinnovations.com\`) || Host(\`serefy-innovations.preview.nayagrowth.com\`)#' '$TARGET_DIR/docker-compose.prod.yml'
+            grep -q 'Host(\`serefyinnovations.com\`)' '$TARGET_DIR/docker-compose.prod.yml'
+            grep -q 'Host(\`www.serefyinnovations.com\`)' '$TARGET_DIR/docker-compose.prod.yml'
+            grep -q 'Host(\`serefy-innovations.preview.nayagrowth.com\`)' '$TARGET_DIR/docker-compose.prod.yml'
+            grep -q 'api.nayagrowth.com' '$TARGET_DIR/nginx.conf'
+            grep -q 'image: nginx:1.27-alpine' '$TARGET_DIR/docker-compose.prod.yml'
+            grep -q './current:/usr/share/nginx/html:ro' '$TARGET_DIR/docker-compose.prod.yml'
+          "
 
-            /usr/local/sbin/serefy-static-deploy \
-              --dist-dir "$INCOMING/dist" \
-              --release-prefix "$RELEASE_PREFIX"
+          tar -czf - dist | ssh "${SSH_OPTS[@]}" "$REMOTE" \
+            "/usr/local/sbin/serefy-static-deploy --release-prefix 'actions-$DEPLOY_SHORT_SHA'"
 
       - name: Verify public release
         run: |
