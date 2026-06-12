@@ -24,6 +24,17 @@ jobs:
         with:
           ref: ${{ github.event.inputs.ref || github.ref_name }}
 
+      - name: Capture deploy ref
+        id: deploy_ref
+        run: |
+          set -euo pipefail
+          sha="$(git rev-parse HEAD)"
+          short_sha="$(git rev-parse --short=12 HEAD)"
+          echo "sha=$sha" >> "$GITHUB_OUTPUT"
+          echo "short_sha=$short_sha" >> "$GITHUB_OUTPUT"
+          echo "DEPLOY_SHA=$sha" >> "$GITHUB_ENV"
+          echo "DEPLOY_SHORT_SHA=$short_sha" >> "$GITHUB_ENV"
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
@@ -71,6 +82,41 @@ jobs:
       - name: Build site
         run: npm run build
 
+      - name: Package static release
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+
+          const html = fs.readFileSync('dist/index.html', 'utf8');
+          const assets = [...html.matchAll(/(?:src|href)="\/?(assets\/[^"]+)"/g)]
+            .map((match) => match[1])
+            .filter((asset) => /\/index-[^/]+\.(js|css)$/.test(asset));
+          const uniqueAssets = [...new Set(assets)];
+
+          if (!uniqueAssets.some((asset) => asset.endsWith('.js'))) {
+            throw new Error('No built JavaScript asset found in dist/index.html');
+          }
+          if (!uniqueAssets.some((asset) => asset.endsWith('.css'))) {
+            throw new Error('No built CSS asset found in dist/index.html');
+          }
+
+          fs.writeFileSync('serefy-release-assets.txt', `${uniqueAssets.join('\n')}\n`);
+          fs.writeFileSync(
+            'dist/serefy-deploy.json',
+            `${JSON.stringify({
+              source: 'github-actions',
+              repository: process.env.GITHUB_REPOSITORY,
+              sha: process.env.DEPLOY_SHA,
+              runId: process.env.GITHUB_RUN_ID,
+              runAttempt: process.env.GITHUB_RUN_ATTEMPT,
+              createdAt: new Date().toISOString(),
+            })}\n`,
+          );
+          NODE
+          tar -czf serefy-static-release.tar.gz dist
+          cat serefy-release-assets.txt
+
       - name: Upload static release to nivi
         uses: appleboy/scp-action@v0.1.7
         with:
@@ -78,8 +124,8 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_SSH_PORT || '22' }}
-          source: "dist,nginx.conf,docker-compose.prod.yml"
-          target: "/home/nivi/apps/serefy-innovations-preview/incoming/${{ github.sha }}"
+          source: "serefy-static-release.tar.gz,nginx.conf,docker-compose.prod.yml"
+          target: "/home/nivi/apps/serefy-innovations-preview/incoming/${{ steps.deploy_ref.outputs.sha }}"
           rm: true
 
       - name: Switch static release on nivi
@@ -94,18 +140,12 @@ jobs:
           script: |
             set -euo pipefail
             TARGET_DIR="$HOME/apps/serefy-innovations-preview"
-            SERVICE="serefy-innovations-preview"
-            CONTAINER="serefy-innovations-preview"
-            RELEASE="main-${{ github.sha }}"
-            INCOMING="$TARGET_DIR/incoming/${{ github.sha }}"
-            RELEASE_DIR="$TARGET_DIR/releases/$RELEASE"
+            INCOMING="$TARGET_DIR/incoming/${{ steps.deploy_ref.outputs.sha }}"
+            RELEASE_PREFIX="actions-${{ steps.deploy_ref.outputs.short_sha }}"
 
-            test -d "$INCOMING/dist"
+            test -f "$INCOMING/serefy-static-release.tar.gz"
             test -f "$INCOMING/nginx.conf"
             test -f "$INCOMING/docker-compose.prod.yml"
-            rm -rf "$RELEASE_DIR"
-            mkdir -p "$RELEASE_DIR"
-            cp -a "$INCOMING/dist/." "$RELEASE_DIR/"
             cp "$INCOMING/nginx.conf" "$TARGET_DIR/nginx.conf"
             cp "$INCOMING/docker-compose.prod.yml" "$TARGET_DIR/docker-compose.prod.yml"
 
@@ -114,22 +154,46 @@ jobs:
               echo "Deployment aborted: traefik router rule does not include required hosts."
               exit 1
             fi
-            test -f "$RELEASE_DIR/index.html"
-            grep -q 'src_serefy_live_20260605' "$RELEASE_DIR/index.html"
-            grep -q 'serefyinnovations.com' "$RELEASE_DIR/index.html"
             grep -q 'api.nayagrowth.com' "$TARGET_DIR/nginx.conf"
             grep -q 'image: nginx:1.27-alpine' "$TARGET_DIR/docker-compose.prod.yml"
             grep -q './current:/usr/share/nginx/html:ro' "$TARGET_DIR/docker-compose.prod.yml"
 
-            ln -sfn "$RELEASE_DIR" "$TARGET_DIR/current"
-            cd "$TARGET_DIR"
-            docker compose -f docker-compose.prod.yml up -d --no-deps --force-recreate --pull never "$SERVICE"
-            docker compose -f docker-compose.prod.yml ps
-            for attempt in $(seq 1 20); do
-              if docker exec "$CONTAINER" wget -q -O - http://127.0.0.1/healthz >/dev/null 2>&1; then
-                exit 0
+            /usr/local/sbin/serefy-static-deploy \
+              --archive "$INCOMING/serefy-static-release.tar.gz" \
+              --release-prefix "$RELEASE_PREFIX"
+
+      - name: Verify public release
+        run: |
+          set -euo pipefail
+          for url in \
+            "https://serefyinnovations.com" \
+            "https://www.serefyinnovations.com" \
+            "https://serefy-innovations.preview.nayagrowth.com"
+          do
+            html="$(mktemp)"
+            marker="$(mktemp)"
+
+            curl --fail --silent --show-error --location \
+              --retry 8 --retry-delay 3 --retry-all-errors \
+              -H 'Cache-Control: no-cache' \
+              "$url/" -o "$html"
+            grep -q 'src_serefy_live_20260605' "$html"
+
+            while IFS= read -r asset; do
+              [ -n "$asset" ] || continue
+              if ! grep -Fq "$asset" "$html"; then
+                echo "::error::Live $url is not serving deployed asset $asset"
+                exit 1
               fi
-              sleep 1
+              curl --fail --silent --show-error --head \
+                --retry 8 --retry-delay 3 --retry-all-errors \
+                "$url/$asset" >/dev/null
+            done < serefy-release-assets.txt
+
+            curl --fail --silent --show-error --location \
+              --retry 8 --retry-delay 3 --retry-all-errors \
+              -H 'Cache-Control: no-cache' \
+              "$url/serefy-deploy.json" -o "$marker"
+            grep -Fq "\"sha\":\"$DEPLOY_SHA\"" "$marker"
+            echo "$url serves $DEPLOY_SHORT_SHA"
             done
-            docker logs --tail=80 "$CONTAINER"
-            exit 1

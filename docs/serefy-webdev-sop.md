@@ -39,6 +39,10 @@ It should not open a shell. It may print `No deploy archive received`.
 
 ## Make the website live
 
+Preferred path when GitHub push is blocked: use `npm run deploy:webdev`.
+Normal repo path: push/merge to `main`; GitHub Actions will deploy the same
+static release flow and verify the public URLs.
+
 1. Open a terminal in the repo.
 2. Pull the latest code:
 
@@ -53,6 +57,19 @@ npm run deploy:webdev
 ```
 
 The script installs dependencies, runs tests, checks assets, typechecks, builds the site, uploads the static build, switches the live release, and smoke-checks the server.
+
+## GitHub Actions deploy path
+
+When a change reaches `main`, the `Deploy Production` workflow:
+
+1. Builds the site.
+2. Uploads the static archive to the VPS.
+3. Calls the same server-side release switcher used by `webdev`.
+4. Checks that all three public hostnames serve the exact built asset files and
+   deployment marker for that commit.
+
+If the workflow is green but your browser looks old, hard refresh first
+(`Ctrl+Shift+R`). If it still looks old, send the workflow run link to Suyash.
 
 ## After deploy
 
