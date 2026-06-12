@@ -78,7 +78,7 @@ jobs:
           username: ${{ secrets.VPS_USER }}
           key: ${{ secrets.VPS_SSH_KEY }}
           port: ${{ secrets.VPS_SSH_PORT || '22' }}
-          source: "dist,nginx.conf"
+          source: "dist,nginx.conf,docker-compose.prod.yml"
           target: "/home/nivi/apps/serefy-innovations-preview/incoming/${{ github.sha }}"
           rm: true
 
@@ -102,10 +102,12 @@ jobs:
 
             test -d "$INCOMING/dist"
             test -f "$INCOMING/nginx.conf"
+            test -f "$INCOMING/docker-compose.prod.yml"
             rm -rf "$RELEASE_DIR"
             mkdir -p "$RELEASE_DIR"
             cp -a "$INCOMING/dist/." "$RELEASE_DIR/"
             cp "$INCOMING/nginx.conf" "$TARGET_DIR/nginx.conf"
+            cp "$INCOMING/docker-compose.prod.yml" "$TARGET_DIR/docker-compose.prod.yml"
 
             sed -i -E 's#^([[:space:]]*)traefik\.http\.routers\.serefy-innovations-preview\.rule:.*#      traefik.http.routers.serefy-innovations-preview.rule: Host(`serefyinnovations.com`) || Host(`www.serefyinnovations.com`) || Host(`serefy-innovations.preview.nayagrowth.com`)#' "$TARGET_DIR/docker-compose.prod.yml"
             if ! grep -q 'Host(`serefyinnovations.com`)' "$TARGET_DIR/docker-compose.prod.yml" || ! grep -q 'Host(`www.serefyinnovations.com`)' "$TARGET_DIR/docker-compose.prod.yml" || ! grep -q 'Host(`serefy-innovations.preview.nayagrowth.com`)' "$TARGET_DIR/docker-compose.prod.yml"; then
