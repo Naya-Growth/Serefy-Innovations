@@ -63,16 +63,17 @@ export default function Layout() {
       {/* Modern Minimalist Header */}
       <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-green-100">
         <div className="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 w-full max-w-7xl mx-auto">
-          <Link to="/" className="text-lg md:text-xl font-black text-black flex items-center gap-2 group shrink-0">
+          <Link to="/" className="flex items-center gap-2 group shrink-0">
             <div className="h-10 md:h-14 flex items-center justify-center">
                <img 
-                src="/logo to be used.PNG" 
+                src="/logo-master-tight-crop.png" 
+                srcSet="/logo-320w.png 320w, /logo-480w.png 480w, /logo-768w.png 768w, /logo-1024w.png 1024w, /logo-1366w.png 1366w, /logo-1440w.png 1440w, /logo-1920w.png 1920w, /logo-2560w.png 2560w"
+                sizes="(max-width: 640px) 120px, (max-width: 768px) 160px, (max-width: 1024px) 200px, 240px"
                 alt={siteConfig.brand.name} 
-                className="h-full w-auto object-contain bg-white transition-transform duration-300 group-hover:scale-110 scale-125"
+                className="h-full w-auto object-contain transition-transform duration-300 group-hover:scale-105 scale-110"
                 style={{ filter: 'brightness(1.05) contrast(1.1)' }}
               />
             </div>
-            <span className="font-headline font-black text-lg md:text-xl tracking-tighter uppercase ml-1">{siteConfig.brand.name}</span>
           </Link>
 
           {/* Desktop Navigation */}
@@ -183,15 +184,15 @@ export default function Layout() {
         <div className="grid grid-cols-1 md:grid-cols-12 gap-12 px-8 max-w-7xl mx-auto relative z-10">
           <div className="md:col-span-5">
             <div className="text-3xl font-black text-white mb-6 flex items-center gap-3">
-              <div className="bg-white p-2 rounded-3xl flex items-center justify-center overflow-hidden w-16 h-16">
+              <div className="flex items-center justify-center h-16 sm:h-20 md:h-28 w-auto">
                  <img 
-                  src="/logo to be used.PNG" 
+                  src="/logo-white-master.png" 
+                  srcSet="/logo-white-320w.png 320w, /logo-white-480w.png 480w, /logo-white-768w.png 768w, /logo-white-1024w.png 1024w, /logo-white-1366w.png 1366w, /logo-white-1440w.png 1440w, /logo-white-1920w.png 1920w, /logo-white-2560w.png 2560w"
+                  sizes="(max-width: 640px) 240px, (max-width: 768px) 300px, (max-width: 1024px) 360px, 400px"
                   alt={siteConfig.brand.name} 
-                  className="h-full w-auto object-contain bg-white scale-125" 
-                  style={{ filter: 'brightness(1.05) contrast(1.1)' }}
+                  className="h-full w-auto object-contain scale-110" 
                 />
               </div>
-              {siteConfig.brand.name}
             </div>
             <p className="text-white text-lg leading-relaxed max-w-md mb-8 font-black opacity-100">
               {t('footer.desc')}

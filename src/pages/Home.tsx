@@ -124,16 +124,17 @@ export default function Home() {
               <AnimatedTags tags={t('hero.tags').split(',')} />
             </div>
 
-            <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-black text-on-surface tracking-tighter leading-[1.1] mb-6">
+            <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-black text-on-surface tracking-tight leading-[1.1] mb-6">
               {t('hero.title').split(' ').map((word, i) => (
                 <React.Fragment key={i}>
                   {word === 'Efficient' || word === 'Smart' || word === 'कुशल' || word === 'स्मार्ट' || word === 'कार्यक्षम' ? (
                     <span className="text-primary inline-block">
-                      {word}{' '}
+                      {word}
                     </span>
                   ) : (
-                    word + ' '
+                    word
                   )}
+                  {' '}
                 </React.Fragment>
               ))}
             </h1>
