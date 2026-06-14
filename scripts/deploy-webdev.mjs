@@ -91,6 +91,29 @@ function requireCleanMain() {
   }
 }
 
+function syncDependencies() {
+  const nodeModulesPath = join(root, "node_modules");
+
+  if (existsSync(nodeModulesPath)) {
+    run("npm", ["install", "--prefer-offline", "--include=optional"]);
+  } else {
+    run("npm", ["ci", "--prefer-offline", "--include=optional"]);
+  }
+
+  const trackedStatus = output("git", [
+    "status",
+    "--porcelain=v1",
+    "--untracked-files=no",
+  ]);
+
+  if (trackedStatus) {
+    console.error("Dependency sync changed tracked files. Refusing to deploy.");
+    console.error("Commit the dependency change or stop and ask the CTO.");
+    console.error(trackedStatus);
+    process.exit(1);
+  }
+}
+
 function readDeployMarker() {
   const markerPath = join(root, "dist", "serefy-deploy.json");
   requireFile(markerPath, "Build failed: dist/serefy-deploy.json is missing.");
@@ -169,7 +192,7 @@ async function main() {
 
   requireCleanMain();
 
-  run("npm", ["ci", "--prefer-offline", "--include=optional"]);
+  syncDependencies();
   run("npm", ["test"]);
   run("npm", ["run", "verify:assets"]);
   run("npm", ["run", "lint"]);
