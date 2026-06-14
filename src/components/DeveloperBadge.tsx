@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { X, ExternalLink, Linkedin } from 'lucide-react';
+import { createPortal } from 'react-dom';
 
 export default function DeveloperBadge() {
   const [isCardOpen, setIsCardOpen] = useState(false);
@@ -37,85 +38,88 @@ export default function DeveloperBadge() {
     <div className="relative inline-block text-left font-sans">
       {/* Floating Developer Portfolio Card */}
       <AnimatePresence>
-        {isCardOpen && (
-          <>
-            {/* Backdrop overlay to close when clicking outside */}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              onClick={() => setIsCardOpen(false)}
-              className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[1px]"
-            />
-            
-            <motion.div
-              initial={{ opacity: 0, y: 15, scale: 0.93, x: '-50%' }}
-              animate={{ opacity: 1, y: 0, scale: 1, x: '-50%' }}
-              exit={{ opacity: 0, y: 15, scale: 0.93, x: '-50%' }}
-              transition={{ type: 'spring', stiffness: 260, damping: 22 }}
-              className="fixed bottom-24 left-1/2 w-[calc(100vw-2rem)] sm:absolute sm:bottom-20 sm:w-80 bg-neutral-950/95 border border-white/10 backdrop-blur-2xl p-5 rounded-2xl shadow-[0_24px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col gap-4 z-50 text-white overflow-hidden"
-            >
-              {/* Subtle dynamic background glow orbs */}
-              <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
-
-              {/* Close Button */}
-              <button
+        {isCardOpen && typeof document !== 'undefined' &&
+          createPortal(
+            <>
+              {/* Backdrop overlay to close when clicking outside */}
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0 }}
                 onClick={() => setIsCardOpen(false)}
-                className="absolute top-3 right-3 text-neutral-400 hover:text-white bg-white/5 hover:bg-white/10 p-1.5 rounded-full transition-all duration-200 active:scale-90 cursor-pointer"
-                aria-label="Close card"
+                className="fixed inset-0 z-40 bg-black/10 backdrop-blur-[1px]"
+              />
+              
+              <motion.div
+                initial={{ opacity: 0, y: 15, scale: 0.93, x: '-50%' }}
+                animate={{ opacity: 1, y: 0, scale: 1, x: '-50%' }}
+                exit={{ opacity: 0, y: 15, scale: 0.93, x: '-50%' }}
+                transition={{ type: 'spring', stiffness: 260, damping: 22 }}
+                className="fixed bottom-24 left-1/2 w-[calc(100vw-2rem)] sm:w-80 bg-neutral-950/95 border border-white/10 backdrop-blur-2xl p-5 rounded-2xl shadow-[0_24px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col gap-4 z-50 text-white overflow-hidden"
               >
-                <X size={14} className="transition-transform duration-300 hover:rotate-90" />
-              </button>
+                {/* Subtle dynamic background glow orbs */}
+                <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
+                <div className="absolute -bottom-12 -left-12 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
 
-              {/* Card Header */}
-              <div className="flex items-center gap-3 mt-1">
-                {/* Visual Initials Avatar Box with custom gradient border */}
-                <div className="relative group shrink-0">
-                  <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-yellow-500 rounded-xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300" />
-                  <div className="relative w-12 h-12 rounded-xl bg-neutral-900 border border-white/10 p-[2px] flex items-center justify-center overflow-hidden bg-gradient-to-tr from-emerald-500 to-yellow-500">
-                    <div className="w-full h-full bg-neutral-950 rounded-[10px] flex items-center justify-center">
-                      <span className="font-extrabold text-base bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-transparent">
-                        B
-                      </span>
+                {/* Close Button */}
+                <button
+                  onClick={() => setIsCardOpen(false)}
+                  className="absolute top-3 right-3 text-neutral-400 hover:text-white bg-white/5 hover:bg-white/10 p-1.5 rounded-full transition-all duration-200 active:scale-90 cursor-pointer"
+                  aria-label="Close card"
+                >
+                  <X size={14} className="transition-transform duration-300 hover:rotate-90" />
+                </button>
+
+                {/* Card Header */}
+                <div className="flex items-center gap-3 mt-1">
+                  {/* Visual Initials Avatar Box with custom gradient border */}
+                  <div className="relative group shrink-0">
+                    <div className="absolute inset-0 bg-gradient-to-tr from-emerald-500 to-yellow-500 rounded-xl blur opacity-30 group-hover:opacity-60 transition-opacity duration-300" />
+                    <div className="relative w-12 h-12 rounded-xl bg-neutral-900 border border-white/10 p-[2px] flex items-center justify-center overflow-hidden bg-gradient-to-tr from-emerald-500 to-yellow-500">
+                      <div className="w-full h-full bg-neutral-950 rounded-[10px] flex items-center justify-center">
+                        <span className="font-extrabold text-base bg-gradient-to-br from-white to-neutral-400 bg-clip-text text-transparent">
+                          B
+                        </span>
+                      </div>
                     </div>
+                  </div>
+
+                  <div className="flex flex-col min-w-0">
+                    <h4 className="font-extrabold text-base tracking-tight text-white flex items-center gap-1.5">
+                      Bhavya Mishra
+                      <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shrink-0 animate-pulse" />
+                    </h4>
+                    <span className="text-xs font-semibold text-neutral-400 mt-0.5">
+                      Frontend Developer
+                    </span>
                   </div>
                 </div>
 
-                <div className="flex flex-col min-w-0">
-                  <h4 className="font-extrabold text-base tracking-tight text-white flex items-center gap-1.5">
-                    Bhavya Mishra
-                    <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 inline-block shrink-0 animate-pulse" />
-                  </h4>
-                  <span className="text-xs font-semibold text-neutral-400 mt-0.5">
-                    Frontend Developer
-                  </span>
+                {/* Divider */}
+                <div className="h-px bg-white/10 w-full" />
+
+                {/* Bio Description */}
+                <p className="text-xs text-neutral-300 leading-relaxed font-normal">
+                  I design and build high-performance web applications with clean interactions, modern aesthetics, and seamless animations. Let's create something outstanding!
+                </p>
+
+                {/* CTA Buttons */}
+                <div className="flex flex-col gap-2 mt-1 w-full">
+                  <a
+                    href={linkedinUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md hover:shadow-emerald-500/20 active:scale-[0.98] cursor-pointer"
+                  >
+                    Connect on LinkedIn
+                    <ExternalLink size={12} />
+                  </a>
                 </div>
-              </div>
-
-              {/* Divider */}
-              <div className="h-px bg-white/10 w-full" />
-
-              {/* Bio Description */}
-              <p className="text-xs text-neutral-300 leading-relaxed font-normal">
-                I design and build high-performance web applications with clean interactions, modern aesthetics, and seamless animations. Let's create something outstanding!
-              </p>
-
-              {/* CTA Buttons */}
-              <div className="flex flex-col gap-2 mt-1 w-full">
-                <a
-                  href={linkedinUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-500 hover:to-emerald-600 text-white font-bold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-1.5 transition-all duration-300 shadow-md hover:shadow-emerald-500/20 active:scale-[0.98] cursor-pointer"
-                >
-                  Connect on LinkedIn
-                  <ExternalLink size={12} />
-                </a>
-              </div>
-            </motion.div>
-          </>
-        )}
+              </motion.div>
+            </>,
+            document.body
+          )
+        }
       </AnimatePresence>
 
       {/* Main Pill-Shaped Badge */}
