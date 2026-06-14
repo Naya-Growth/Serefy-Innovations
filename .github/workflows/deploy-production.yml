@@ -106,14 +106,23 @@ jobs:
 
           REMOTE="$WEBDEV_USER@$WEBDEV_HOST"
           SSH_KEY="$RUNNER_TEMP/serefy-actions-key"
-          SSH_OPTS=(-i "$SSH_KEY" -p "$WEBDEV_SSH_PORT" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes)
+          SSH_OPTS=(-i "$SSH_KEY" -p "$WEBDEV_SSH_PORT" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes -o ConnectTimeout=20 -o ServerAliveInterval=10 -o ServerAliveCountMax=6)
 
           install -m 700 -d ~/.ssh
           printf '%s\n' "$WEBDEV_SSH_KEY" | tr -d '\r' > "$SSH_KEY"
           chmod 600 "$SSH_KEY"
-          ssh-keyscan -p "$WEBDEV_SSH_PORT" -H "$WEBDEV_HOST" >> ~/.ssh/known_hosts
+          for attempt in 1 2 3 4; do
+            if ssh-keyscan -T 20 -p "$WEBDEV_SSH_PORT" -H "$WEBDEV_HOST" >> ~/.ssh/known_hosts; then
+              break
+            fi
+            if [ "$attempt" = "4" ]; then
+              echo "::error::Could not read the Serefy webdev SSH host key after retries."
+              exit 1
+            fi
+            sleep 3
+          done
 
-          tar -czf - dist | ssh "${SSH_OPTS[@]}" "$REMOTE" serefy
+          tar -czf - dist | timeout 180s ssh "${SSH_OPTS[@]}" "$REMOTE" serefy
 
       - name: Verify public release
         run: |
