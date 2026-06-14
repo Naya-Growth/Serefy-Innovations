@@ -82,77 +82,38 @@ jobs:
       - name: Build site
         run: npm run build
 
-      - name: Prepare static release checks
-        run: |
-          set -euo pipefail
-          node --input-type=module <<'NODE'
-          import fs from 'node:fs';
-
-          const html = fs.readFileSync('dist/index.html', 'utf8');
-          const assets = [...html.matchAll(/(?:src|href)="\/?(assets\/[^"]+)"/g)]
-            .map((match) => match[1])
-            .filter((asset) => /\/index-[^/]+\.(js|css)$/.test(asset));
-          const uniqueAssets = [...new Set(assets)];
-
-          if (!uniqueAssets.some((asset) => asset.endsWith('.js'))) {
-            throw new Error('No built JavaScript asset found in dist/index.html');
-          }
-          if (!uniqueAssets.some((asset) => asset.endsWith('.css'))) {
-            throw new Error('No built CSS asset found in dist/index.html');
-          }
-
-          fs.writeFileSync('serefy-release-assets.txt', `${uniqueAssets.join('\n')}\n`);
-          fs.writeFileSync(
-            'dist/serefy-deploy.json',
-            `${JSON.stringify({
-              source: 'github-actions',
-              repository: process.env.GITHUB_REPOSITORY,
-              sha: process.env.DEPLOY_SHA,
-              runId: process.env.GITHUB_RUN_ID,
-              runAttempt: process.env.GITHUB_RUN_ATTEMPT,
-              createdAt: new Date().toISOString(),
-            })}\n`,
-          );
-          NODE
-          cat serefy-release-assets.txt
-
-      - name: Deploy static release over SSH stream
+      - name: Prepare static release marker
         env:
-          VPS_HOST: ${{ secrets.VPS_HOST }}
-          VPS_USER: ${{ secrets.VPS_USER }}
-          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
-          VPS_SSH_PORT: ${{ secrets.VPS_SSH_PORT || '22' }}
+          SEREFY_DEPLOY_SOURCE: github-actions
+        run: npm run prepare:deploy-artifacts
+
+      - name: Deploy static release through restricted webdev SSH
+        env:
+          WEBDEV_HOST: ${{ secrets.WEBDEV_HOST }}
+          WEBDEV_USER: ${{ secrets.WEBDEV_USER }}
+          WEBDEV_SSH_KEY: ${{ secrets.WEBDEV_SSH_KEY }}
+          WEBDEV_SSH_PORT: ${{ secrets.WEBDEV_SSH_PORT || '22' }}
         run: |
           set -euo pipefail
-          TARGET_DIR="/home/nivi/apps/serefy-innovations-preview"
-          REMOTE="$VPS_USER@$VPS_HOST"
+          : "${WEBDEV_HOST:?WEBDEV_HOST secret is required}"
+          : "${WEBDEV_USER:?WEBDEV_USER secret is required}"
+          : "${WEBDEV_SSH_KEY:?WEBDEV_SSH_KEY secret is required}"
+
+          if [ "$WEBDEV_USER" != "webdev" ]; then
+            echo "::error::Serefy production deploy must use the restricted webdev SSH user."
+            exit 1
+          fi
+
+          REMOTE="$WEBDEV_USER@$WEBDEV_HOST"
           SSH_KEY="$RUNNER_TEMP/serefy-actions-key"
-          SSH_OPTS=(-i "$SSH_KEY" -p "$VPS_SSH_PORT" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes)
-          SCP_OPTS=(-i "$SSH_KEY" -P "$VPS_SSH_PORT" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes)
+          SSH_OPTS=(-i "$SSH_KEY" -p "$WEBDEV_SSH_PORT" -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes)
 
           install -m 700 -d ~/.ssh
-          printf '%s\n' "$VPS_SSH_KEY" | tr -d '\r' > "$SSH_KEY"
+          printf '%s\n' "$WEBDEV_SSH_KEY" | tr -d '\r' > "$SSH_KEY"
           chmod 600 "$SSH_KEY"
-          ssh-keyscan -p "$VPS_SSH_PORT" -H "$VPS_HOST" >> ~/.ssh/known_hosts
+          ssh-keyscan -p "$WEBDEV_SSH_PORT" -H "$WEBDEV_HOST" >> ~/.ssh/known_hosts
 
-          ssh "${SSH_OPTS[@]}" "$REMOTE" "mkdir -p '$TARGET_DIR/incoming/$DEPLOY_SHA'"
-          scp "${SCP_OPTS[@]}" nginx.conf docker-compose.prod.yml "$REMOTE:$TARGET_DIR/incoming/$DEPLOY_SHA/"
-
-          ssh "${SSH_OPTS[@]}" "$REMOTE" "set -euo pipefail
-            INCOMING='$TARGET_DIR/incoming/$DEPLOY_SHA'
-            cp \"\$INCOMING/nginx.conf\" '$TARGET_DIR/nginx.conf'
-            cp \"\$INCOMING/docker-compose.prod.yml\" '$TARGET_DIR/docker-compose.prod.yml'
-            sed -i -E 's#^([[:space:]]*)traefik\.http\.routers\.serefy-innovations-preview\.rule:.*#      traefik.http.routers.serefy-innovations-preview.rule: Host(\`serefyinnovations.com\`) || Host(\`www.serefyinnovations.com\`) || Host(\`serefy-innovations.preview.nayagrowth.com\`)#' '$TARGET_DIR/docker-compose.prod.yml'
-            grep -q 'Host(\`serefyinnovations.com\`)' '$TARGET_DIR/docker-compose.prod.yml'
-            grep -q 'Host(\`www.serefyinnovations.com\`)' '$TARGET_DIR/docker-compose.prod.yml'
-            grep -q 'Host(\`serefy-innovations.preview.nayagrowth.com\`)' '$TARGET_DIR/docker-compose.prod.yml'
-            grep -q 'api.nayagrowth.com' '$TARGET_DIR/nginx.conf'
-            grep -q 'image: nginx:1.27-alpine' '$TARGET_DIR/docker-compose.prod.yml'
-            grep -q './current:/usr/share/nginx/html:ro' '$TARGET_DIR/docker-compose.prod.yml'
-          "
-
-          tar -czf - dist | ssh "${SSH_OPTS[@]}" "$REMOTE" \
-            "/usr/local/sbin/serefy-static-deploy --release-prefix 'actions-$DEPLOY_SHORT_SHA'"
+          tar -czf - dist | ssh "${SSH_OPTS[@]}" "$REMOTE" serefy
 
       - name: Verify public release
         run: |

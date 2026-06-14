@@ -11,6 +11,7 @@
     "lint": "tsc --noEmit",
     "test": "node --test --import tsx src/lib/naya-lead.test.ts",
     "verify:assets": "node scripts/verify-public-assets.mjs",
+    "prepare:deploy-artifacts": "node scripts/prepare-deploy-artifacts.mjs",
     "deploy:webdev": "node scripts/deploy-webdev.mjs"
   },
   "dependencies": {

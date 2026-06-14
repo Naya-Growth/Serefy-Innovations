@@ -108,6 +108,10 @@ export default function Home() {
   };
 
   const { t } = useLanguage();
+  const heroCtaText = t('hero.cta');
+  const heroCtaSplit = heroCtaText.match(/^(.+?)\s*(?:&|और|आणि)\s*(.+)$/u);
+  const heroCtaAction = heroCtaSplit?.[1]?.trim() || heroCtaText;
+  const heroCtaOffer = heroCtaSplit?.[2]?.trim() || '';
 
   return (
     <div className="bg-surface text-on-surface font-body antialiased selection:bg-primary/20 flex flex-col min-h-screen">
@@ -143,38 +147,47 @@ export default function Home() {
               {t('hero.tagline')}
             </p>
 
-            <div className="flex flex-col gap-6 w-full sm:w-auto items-center lg:items-start mb-10">
-              <div className="flex flex-col sm:flex-row items-center gap-4 w-full">
-                <a className="btn-primary w-full sm:w-auto justify-center text-on-primary font-label font-black px-8 py-4 rounded-2xl hover:bg-primary-container hover:scale-[1.02] transition-all shadow-xl hover:shadow-primary/30 hover:-translate-y-1 cursor-pointer flex items-center gap-3 text-base" onClick={(e) => handleOpenWizard(e, 'hero_cta')}>
-                  {t('hero.cta')} <ArrowRight size={20} />
-                </a>
-                <Link to="/technology" className="w-full sm:w-auto justify-center text-slate-800 bg-white border border-slate-200 font-label font-black px-8 py-4 rounded-2xl hover:bg-slate-50 hover:scale-[1.02] transition-all shadow-md hover:-translate-y-1 cursor-pointer flex items-center gap-3 text-base">
-                  {t('tech.hero.cta')} <ArrowRight size={20} />
-                </Link>
-              </div>
-              <div className="flex flex-col gap-1">
-                <div className="flex items-center gap-2 text-primary font-black text-xs">
-                  <CheckCircle2 size={16} />
-                  <span className="uppercase tracking-[0.1em]">{t('hero.preorder')}</span>
+            <div className="mb-10 flex w-full flex-col items-center gap-3 sm:w-auto lg:items-start">
+              <div className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row lg:items-start">
+                <div className="relative flex w-full max-w-[236px] justify-center pb-5 sm:w-auto sm:max-w-none sm:pb-0">
+                  <a
+                    className="group/heroCta relative flex w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-emerald-700 via-green-600 to-emerald-800 px-5 py-3.5 text-center font-label text-sm font-black text-on-primary shadow-[0_18px_38px_rgba(21,128,61,0.24)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_22px_50px_rgba(21,128,61,0.32)] active:translate-y-0 active:scale-[0.99] sm:w-auto"
+                    onClick={(e) => handleOpenWizard(e, 'hero_cta')}
+                    aria-label={heroCtaText}
+                  >
+                    <span className="pointer-events-none absolute inset-y-0 left-0 w-14 -translate-x-24 skew-x-[-16deg] bg-white/30 blur-sm animate-[hero-cta-sheen_3.8s_ease-in-out_infinite]" />
+                    <span className="relative z-10 whitespace-nowrap">{heroCtaAction}</span>
+                    <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 transition-colors duration-300 group-hover/heroCta:bg-white group-hover/heroCta:text-primary">
+                      <ArrowRight size={17} />
+                    </span>
+                  </a>
+                  {heroCtaOffer && (
+                    <span className="pointer-events-none absolute -bottom-1 right-1 z-20 inline-flex items-center gap-1.5 rounded-full bg-lime-300 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-emerald-950 shadow-[0_12px_28px_rgba(132,204,22,0.34)] ring-[3px] ring-white animate-[hero-offer-float_2.9s_ease-in-out_infinite] sm:-right-5 sm:-top-3 sm:bottom-auto">
+                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-700 shadow-[0_0_10px_rgba(21,128,61,0.7)]" />
+                      {heroCtaOffer}
+                    </span>
+                  )}
                 </div>
-                <p className="text-on-surface-variant font-bold text-xs opacity-70">{t('hero.incubated')}</p>
+                <Link to="/technology" className="flex w-full max-w-[236px] items-center justify-center gap-2.5 rounded-[1.15rem] border border-slate-200 bg-white px-5 py-3 font-label text-[13px] font-black text-slate-800 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.015] hover:bg-slate-50 hover:shadow-md active:translate-y-0 active:scale-[0.99] sm:w-auto">
+                  {t('tech.hero.cta')} <ArrowRight size={18} />
+                </Link>
               </div>
             </div>
 
-            <div className="bg-surface-container/30 backdrop-blur-sm border border-outline-variant/20 p-4 md:p-5 rounded-3xl w-fit shadow-sm">
-              <p className="text-[10px] md:text-xs font-black text-primary uppercase tracking-[0.2em] mb-3">{t('hero.capacity')}</p>
-              <div className="flex flex-wrap gap-x-6 md:gap-x-10 gap-y-3 justify-center lg:justify-start">
-                <div className="flex flex-col group cursor-default">
+            <div className="w-full max-w-[332px] rounded-[1.65rem] border border-outline-variant/20 bg-surface-container/30 px-6 py-4 shadow-sm backdrop-blur-sm sm:max-w-[380px]">
+              <p className="mb-2 text-center text-[10px] font-black uppercase tracking-[0.2em] text-primary md:text-xs">{t('hero.capacity')}</p>
+              <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-x-4">
+                <div className="flex flex-col items-center group cursor-default">
                   <span className="text-xl md:text-3xl font-black text-on-surface transition-colors group-hover:text-primary">120</span>
                   <span className="text-[8px] md:text-[10px] text-on-surface-variant font-black uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{t('hero.eggs')}</span>
                 </div>
-                <div className="w-px h-8 md:h-10 bg-outline-variant/30 self-center hidden xs:block"></div>
-                <div className="flex flex-col group cursor-default">
+                <div className="h-8 w-px self-center bg-outline-variant/30 md:h-10"></div>
+                <div className="flex flex-col items-center group cursor-default">
                   <span className="text-xl md:text-3xl font-black text-on-surface transition-colors group-hover:text-primary">200</span>
                   <span className="text-[8px] md:text-[10px] text-on-surface-variant font-black uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{t('hero.eggs')}</span>
                 </div>
-                <div className="w-px h-8 md:h-10 bg-outline-variant/30 self-center hidden xs:block"></div>
-                <div className="flex flex-col group cursor-default">
+                <div className="h-8 w-px self-center bg-outline-variant/30 md:h-10"></div>
+                <div className="flex flex-col items-center group cursor-default">
                   <span className="text-xl md:text-3xl font-black text-on-surface transition-colors group-hover:text-primary">500</span>
                   <span className="text-[8px] md:text-[10px] text-on-surface-variant font-black uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{t('hero.eggs')}</span>
                 </div>

@@ -2,7 +2,13 @@
 
 Use this only from the `Serefy-Innovations` repo.
 
-## First-time setup
+Read these first:
+
+- `docs/ops/README.md`
+- `docs/ops/intern-workflow.md`
+- `docs/ops/frontend-deploy.md`
+
+## First-Time SSH Setup
 
 1. Install Node.js 22.
 2. Generate your deploy key:
@@ -11,7 +17,7 @@ Use this only from the `Serefy-Innovations` repo.
 ssh-keygen -t ed25519 -f ~/.ssh/serefy_webdev_ed25519 -N "" -C "bhavya-serefy-webdev"
 ```
 
-3. Send this public key to Suyash:
+3. Send this public key to the CTO:
 
 ```bash
 cat ~/.ssh/serefy_webdev_ed25519.pub
@@ -32,23 +38,27 @@ Host webdev
 5. Confirm this works:
 
 ```bash
-ssh -T webdev
+ssh -n -T webdev serefy
 ```
 
-It should not open a shell. It may print `No deploy archive received`.
+It should not open a shell. It should print `No deploy archive received`.
 
-## Make the website live
+## Make The Website Live
 
-Preferred path when GitHub push is blocked: use `npm run deploy:webdev`.
-Normal repo path: push/merge to `main`; GitHub Actions will deploy the same
-static release flow and verify the public URLs.
+Normal path: push or merge the approved commit to `main`; GitHub Actions will deploy through restricted `webdev` SSH and verify the public URLs.
+
+Fallback path: after CTO approval, use `npm run deploy:webdev`.
 
 1. Open a terminal in the repo.
 2. Pull the latest code:
 
 ```bash
-git pull
+git switch main
+git pull --ff-only
+git status --short
 ```
+
+`git status --short` must print nothing.
 
 3. Deploy:
 
@@ -56,15 +66,15 @@ git pull
 npm run deploy:webdev
 ```
 
-The script installs dependencies, runs tests, checks assets, typechecks, builds the site, uploads the static build, switches the live release, and smoke-checks the server.
+The script refuses dirty or unsynced code, installs dependencies, runs tests, checks assets, typechecks, builds the site, uploads the static build, switches the live release, and verifies the public release marker.
 
 ## GitHub Actions deploy path
 
 When a change reaches `main`, the `Deploy Production` workflow:
 
 1. Builds the site.
-2. Uploads the static archive to the VPS.
-3. Calls the same server-side release switcher used by `webdev`.
+2. Uploads the static archive through the restricted `webdev` SSH user.
+3. Calls the same server-side release switcher used by direct deploys.
 4. Checks that all three public hostnames serve the exact built asset files and
    deployment marker for that commit.
 
@@ -79,4 +89,4 @@ Open these URLs:
 - https://www.serefyinnovations.com/
 - https://serefy-innovations.preview.nayagrowth.com/
 
-If the script fails, stop and send the full terminal output to Suyash. Do not keep retrying with random changes.
+If the script fails, stop and send the full terminal output to the CTO. Do not keep retrying with random changes.

@@ -1,0 +1,245 @@
+.naya-signature {
+  --naya-signature-bg: rgba(255, 255, 255, 0.12);
+  --naya-signature-border: rgba(255, 255, 255, 0.18);
+  --naya-signature-text: #ffffff;
+  --naya-signature-muted: rgba(255, 255, 255, 0.56);
+  --naya-signature-shadow: 0 18px 45px rgba(0, 0, 0, 0.22);
+  align-items: center;
+  background: var(--naya-signature-bg);
+  border: 1px solid var(--naya-signature-border);
+  border-radius: 999px;
+  box-sizing: border-box;
+  box-shadow: var(--naya-signature-shadow);
+  color: var(--naya-signature-text);
+  display: inline-flex;
+  font-family: "Avenir Next", "Segoe UI", system-ui, sans-serif;
+  gap: 0.56rem;
+  isolation: isolate;
+  letter-spacing: 0;
+  line-height: 1;
+  max-width: min(100%, 23.5rem);
+  min-height: 3.8rem;
+  overflow: hidden;
+  padding: 0.54rem 0.66rem;
+  position: relative;
+  transform: translateZ(0);
+  transition:
+    border-color 180ms ease,
+    box-shadow 180ms ease,
+    transform 180ms ease;
+  width: fit-content;
+}
+
+.naya-signature::after {
+  background:
+    radial-gradient(circle at 22% 18%, rgba(0, 230, 145, 0.24), transparent 32%),
+    linear-gradient(115deg, transparent 0%, rgba(255, 255, 255, 0.16) 42%, transparent 68%);
+  content: "";
+  inset: 0;
+  opacity: 0.8;
+  pointer-events: none;
+  position: absolute;
+  transform: translateX(-18%);
+  transition: transform 360ms ease;
+  z-index: -1;
+}
+
+.naya-signature:hover {
+  border-color: rgba(0, 229, 147, 0.42);
+  box-shadow: 0 22px 54px rgba(0, 0, 0, 0.28);
+  transform: translateY(-1px);
+}
+
+.naya-signature:hover::after {
+  transform: translateX(8%);
+}
+
+.naya-signature__main {
+  align-items: center;
+  color: inherit;
+  display: inline-flex;
+  gap: 0.68rem;
+  min-width: 0;
+  text-decoration: none;
+}
+
+.naya-signature__icon-shell {
+  align-items: center;
+  background: #07130f;
+  border-radius: 50%;
+  display: inline-flex;
+  flex: 0 0 auto;
+  height: 2.7rem;
+  justify-content: center;
+  overflow: hidden;
+  width: 2.7rem;
+}
+
+.naya-signature__icon {
+  display: block;
+  height: 1.72rem;
+  object-fit: contain;
+  width: 1.72rem;
+}
+
+.naya-signature__copy {
+  display: grid;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.naya-signature__label {
+  color: var(--naya-signature-muted);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.naya-signature__brand {
+  color: var(--naya-signature-text);
+  font-size: 0.96rem;
+  font-weight: 800;
+  letter-spacing: 0;
+  white-space: nowrap;
+}
+
+.naya-signature__actions {
+  align-items: center;
+  border-left: 1px solid var(--naya-signature-border);
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 0.24rem;
+  margin-left: 0.05rem;
+  padding-left: 0.52rem;
+}
+
+.naya-signature__action {
+  align-items: center;
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid transparent;
+  border-radius: 999px;
+  color: var(--naya-signature-muted);
+  display: inline-flex;
+  height: 1.85rem;
+  justify-content: center;
+  text-decoration: none;
+  transition:
+    background-color 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease,
+    transform 160ms ease;
+  width: 1.85rem;
+}
+
+.naya-signature__action:hover,
+.naya-signature__action:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  border-color: rgba(255, 255, 255, 0.24);
+  color: var(--naya-signature-text);
+  outline: none;
+  transform: translateY(-1px);
+}
+
+.naya-signature__action-mark {
+  align-items: center;
+  display: inline-flex;
+  font-size: 0.62rem;
+  font-weight: 900;
+  justify-content: center;
+  letter-spacing: 0;
+  line-height: 1;
+  text-transform: uppercase;
+}
+
+.naya-signature__action-mark::before {
+  content: ">";
+}
+
+.naya-signature__action-mark[data-naya-signature-action-icon="whatsapp"]::before {
+  content: "WA";
+}
+
+.naya-signature__action-mark[data-naya-signature-action-icon="mail"]::before {
+  content: "@";
+}
+
+.naya-signature__action-mark[data-naya-signature-action-icon="linkedin"]::before {
+  content: "in";
+  text-transform: none;
+}
+
+.naya-signature__action-mark[data-naya-signature-action-icon="instagram"]::before {
+  content: "IG";
+}
+
+.naya-signature__action-mark[data-naya-signature-action-icon="x"]::before {
+  content: "X";
+}
+
+.naya-signature--dark-glass {
+  --naya-signature-bg: rgba(56, 56, 56, 0.88);
+  --naya-signature-border: rgba(255, 255, 255, 0.16);
+  --naya-signature-text: #ffffff;
+  --naya-signature-muted: rgba(255, 255, 255, 0.46);
+}
+
+.naya-signature--light-outline,
+.naya-signature--auto {
+  --naya-signature-bg: rgba(255, 255, 255, 0.9);
+  --naya-signature-border: rgba(0, 136, 84, 0.22);
+  --naya-signature-text: #10231b;
+  --naya-signature-muted: rgba(0, 110, 72, 0.62);
+  --naya-signature-shadow: 0 14px 34px rgba(18, 56, 42, 0.12);
+}
+
+.naya-signature--light-outline .naya-signature__action,
+.naya-signature--auto .naya-signature__action {
+  background: rgba(0, 136, 84, 0.08);
+}
+
+.naya-signature--light-outline .naya-signature__action:hover,
+.naya-signature--light-outline .naya-signature__action:focus-visible,
+.naya-signature--auto .naya-signature__action:hover,
+.naya-signature--auto .naya-signature__action:focus-visible {
+  background: rgba(0, 136, 84, 0.14);
+  border-color: rgba(0, 136, 84, 0.2);
+}
+
+.naya-signature--minimal {
+  --naya-signature-bg: transparent;
+  --naya-signature-border: rgba(148, 163, 184, 0.34);
+  --naya-signature-text: currentColor;
+  --naya-signature-muted: currentColor;
+  --naya-signature-shadow: none;
+  min-height: 3rem;
+  opacity: 0.78;
+}
+
+@media (max-width: 420px) {
+  .naya-signature {
+    gap: 0.44rem;
+    min-height: 3.5rem;
+    padding: 0.48rem 0.54rem;
+  }
+
+  .naya-signature__icon-shell {
+    height: 2.35rem;
+    width: 2.35rem;
+  }
+
+  .naya-signature__brand {
+    font-size: 0.88rem;
+  }
+
+  .naya-signature__actions {
+    gap: 0.18rem;
+    padding-left: 0.42rem;
+  }
+
+  .naya-signature__action {
+    height: 1.68rem;
+    width: 1.68rem;
+  }
+}

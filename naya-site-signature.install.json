@@ -1,0 +1,22 @@
+{
+  "installedAt": "2026-06-13T17:23:10.693Z",
+  "plan": {
+    "mode": "EXECUTE",
+    "projectSlug": "serefy-innovations",
+    "domain": "serefyinnovations.com",
+    "repo": "D:/Projects/Serefy-Innovations",
+    "framework": "react",
+    "variant": "dark-glass",
+    "files": [
+      {
+        "action": "UPSERT_PACKAGE_SOURCE",
+        "path": "package.json"
+      },
+      {
+        "action": "INSERT_FOOTER_SNIPPET",
+        "path": "footer component"
+      }
+    ],
+    "snippet": "import { NayaGrowthSignature } from \"@naya/site-signature/react\";\nimport \"@naya/site-signature/styles.css\";\n\n<NayaGrowthSignature config={{ brandCredit: { variant: \"dark-glass\" } }} />"
+  }
+}

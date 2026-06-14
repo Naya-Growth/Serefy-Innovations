@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import React, { useState, useEffect } from 'react';
 import { Menu, X, Globe } from 'lucide-react';
+import NayaGrowthSignature from './NayaGrowthSignature';
 
 export default function Layout() {
   const location = useLocation();
@@ -59,7 +60,6 @@ export default function Layout() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white selection:bg-green-500/10 overflow-x-hidden">
-
       {/* Modern Minimalist Header */}
       <header className="fixed top-0 w-full z-50 bg-white/80 backdrop-blur-xl border-b border-green-100">
         <div className="flex justify-between items-center px-4 md:px-6 py-3 md:py-4 w-full max-w-7xl mx-auto">
@@ -249,33 +249,7 @@ export default function Layout() {
             © {new Date().getFullYear()} {siteConfig.brand.name}. {t('footer.rights')}
           </p>
 
-          {/* Naya Growth & Developer Credit */}
-          <div className="flex items-center gap-6">
-            <motion.a
-              href="https://nayagrowth.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={{ y: -5, scale: 1.02 }}
-              className="bg-white/5 backdrop-blur-md px-4 py-2 rounded-2xl border border-white/10 flex items-center gap-3 group transition-all hover:bg-white/10"
-            >
-              <div className="w-8 h-8 bg-green-800 rounded-xl flex items-center justify-center font-black text-xs text-white shadow-lg">N</div>
-              <div className="text-left">
-                <p className="text-[8px] text-white/40 font-bold uppercase tracking-widest leading-none mb-1">{t('footer.partner')}</p>
-                <p className="text-xs font-black text-white group-hover:text-green-400 transition-colors">Naya Growth</p>
-              </div>
-            </motion.a>
-
-            <div className="h-8 w-px bg-white/10"></div>
-
-            <a
-              href="https://www.linkedin.com/in/bhavya-mishra-7a3b09324/"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-green-500 transition-colors"
-            >
-              {t('footer.devBy')} <span className="text-white underline decoration-green-500/50 underline-offset-4">Bhavya</span>
-            </a>
-          </div>
+          <NayaGrowthSignature eyebrow={t('footer.devBy')} />
         </div>
       </footer>
 
