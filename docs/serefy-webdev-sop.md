@@ -23,7 +23,7 @@ ssh-keygen -t ed25519 -f ~/.ssh/serefy_webdev_ed25519 -N "" -C "bhavya-serefy-we
 cat ~/.ssh/serefy_webdev_ed25519.pub
 ```
 
-4. After Suyash confirms the key is added, put this in `~/.ssh/config`:
+4. After the CTO confirms the key is added, put this in `~/.ssh/config`:
 
 ```text
 Host webdev
@@ -79,7 +79,7 @@ When a change reaches `main`, the `Deploy Production` workflow:
    deployment marker for that commit.
 
 If the workflow is green but your browser looks old, hard refresh first
-(`Ctrl+Shift+R`). If it still looks old, send the workflow run link to Suyash.
+(`Ctrl+Shift+R`). If it still looks old, send the workflow run link to the CTO.
 
 ## After deploy
 

@@ -74,15 +74,11 @@ Open:
 
 Hard refresh if the browser looks old.
 
-## CTO VPS Health Check
+## VPS Health Check
 
-Interns do not need this access. The CTO or authorized operator can run it before/after deployment:
+Interns do not need VPS access. The CTO or authorized operator will check VPS load, CPU steal, and container health when needed.
 
-```bash
-ssh nivi "printf 'loadavg: '; cat /proc/loadavg; top -bn1 | grep '%Cpu' || true; awk '/^cpu / {total=0; for(i=2;i<=11;i++) total+=\$i; printf \"steal: %.2f%%\\n\", (\$9*100)/total}' /proc/stat; docker inspect serefy-innovations-preview --format 'status={{.State.Status}} health={{if .State.Health}}{{.State.Health.Status}}{{else}}none{{end}} restart={{.RestartCount}} image={{.Config.Image}}'"
-```
-
-Stop deployment if CPU steal is high, load is abnormal, the container is unhealthy, or the CTO says to pause.
+Stop deployment if the CTO says to pause.
 
 ## Rollback
 
