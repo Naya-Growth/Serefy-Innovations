@@ -118,13 +118,13 @@ export default function DeveloperBadge() {
                   animate={{ opacity: 1, y: 0, scale: 1 }}
                   exit={{ opacity: 0, y: 10, scale: 0.95 }}
                   transition={{ type: 'spring', stiffness: 300, damping: 25 }}
-                  className="fixed z-50 text-white overflow-hidden bg-neutral-950/95 border border-white/10 backdrop-blur-2xl p-4 rounded-2xl shadow-[0_24px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col gap-3 w-[calc(100vw-2rem)] sm:w-72"
+                  className="fixed z-50 text-white overflow-hidden bg-neutral-950/95 border border-white/10 backdrop-blur-2xl p-4 rounded-2xl shadow-[0_24px_50px_rgba(0,0,0,0.8),inset_0_1px_1px_rgba(255,255,255,0.15)] flex flex-col gap-3 sm:w-72"
                   style={
                     mobileView
-                      ? { bottom: '96px', left: '16px', right: '16px' }
+                      ? { bottom: '96px', left: '16px', right: '16px', maxWidth: 'calc(100vw - 2rem)' }
                       : coords
-                      ? { bottom: `${coords.bottom}px`, right: `${coords.right}px` }
-                      : { bottom: '96px', right: '32px' }
+                      ? { bottom: `${coords.bottom}px`, right: `${coords.right}px`, width: '18rem' }
+                      : { bottom: '96px', right: '32px', width: '18rem' }
                   }
                 >
                   {/* Subtle dynamic background glow orbs */}
@@ -268,9 +268,9 @@ export default function DeveloperBadge() {
               <AnimatePresence>
                 {isHovered && (
                   <motion.span
-                    initial={{ opacity: 0, width: 0, marginLeft: 0 }}
-                    animate={{ opacity: 1, width: 'auto', marginLeft: 4 }}
-                    exit={{ opacity: 0, width: 0, marginLeft: 0 }}
+                    initial={{ opacity: 0, maxWidth: 0, marginLeft: 0 }}
+                    animate={{ opacity: 1, maxWidth: '4rem', marginLeft: 4 }}
+                    exit={{ opacity: 0, maxWidth: 0, marginLeft: 0 }}
                     transition={{ duration: 0.35, ease: 'easeOut' }}
                     className="text-[10px] font-bold text-neutral-400 tracking-wide overflow-hidden whitespace-nowrap pt-[2px]"
                   >
