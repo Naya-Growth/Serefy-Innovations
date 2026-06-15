@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Globe, X, Check } from 'lucide-react';
 import { useLanguage } from '../context/LanguageContext';
+import { createPortal } from 'react-dom';
 
 interface LanguageSelectionProps {
   isOpen: boolean;
@@ -9,11 +10,7 @@ interface LanguageSelectionProps {
 }
 
 export default function LanguageSelection({ isOpen, onClose }: LanguageSelectionProps) {
-  const { language: selectedLang, setLanguage, t } = useLanguage();
-
-  useEffect(() => {
-    // Note: Auto-open logic is now handled by the caller or by a separate effect if needed
-  }, []);
+  const { language: selectedLang, setLanguage } = useLanguage();
 
   const handleSelect = (lang: string) => {
     setLanguage(lang as any);
@@ -28,84 +25,101 @@ export default function LanguageSelection({ isOpen, onClose }: LanguageSelection
 
   return (
     <>
-      <AnimatePresence>
-        {isOpen && (
-          <div className="fixed inset-0 z-[120] flex items-center justify-center p-4 sm:p-6 bg-black/40 backdrop-blur-md overflow-y-auto">
-            <div className="fixed inset-0" onClick={onClose} />
-            <motion.div
-              initial={{ opacity: 0, scale: 0.9, y: 20 }}
-              animate={{ opacity: 1, scale: 1, y: 0 }}
-              exit={{ opacity: 0, scale: 0.9, y: 20 }}
-              className="bg-white w-full max-w-[92%] sm:max-w-[380px] rounded-[2rem] p-5 sm:p-6 md:p-8 shadow-2xl border border-green-100 relative z-10 my-auto"
-            >
-              {/* Decorative Background Elements */}
-              <div className="absolute -top-24 -right-24 w-48 h-48 bg-green-500/5 rounded-full blur-3xl pointer-events-none" />
-              <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-green-500/5 rounded-full blur-3xl pointer-events-none" />
-
-              <button
-                onClick={onClose}
-                className="absolute top-4 right-4 w-8 h-8 rounded-full bg-green-50 flex items-center justify-center text-black/40 hover:text-black transition-colors"
-              >
-                <X size={16} />
-              </button>
-
-              <div className="text-center mb-6">
+      {typeof document !== 'undefined' &&
+        createPortal(
+          <AnimatePresence>
+            {isOpen && (
+              <div className="fixed inset-0 z-[99999] flex items-center justify-center p-4">
+                {/* Backdrop overlay with hardware-accelerated fade */}
                 <motion.div
-                  initial={{ rotate: -10 }}
-                  animate={{ rotate: 0 }}
-                  className="w-12 h-12 sm:w-14 sm:h-14 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-3 sm:mb-4 shadow-inner"
-                >
-                  <Globe className="text-green-700 w-6 h-6 sm:w-7 sm:h-7" />
-                </motion.div>
-                <h2 className="font-headline text-xl sm:text-2xl font-black text-black tracking-tight">Choose Language</h2>
-                <p className="text-black/50 text-xs sm:text-sm mt-1 sm:mt-2 leading-relaxed">Customize your experience by selecting your preferred language.</p>
-              </div>
-
-              <div className="space-y-2 sm:space-y-3">
-                {languages.map((lang, idx) => (
-                  <motion.button
-                    initial={{ opacity: 0, x: -20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: idx * 0.1 }}
-                    key={lang.name}
-                    onClick={() => handleSelect(lang.name)}
-                    whileHover={{ scale: 1.01 }}
-                    className={`w-full p-3 sm:p-3.5 rounded-2xl border-2 transition-all flex items-center justify-between group relative overflow-hidden ${selectedLang === lang.name
-                      ? 'border-green-600 bg-green-50/50'
-                      : 'border-green-100 hover:border-green-300 hover:bg-green-50'
-                      }`}
-                  >
-                    <div className="flex items-center gap-3">
-                      <div className={`w-8 h-8 sm:w-10 sm:h-10 rounded-xl flex items-center justify-center font-black text-sm sm:text-base transition-colors ${selectedLang === lang.name ? 'bg-green-600 text-white' : 'bg-green-50 text-black/40 group-hover:bg-green-100 group-hover:text-green-600'
-                        }`}>
-                        {lang.native[0]}
-                      </div>
-                      <div className="text-left">
-                        <div className="text-[8px] sm:text-[9px] font-black uppercase tracking-[0.1em] text-green-700/60">{lang.name}</div>
-                        <div className="text-sm sm:text-base font-black text-black">{lang.native}</div>
-                      </div>
-                    </div>
-
-                    <div className={`w-5 h-5 sm:w-6 sm:h-6 rounded-full border-2 flex items-center justify-center transition-all ${selectedLang === lang.name ? 'border-green-600 bg-green-600 text-white scale-110' : 'border-green-200 group-hover:border-green-300'
-                      }`}>
-                      {selectedLang === lang.name && <Check size={12} strokeWidth={3} />}
-                    </div>
-                  </motion.button>
-                ))}
-              </div>
-
-              <div className="mt-6 pt-4 border-t border-green-100">
-                <button
+                  key="language-backdrop"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.2 }}
                   onClick={onClose}
-                  className="w-full bg-black text-white py-3 rounded-xl font-black text-sm shadow-xl hover:bg-green-700 hover:scale-[1.01] transition-all"
+                  className="fixed inset-0 bg-black/50 backdrop-blur-[2px]"
+                />
+
+                {/* Main Card with smooth, lag-free spring transition */}
+                <motion.div
+                  key="language-card"
+                  initial={{ opacity: 0, scale: 0.95, y: 10 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  exit={{ opacity: 0, scale: 0.95, y: 10 }}
+                  transition={{ type: 'spring', stiffness: 350, damping: 28 }}
+                  className="bg-white w-full max-w-[340px] rounded-[1.75rem] p-5 shadow-[0_24px_50px_rgba(0,0,0,0.25)] border border-green-50/50 relative z-10 my-auto flex flex-col gap-4 overflow-hidden"
                 >
-                  Continue / आगे बढ़ें
-                </button>
+                  {/* Decorative Background Elements */}
+                  <div className="absolute -top-24 -right-24 w-48 h-48 bg-green-500/5 rounded-full blur-3xl pointer-events-none" />
+                  <div className="absolute -bottom-24 -left-24 w-48 h-48 bg-green-500/5 rounded-full blur-3xl pointer-events-none" />
+
+                  {/* Close button */}
+                  <button
+                    onClick={onClose}
+                    className="absolute top-4 right-4 w-7.5 h-7.5 rounded-full bg-neutral-100 flex items-center justify-center text-black/40 hover:text-black hover:bg-neutral-200 active:scale-95 transition-all duration-200"
+                    aria-label="Close modal"
+                  >
+                    <X size={14} />
+                  </button>
+
+                  <div className="text-center">
+                    <div className="w-11 h-11 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner group/globe">
+                      <Globe className="text-green-700 w-5.5 h-5.5 transition-transform duration-500 group-hover/globe:rotate-12" />
+                    </div>
+                    <h2 className="font-headline text-lg font-black text-black tracking-tight">Choose Language</h2>
+                    <p className="text-black/50 text-[11px] mt-1.5 leading-relaxed max-w-[240px] mx-auto">
+                      Customize your experience by selecting your preferred language.
+                    </p>
+                  </div>
+
+                  <div className="flex flex-col gap-2.5">
+                    {languages.map((lang) => (
+                      <button
+                        key={lang.name}
+                        onClick={() => handleSelect(lang.name)}
+                        className={`w-full p-3 rounded-xl border transition-all duration-200 flex items-center justify-between group relative overflow-hidden active:scale-[0.99] cursor-pointer ${
+                          selectedLang === lang.name
+                            ? 'border-green-600 bg-green-50/30'
+                            : 'border-neutral-100 hover:border-green-200 hover:bg-green-50/30'
+                        }`}
+                      >
+                        <div className="flex items-center gap-3">
+                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-black text-sm transition-colors ${
+                            selectedLang === lang.name ? 'bg-green-600 text-white' : 'bg-green-50 text-black/40 group-hover:bg-green-100 group-hover:text-green-600'
+                          }`}>
+                            {lang.native[0]}
+                          </div>
+                          <div className="text-left">
+                            <div className="text-[8px] font-black uppercase tracking-[0.1em] text-green-700/60">{lang.name}</div>
+                            <div className="text-sm font-black text-black leading-none mt-1">{lang.native}</div>
+                          </div>
+                        </div>
+
+                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                          selectedLang === lang.name ? 'border-green-600 bg-green-600 text-white scale-105' : 'border-green-200 group-hover:border-green-300'
+                        }`}>
+                          {selectedLang === lang.name && <Check size={10} strokeWidth={3} />}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+
+                  <div className="mt-1 pt-3.5 border-t border-neutral-100">
+                    <button
+                      onClick={onClose}
+                      className="w-full bg-black hover:bg-green-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-xl active:scale-[0.98] transition-all duration-200 uppercase tracking-widest cursor-pointer"
+                    >
+                      Continue / आगे बढ़ें
+                    </button>
+                  </div>
+                </motion.div>
               </div>
-            </motion.div>
-          </div>
-        )}
-      </AnimatePresence>
+            )}
+          </AnimatePresence>,
+          document.body
+        )
+      }
     </>
   );
 }
