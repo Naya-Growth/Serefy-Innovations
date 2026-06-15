@@ -34,7 +34,7 @@ export default function GallerySection() {
   ];
 
   return (
-    <SectionWrapper className="w-full pt-12 md:pt-16 pb-20 md:pb-32 px-6 md:px-12 bg-surface overflow-hidden" id="gallery">
+    <SectionWrapper className="w-full pt-12 md:pt-16 pb-20 md:pb-32 px-6 md:px-12 bg-surface overflow-hidden relative" id="gallery">
       <div className="max-w-screen-xl mx-auto">
         <div className="mb-16 md:mb-24">
           <div className="inline-block px-4 py-1.5 bg-primary text-on-primary rounded-full font-label text-[10px] md:text-xs font-black uppercase tracking-[0.2em] mb-4 shadow-lg shadow-primary/20">
@@ -87,9 +87,9 @@ export default function GallerySection() {
         </div>
       </div>
 
-      {/* Background accents */}
-      <div className="absolute top-1/2 -right-64 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
-      <div className="absolute bottom-0 -left-64 w-[600px] h-[600px] bg-green-500/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      {/* Background accents - positioned safely within the relative+overflow-hidden parent */}
+      <div className="absolute top-1/2 right-0 translate-x-1/2 w-[600px] h-[600px] bg-primary/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
+      <div className="absolute bottom-0 left-0 -translate-x-1/2 w-[600px] h-[600px] bg-green-500/5 rounded-full blur-[120px] -z-10 pointer-events-none" />
     </SectionWrapper>
   );
 }

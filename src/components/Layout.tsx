@@ -182,7 +182,7 @@ export default function Layout() {
       {/* High-Contrast Professional Footer */}
       <footer className="bg-black text-white w-full pt-20 pb-10 mt-auto relative overflow-hidden">
         <div className="absolute top-0 left-0 w-full h-px bg-gradient-to-r from-transparent via-white/20 to-transparent"></div>
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 px-8 max-w-7xl mx-auto relative z-10">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-12 px-4 sm:px-8 max-w-7xl mx-auto relative z-10">
           <div className="md:col-span-5">
             <div className="text-3xl font-black text-white mb-6 flex items-center gap-3">
               <div className="flex items-center justify-center h-16 sm:h-20 md:h-28 w-auto">
@@ -245,12 +245,12 @@ export default function Layout() {
             </div>
           </div>
         </div>
-        <div className="mt-20 pt-10 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 px-8 max-w-7xl mx-auto">
-          <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.3em]">
+        <div className="mt-20 pt-10 border-t border-white/10 flex flex-col md:flex-row items-center justify-between gap-6 px-4 sm:px-8 max-w-7xl mx-auto overflow-hidden">
+          <p className="text-white/40 text-[10px] font-black uppercase tracking-[0.15em] sm:tracking-[0.3em] text-center md:text-left">
             © {new Date().getFullYear()} {siteConfig.brand.name}. {t('footer.rights')}
           </p>
 
-          <div className="flex flex-col sm:flex-row items-center gap-4">
+          <div className="flex flex-col items-center gap-4 max-w-full overflow-hidden">
             <NayaGrowthSignature eyebrow={t('footer.devBy')} />
             <DeveloperBadge />
           </div>
