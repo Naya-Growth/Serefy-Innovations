@@ -8,12 +8,12 @@ export default function Metrics() {
   const [isCalcOpen, setIsCalcOpen] = useState(false);
   const [eggCapacity, setEggCapacity] = useState(200);
   const [chickPrice, setChickPrice] = useState(35);
-  
+
   // Math for ROI Calculator
   const traditionalHatch = Math.round(eggCapacity * 0.60);
   const sereHatch = Math.round(eggCapacity * 0.90);
   const extraChicks = sereHatch - traditionalHatch;
-  
+
   const monthlyUpside = extraChicks * chickPrice;
   const monthlyEggSavings = Math.round(eggCapacity * 0.30 * 10); // 30% difference in hatch, Rs. 10 per egg
   const totalMonthlyImpact = monthlyUpside + monthlyEggSavings;
@@ -38,16 +38,16 @@ export default function Metrics() {
           </div>
 
           <div className="flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-right-8 duration-1000">
-            <Link 
-              to="/contact" 
+            <Link
+              to="/contact"
               className="bg-green-700 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-widest shadow-xl shadow-green-700/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 text-center flex items-center justify-center cursor-pointer"
             >
               Request a Demo
             </Link>
-            <a 
-              href="/media/Competitors/sere%20innovations%20KIT%20pitch%20deck..pptx.pdf" 
-              target="_blank" 
-              rel="noopener noreferrer" 
+            <a
+              href="/media/Competitors/sere%20innovations%20KIT%20pitch%20deck..pptx.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
               className="bg-green-950 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-widest shadow-xl shadow-green-950/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 text-center flex items-center justify-center cursor-pointer"
             >
               Download Report
@@ -184,7 +184,7 @@ export default function Metrics() {
                 </div>
               </div>
 
-              <button 
+              <button
                 onClick={() => setIsCalcOpen(true)}
                 className="w-full bg-green-600 text-white py-5 rounded-2xl font-black text-[11px] uppercase tracking-widest flex items-center justify-center gap-3 shadow-xl shadow-green-600/20 hover:brightness-110 hover:scale-[1.02] transition-all active:scale-95 cursor-pointer"
               >
@@ -213,8 +213,8 @@ export default function Metrics() {
                   <span className="material-symbols-outlined text-green-700">calculate</span>
                   <h3 className="font-headline text-lg font-black text-black uppercase tracking-wider">ROI Calculator</h3>
                 </div>
-                <button 
-                  onClick={() => setIsCalcOpen(false)} 
+                <button
+                  onClick={() => setIsCalcOpen(false)}
                   className="w-8 h-8 rounded-full hover:bg-green-50 flex items-center justify-center text-black/50 hover:text-black transition-colors cursor-pointer"
                 >
                   <span className="material-symbols-outlined text-xl">close</span>

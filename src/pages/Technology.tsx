@@ -1,15 +1,15 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { motion, AnimatePresence } from 'motion/react';
-import { 
-  Cpu, 
-  Thermometer, 
-  Droplets, 
-  RotateCw, 
-  Zap, 
-  Battery, 
-  Sun, 
-  CheckCircle2, 
+import {
+  Cpu,
+  Thermometer,
+  Droplets,
+  RotateCw,
+  Zap,
+  Battery,
+  Sun,
+  CheckCircle2,
   AlertTriangle,
   Activity,
   Play,
@@ -233,7 +233,7 @@ export default function Technology() {
   const [humidity, setHumidity] = useState(55.4);
   const [isRotating, setIsRotating] = useState(false);
   const [rotationAngle, setRotationAngle] = useState(0);
-  
+
   // Power simulation states
   const [powerSource, setPowerSource] = useState<'grid' | 'battery'>('grid');
   const [isPowerSwitching, setIsPowerSwitching] = useState(false);
@@ -289,7 +289,7 @@ export default function Technology() {
             <p className="text-sm sm:text-base text-slate-600 font-medium max-w-lg mb-6 leading-relaxed">
               {t('tech.hero.desc')}
             </p>
-            <button 
+            <button
               onClick={() => showcaseRef.current?.scrollIntoView({ behavior: 'smooth' })}
               className="bg-green-700 text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-2xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-green-700/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 cursor-pointer w-full sm:w-auto justify-center"
             >
@@ -315,16 +315,29 @@ export default function Technology() {
       </section>
 
       {/* Mission Section */}
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 border-t border-slate-200 bg-white rounded-3xl shadow-sm mb-12 sm:mb-16">
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-          <div>
-            <p className="text-green-700 text-[10px] font-black uppercase tracking-[0.3em] mb-3 sm:mb-4">{t('tech.mission.badge')}</p>
-            <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tighter">{t('tech.mission.title')}</h2>
-          </div>
-          <div>
-            <p className="text-sm sm:text-lg text-slate-600 font-medium leading-relaxed">
-              {t('tech.mission.desc')}
-            </p>
+      <section className="max-w-7xl mx-auto px-4 sm:px-6 py-12 sm:py-16 mb-12 sm:mb-16">
+        <div className="bg-gradient-to-br from-green-50/20 via-white to-slate-50/50 rounded-3xl border border-slate-100 p-8 sm:p-12 relative overflow-hidden shadow-sm hover:shadow-md transition-all duration-300">
+          {/* Subtle design node ambient glow */}
+          <div className="absolute top-0 right-0 w-48 h-48 bg-green-50/30 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16"></div>
+          
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-center relative z-10">
+            {/* Left Content Column */}
+            <div className="lg:col-span-5 border-l-4 border-green-700 pl-6">
+              <span className="text-green-700 text-[10px] font-black uppercase tracking-[0.25em] mb-2 block">
+                {t('tech.mission.badge')}
+              </span>
+              <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+                {t('tech.mission.title')}
+              </h2>
+            </div>
+            
+            {/* Right Quote / Desc Column */}
+            <div className="lg:col-span-7 flex items-start gap-3">
+              <span className="text-green-300 font-serif text-5xl leading-none select-none -mt-2">“</span>
+              <p className="text-slate-650 text-sm sm:text-base md:text-lg font-medium leading-relaxed italic">
+                {t('tech.mission.desc')}
+              </p>
+            </div>
           </div>
         </div>
       </section>
@@ -341,33 +354,30 @@ export default function Technology() {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 sm:gap-8 items-stretch">
-          
+
           {/* Tabs Selector List */}
           <div className="lg:col-span-4 grid grid-cols-1 sm:grid-cols-2 lg:flex lg:flex-col gap-3">
             {content.tabs.map((tab) => {
               const TabIconComponent = tab.icon;
               const isSelected = activeTab === tab.id;
-              
+
               return (
                 <button
                   key={tab.id}
                   onClick={() => setActiveTab(tab.id)}
-                  className={`flex items-center sm:items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl border text-left transition-all duration-300 ${
-                    isSelected 
-                      ? 'bg-green-700 text-white border-green-700 shadow-lg shadow-green-700/20 lg:translate-x-2'
-                      : 'bg-white text-slate-700 border-slate-200/60 hover:border-green-700/40 hover:bg-green-50/20'
-                  }`}
+                  className={`flex items-center sm:items-start gap-3 sm:gap-4 p-4 sm:p-5 rounded-2xl border text-left transition-all duration-300 ${isSelected
+                    ? 'bg-green-700 text-white border-green-700 shadow-lg shadow-green-700/20 lg:translate-x-2'
+                    : 'bg-white text-slate-700 border-slate-200/60 hover:border-green-700/40 hover:bg-green-50/20'
+                    }`}
                 >
-                  <div className={`p-2 sm:p-3 rounded-xl ${
-                    isSelected ? 'bg-white/10 text-white' : 'bg-green-50 text-green-700'
-                  }`}>
+                  <div className={`p-2 sm:p-3 rounded-xl ${isSelected ? 'bg-white/10 text-white' : 'bg-green-50 text-green-700'
+                    }`}>
                     <TabIconComponent size={20} className="sm:w-6 sm:h-6" />
                   </div>
                   <div>
                     <h4 className="font-bold text-xs sm:text-sm md:text-base tracking-tight leading-snug">{tab.title}</h4>
-                    <p className={`text-[10px] sm:text-xs mt-1 font-medium ${
-                      isSelected ? 'text-green-100' : 'text-slate-400'
-                    }`}>
+                    <p className={`text-[10px] sm:text-xs mt-1 font-medium ${isSelected ? 'text-green-100' : 'text-slate-400'
+                      }`}>
                       {tab.short}
                     </p>
                   </div>
@@ -456,7 +466,7 @@ export default function Technology() {
                               <span className="text-[9px] sm:text-[10px] font-bold text-slate-400 uppercase tracking-wider">PID DUTY CYCLE</span>
                               <div className="flex items-center gap-2 w-full justify-center md:justify-end">
                                 <div className="w-32 sm:w-24 h-2.5 bg-slate-200 rounded-full overflow-hidden">
-                                  <motion.div 
+                                  <motion.div
                                     animate={{ width: `${40 + (temp - 37.5) * 100}%` }}
                                     className="h-full bg-green-600"
                                   ></motion.div>

@@ -66,8 +66,8 @@ export default function Contact() {
         {/* Text Column */}
         <div className="flex flex-col justify-center text-center lg:text-left lg:pr-6">
           <div className="inline-flex items-center self-center lg:self-start gap-2 px-3.5 py-1.5 mb-6 text-[9px] font-black tracking-[0.3em] uppercase bg-black text-white rounded-xl shadow-xl w-fit">
-             <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
-             Get In Touch
+            <span className="w-1.5 h-1.5 rounded-full bg-green-500 animate-pulse"></span>
+            Get In Touch
           </div>
           <h1 className="font-headline text-4xl md:text-5xl lg:text-6xl font-black text-black tracking-tighter leading-tight mb-6">
             {t('contact.title')}
@@ -75,7 +75,7 @@ export default function Contact() {
           <p className="text-black/70 text-base sm:text-lg mb-4 max-w-md sm:max-w-lg lg:max-w-md mx-auto lg:mx-0 leading-relaxed font-medium">
             {t('contact.desc')}
           </p>
-          
+
           {/* Contact Details */}
           <div className="flex flex-col gap-5 mt-2 items-start text-black mb-12 lg:mb-0 w-fit mx-auto lg:mx-0">
             <div className="flex items-center gap-4 group">
@@ -86,8 +86,8 @@ export default function Contact() {
                 <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest leading-none mb-1">
                   {t('contact.phone.label')}
                 </p>
-                <a 
-                  href={`tel:${siteConfig.brand.phone.replace(/\s+/g, '')}`} 
+                <a
+                  href={`tel:${siteConfig.brand.phone.replace(/\s+/g, '')}`}
                   className="text-base sm:text-lg font-black hover:text-green-700 transition-colors"
                 >
                   {siteConfig.brand.phone}
@@ -103,8 +103,8 @@ export default function Contact() {
                 <p className="text-[10px] text-black/40 font-bold uppercase tracking-widest leading-none mb-1">
                   {t('contact.email.label')}
                 </p>
-                <a 
-                  href={`mailto:${siteConfig.brand.email}`} 
+                <a
+                  href={`mailto:${siteConfig.brand.email}`}
                   className="text-base sm:text-lg font-black hover:text-green-700 transition-colors break-all"
                 >
                   {siteConfig.brand.email}
@@ -134,25 +134,25 @@ export default function Contact() {
           <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
             <div>
               <label htmlFor="name" className="block text-sm font-bold text-on-surface mb-2">{t('form.firstName')}</label>
-              <input 
-                type="text" 
-                id="name" 
-                name="name" 
-                required 
-                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base" 
-                placeholder="Your name" 
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base"
+                placeholder="Your name"
               />
             </div>
-            
+
             <div>
               <label htmlFor="email" className="block text-sm font-bold text-on-surface mb-2">{t('form.email')}</label>
-              <input 
-                type="email" 
-                id="email" 
-                name="email" 
-                required 
-                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base" 
-                placeholder="you@example.com" 
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base"
+                placeholder="you@example.com"
               />
             </div>
 
@@ -163,12 +163,12 @@ export default function Contact() {
 
             <div>
               <label htmlFor="message" className="block text-sm font-bold text-on-surface mb-2">{t('form.message')}</label>
-              <textarea 
-                id="message" 
-                name="message" 
-                rows={4} 
-                required 
-                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none text-sm sm:text-base" 
+              <textarea
+                id="message"
+                name="message"
+                rows={4}
+                required
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none text-sm sm:text-base"
                 placeholder="How can we help you?"
               ></textarea>
             </div>

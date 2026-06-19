@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import WizardModal, { type WizardFormData } from '../components/WizardModal';
 import ThankYouModal from '../components/ThankYouModal';
 import { Link } from 'react-router-dom';
@@ -8,7 +8,7 @@ import SectionWrapper from '../components/SectionWrapper';
 import GallerySection from '../components/GallerySection';
 import LegalModal from '../components/LegalModal';
 import { submitSERELead, type SERELeadInput } from '../lib/naya-lead';
-import { motion } from 'motion/react';
+import { motion, AnimatePresence } from 'motion/react';
 import { useLanguage } from '../context/LanguageContext';
 import {
   ArrowRight,
@@ -25,16 +25,45 @@ import {
   Play,
   Facebook,
   Instagram,
-  X
+  X,
+  Zap,
+  TrendingUp
 } from 'lucide-react';
 
 export default function Home() {
   const [isWizardOpen, setIsWizardOpen] = useState(false);
+  const [activeStep, setActiveStep] = useState(0);
   const [isThankYouOpen, setIsThankYouOpen] = useState(false);
   const [submitName, setSubmitName] = useState('');
   const [isSubmittingLead, setIsSubmittingLead] = useState(false);
   const [leadError, setLeadError] = useState('');
   const [legalModalOpen, setLegalModalOpen] = useState<'terms' | 'privacy' | 'disclaimer' | null>(null);
+  const [activeCompareTab, setActiveCompareTab] = useState(0);
+
+  const [activeTab, setActiveTab] = useState(0);
+  const [progress, setProgress] = useState(0);
+  const [isTabHovered, setIsTabHovered] = useState(false);
+
+  useEffect(() => {
+    if (isTabHovered) return;
+
+    const interval = setInterval(() => {
+      setProgress((prev) => {
+        if (prev >= 100) {
+          setActiveTab((currentTab) => (currentTab + 1) % 3);
+          return 0;
+        }
+        return prev + 0.83; // Fills 100% in ~6 seconds
+      });
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, [isTabHovered]);
+
+  const handleTabClick = (index: number) => {
+    setActiveTab(index);
+    setProgress(0);
+  };
 
   // Simulated Inhouse API function for tracking and submissions
   const trackEvent = async (eventName: string, data: any = {}) => {
@@ -209,50 +238,182 @@ export default function Home() {
         </section>
 
         {/* 2 & 3. Problem & Solution Overview */}
-        <SectionWrapper className="w-full py-16 md:py-24 px-4 md:px-12 bg-surface-container-low border-y border-outline-variant/20" id="problem-solution">
+        <SectionWrapper className="w-full py-20 md:py-28 px-4 md:px-12 bg-surface-container-low border-y border-outline-variant" id="problem-solution">
           <div className="max-w-screen-xl mx-auto">
-            <div className="text-center mb-16">
-              <h2 className="font-headline text-3xl md:text-5xl font-black text-on-surface mb-6 uppercase tracking-tighter">
-                {t('section.problem.allChallenges')}
+            {/* Header Block */}
+            <div className="text-center mb-16 max-w-4xl mx-auto px-4">
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100/40 border border-emerald-300/30 text-emerald-800 text-xs font-black uppercase tracking-[0.15em] mb-4 shadow-sm backdrop-blur-sm">
+                <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse-soft"></span>
+                {t('section.solution.badge')}
+              </span>
+              <h2 className="font-headline text-3xl md:text-5xl lg:text-[3.25rem] font-black text-on-surface mb-6 tracking-tight leading-[1.15]">
+                {t('section.problem.allChallenges').split(' ').map((word, idx) => {
+                  const isHighlight = word.toLowerCase().includes('challenge') || word.toLowerCase().includes('solution') || word.includes('समाधान') || word.includes('उपाय');
+                  return (
+                    <span key={idx} className={isHighlight ? "bg-gradient-to-r from-emerald-600 to-green-700 bg-clip-text text-transparent inline-block" : ""}>
+                      {word}{' '}
+                    </span>
+                  );
+                })}
               </h2>
-              <p className="text-lg md:text-xl text-on-surface-variant max-w-3xl mx-auto font-medium">
+              <div className="h-1 w-20 bg-gradient-to-r from-emerald-500 to-green-600 mx-auto rounded-full mb-6"></div>
+              <p className="text-base sm:text-lg md:text-xl text-on-surface-variant max-w-3xl mx-auto font-medium leading-relaxed">
                 {t('section.problem.allChallenges.desc')}
               </p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div className="relative group">
-                <div className="absolute -inset-4 bg-primary/20 rounded-[3rem] blur-xl group-hover:bg-primary/30 transition-all duration-500"></div>
-                <img src="/media/sere-120.webp" alt="SERE 120 Capacity Model" className="relative w-full rounded-3xl shadow-2xl border border-primary/20" />
+            {/* Content Stage (Grid) */}
+            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+              {/* Left Side: Dynamic Media Player Stage */}
+              <div
+                className="relative group max-w-xl mx-auto lg:max-w-none w-full"
+                onMouseEnter={() => setIsTabHovered(true)}
+                onMouseLeave={() => setIsTabHovered(false)}
+              >
+                {/* Background soft lighting */}
+                <div className="absolute -inset-6 bg-gradient-to-tr from-emerald-500/20 to-green-500/10 rounded-[3rem] blur-2xl opacity-75 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"></div>
 
-                {/* Solution Pointers - Hidden on mobile/tablet for cleaner layout */}
-                <div className="hidden md:flex absolute top-[20%] -left-6 bg-surface p-3 rounded-2xl shadow-lg border border-outline-variant/50 text-sm font-bold items-center gap-2 animate-bounce transition-all hover:scale-[1.02]">
-                  <span className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></span>
-                  {t('section.solution.pointer1')}
+                {/* Media screen */}
+                <div className="relative rounded-[2.5rem] p-3 bg-white/60 backdrop-blur-md border border-white/40 shadow-2xl overflow-hidden aspect-[4/3] flex items-center justify-center">
+                  <div className="w-full h-full rounded-[2rem] overflow-hidden relative bg-black flex items-center justify-center">
+                    <AnimatePresence mode="wait">
+                      {activeTab === 0 && (
+                        <motion.img
+                          key="tab-image-0"
+                          initial={{ opacity: 0, scale: 1.02 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.4 }}
+                          src="/media/sere-120.webp"
+                          alt="SERE 120 Model"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {activeTab === 1 && (
+                        <motion.img
+                          key="tab-image-1"
+                          initial={{ opacity: 0, scale: 1.02 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.4 }}
+                          src="/media/happy-poultry-farmer.png"
+                          alt="Reliable Climate"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {activeTab === 2 && (
+                        <motion.img
+                          key="tab-image-2"
+                          initial={{ opacity: 0, scale: 1.02 }}
+                          animate={{ opacity: 1, scale: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.4 }}
+                          src="/media/Machine%20process/IMG_4238.jpg"
+                          alt="Chicks Yield"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
-                <div className="hidden md:flex absolute top-[50%] -right-8 bg-surface p-3 rounded-2xl shadow-lg border border-outline-variant/50 text-sm font-bold items-center gap-2 transition-all hover:scale-[1.02]">
-                  <span className="w-3 h-3 bg-primary rounded-full"></span>
-                  {t('section.solution.pointer2')}
+
+                {/* Floating dynamic status tags based on activeTab */}
+                <div className="hidden md:flex absolute top-[12%] -left-8 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-white/60 text-sm font-bold items-center gap-2.5 transition-all duration-300 hover:scale-105 hover:bg-white animate-float-slow">
+                  <span className="relative flex h-3.5 w-3.5">
+                    <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
+                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+                  </span>
+                  <span className="text-slate-800">
+                    {activeTab === 0 ? t('section.solution.pointer1') : activeTab === 1 ? "0.01°C Accuracy" : "90% Hatch Rate"}
+                  </span>
                 </div>
-                <div className="absolute bottom-4 left-4 right-4 md:bottom-[10%] md:left-4 md:right-auto bg-primary text-on-primary p-3 rounded-2xl shadow-lg font-bold flex items-center justify-center md:justify-start gap-2 text-base md:text-lg transition-all hover:scale-[1.02]">
-                  <CheckCircle2 size={20} />
-                  {t('section.solution.badge')}
+
+                <div className="hidden md:flex absolute top-[58%] -right-8 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-white/60 text-sm font-bold items-center gap-2.5 transition-all duration-300 hover:scale-105 hover:bg-white animate-float-medium">
+                  <span className="relative flex h-3.5 w-3.5">
+                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-600"></span>
+                  </span>
+                  <span className="text-slate-800">
+                    {activeTab === 0 ? "Solar Compatible" : activeTab === 1 ? t('section.solution.pointer1') : "Farmer Certified"}
+                  </span>
+                </div>
+
+                <div className="absolute bottom-6 left-6 right-6 md:bottom-[8%] md:left-6 md:right-auto bg-gradient-to-r from-emerald-600 to-green-700 text-white px-5 py-3 rounded-2xl shadow-lg shadow-emerald-700/20 font-bold flex items-center justify-center md:justify-start gap-2.5 text-base hover:shadow-emerald-700/30 transition-all duration-300 hover:scale-[1.03] animate-float-delayed">
+                  <CheckCircle2 size={20} className="text-emerald-100 animate-pulse-soft" />
+                  <span>
+                    {activeTab === 0 ? t('section.solution.badge') : activeTab === 1 ? "Smart Inhouse API Tracking" : "High Hatch Yield Guaranteed"}
+                  </span>
                 </div>
               </div>
 
-              <div className="space-y-6">
-                <div className="bg-surface p-6 rounded-3xl border border-outline-variant/30 ambient-shadow hover:-translate-y-1 hover:scale-[1.02] transition-all">
-                  <h3 className="font-headline font-bold text-xl mb-2 text-primary">{t('section.solution.plugPlay')}</h3>
-                  <p className="text-on-surface-variant">{t('section.solution.plugPlay.desc')}</p>
-                </div>
-                <div className="bg-surface p-6 rounded-3xl border border-outline-variant/30 ambient-shadow hover:-translate-y-1 hover:scale-[1.02] transition-all">
-                  <h3 className="font-headline font-bold text-xl mb-2 text-primary">{t('section.solution.reliableClimate')}</h3>
-                  <p className="text-on-surface-variant">{t('section.solution.reliableClimate.desc')}</p>
-                </div>
-                <div className="bg-surface p-6 rounded-3xl border border-outline-variant/30 ambient-shadow hover:-translate-y-1 hover:scale-[1.02] transition-all">
-                  <h3 className="font-headline font-bold text-xl mb-2 text-primary">{t('section.solution.financialIndep')}</h3>
-                  <p className="text-on-surface-variant">{t('section.solution.financialIndep.desc')}</p>
-                </div>
+              {/* Right Side: Interactive Progress Cards */}
+              <div
+                className="space-y-6"
+                onMouseEnter={() => setIsTabHovered(true)}
+                onMouseLeave={() => setIsTabHovered(false)}
+              >
+                {[
+                  {
+                    id: 0,
+                    title: t('section.solution.plugPlay'),
+                    desc: t('section.solution.plugPlay.desc'),
+                    icon: Zap,
+                    color: "bg-emerald-50 text-emerald-700 hover:bg-emerald-100"
+                  },
+                  {
+                    id: 1,
+                    title: t('section.solution.reliableClimate'),
+                    desc: t('section.solution.reliableClimate.desc'),
+                    icon: Thermometer,
+                    color: "bg-green-50 text-green-700 hover:bg-green-100"
+                  },
+                  {
+                    id: 2,
+                    title: t('section.solution.financialIndep'),
+                    desc: t('section.solution.financialIndep.desc'),
+                    icon: TrendingUp,
+                    color: "bg-emerald-50 text-emerald-800 hover:bg-emerald-100"
+                  }
+                ].map((card) => {
+                  const IconComponent = card.icon;
+                  const isActive = activeTab === card.id;
+
+                  return (
+                    <div
+                      key={card.id}
+                      onClick={() => handleTabClick(card.id)}
+                      className={`group relative p-6 sm:p-7 rounded-3xl border transition-all duration-500 cursor-pointer overflow-hidden ${isActive
+                          ? "bg-gradient-to-br from-white via-white to-emerald-50/10 border-emerald-500/30 shadow-[0_16px_36px_rgba(21,128,61,0.08)] scale-[1.01]"
+                          : "bg-white/40 border-outline-variant hover:bg-white hover:border-emerald-500/10 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:scale-[1.005]"
+                        }`}
+                    >
+                      {/* Active Progress Bar (Fills automatically) */}
+                      {isActive && (
+                        <div className="absolute left-0 bottom-0 top-0 w-[4px] bg-slate-100">
+                          <div
+                            className="h-full bg-gradient-to-b from-emerald-500 to-green-600 transition-all duration-75 ease-linear"
+                            style={{ height: `${progress}%` }}
+                          />
+                        </div>
+                      )}
+
+                      <div className="flex gap-4 sm:gap-5 relative z-10 items-start">
+                        {/* Icon Badge */}
+                        <div className={`flex shrink-0 w-12 h-12 sm:w-14 sm:h-14 items-center justify-center rounded-2xl ${card.color} group-hover:scale-110 transition-transform duration-300 shadow-sm ${isActive ? "ring-2 ring-emerald-500/20" : ""}`}>
+                          <IconComponent size={24} className={`group-hover:rotate-12 transition-transform duration-300 ${isActive ? "animate-pulse" : ""}`} />
+                        </div>
+
+                        <div className="space-y-1.5">
+                          <h3 className={`font-headline font-extrabold text-lg sm:text-xl transition-colors duration-300 ${isActive ? "text-primary" : "text-slate-900"}`}>
+                            {card.title}
+                          </h3>
+                          <p className={`text-sm sm:text-base transition-colors duration-300 font-medium leading-relaxed ${isActive ? "text-on-surface-variant" : "text-on-surface-variant/70"}`}>
+                            {card.desc}
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -295,33 +456,441 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Market vs SERE Comparison */}
-        <SectionWrapper className="w-full pt-20 pb-10 px-4 md:px-12 bg-surface">
-          <div className="max-w-screen-lg mx-auto">
-            <div className="text-center mb-12">
-              <h2 className="font-headline text-3xl md:text-5xl font-extrabold text-on-surface mb-4">{t('section.market.loseTitle')}</h2>
-              <p className="text-on-surface-variant text-lg">{t('section.market.loseSubtitle')}</p>
+        <SectionWrapper className="w-full pt-20 pb-16 px-4 md:px-12 bg-surface">
+          <div className="max-w-screen-xl mx-auto">
+            {/* Title block */}
+            <div className="text-center mb-16 max-w-3xl mx-auto">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 rounded-full font-label text-xs font-bold text-red-700 tracking-widest uppercase mb-4 border border-red-200/50">
+                LIMITATION VS TECHNOLOGY
+              </span>
+              <h2 className="font-headline text-3xl md:text-5xl font-black text-on-surface mb-4 tracking-tight leading-tight">
+                {t('section.market.loseTitle')}
+              </h2>
+              <div className="h-1 w-20 bg-gradient-to-r from-red-400 to-emerald-500 mx-auto rounded-full mb-6"></div>
+              <p className="text-on-surface-variant font-medium text-base sm:text-lg">{t('section.market.loseSubtitle')}</p>
             </div>
 
-            <div className="grid md:grid-cols-2 gap-8">
-              <div className="bg-surface-container-low p-8 rounded-3xl border border-outline-variant/10">
-                <h3 className="text-2xl font-bold text-on-surface/60 mb-6 flex items-center gap-3"><X size={28} /> {t('section.market.traditional')}</h3>
-                <ul className="space-y-4 text-on-surface-variant font-medium">
-                  <li className="flex items-start gap-2"><span>-</span> <span>{t('section.market.traditional.list1')}</span></li>
-                  <li className="flex items-start gap-2"><span>-</span> <span>{t('section.market.traditional.list2')}</span></li>
-                  <li className="flex items-start gap-2"><span>-</span> <span>{t('section.market.traditional.list3')}</span></li>
-                  <li className="flex items-start gap-2"><span>-</span> <span>{t('section.market.traditional.list4')}</span></li>
-                </ul>
-              </div>
-              <div className="bg-primary/10 p-8 rounded-3xl border border-primary/20">
-                <h3 className="text-2xl font-bold text-primary mb-6 flex items-center gap-3"><CheckCircle2 size={28} /> {t('section.market.SERE')}</h3>
-                <ul className="space-y-4 text-primary/80 font-medium">
-                  <li className="flex items-start gap-2"><span>+</span> <span>{t('section.market.SERE.list1')}</span></li>
-                  <li className="flex items-start gap-2"><span>+</span> <span>{t('section.market.SERE.list2')}</span></li>
-                  <li className="flex items-start gap-2"><span>+</span> <span>{t('section.market.SERE.list3')}</span></li>
-                  <li className="flex items-start gap-2"><span>+</span> <span>{t('section.market.SERE.list4')}</span></li>
-                </ul>
-              </div>
-            </div>
+            {/* Interactive Battle Arena Dashboard */}
+            {(() => {
+              const comparisonFeatures = [
+                {
+                  id: 0,
+                  title: "Climate Control",
+                  subtitle: "Temp & Humidity regulation",
+                  icon: Thermometer,
+                  traditional: t('section.market.traditional.list1'),
+                  sere: t('section.market.SERE.list1'),
+                  traditionalDetail: "Traditional incubators use basic thermostats and manual water trays. This leads to dangerous temperature spikes or dry spells that ruin eggs.",
+                  sereDetail: "SERE uses advanced PID digital controllers and automatic humidity pumps to maintain a perfect, stable climate 24/7.",
+                  metricType: "climate",
+                  label: "Environment Stability"
+                },
+                {
+                  id: 1,
+                  title: "Operational Effort",
+                  subtitle: "Manual labor vs Automation",
+                  icon: Cpu,
+                  traditional: t('section.market.traditional.list2'),
+                  sere: t('section.market.SERE.list2'),
+                  traditionalDetail: "Requires waking up throughout the night to turn eggs manually and check water levels. Missing a cycle can result in high embryonic mortality.",
+                  sereDetail: "Set and forget. SERE features automatic egg turning, automatic ventilation, and alerts, letting you focus on your other farm activities.",
+                  metricType: "effort",
+                  label: "Labor & Monitoring"
+                },
+                {
+                  id: 2,
+                  title: "Energy Efficiency",
+                  subtitle: "Insulation & Backup source",
+                  icon: Zap,
+                  traditional: t('section.market.traditional.list3'),
+                  sere: t('section.market.SERE.list3'),
+                  traditionalDetail: "Uninsulated plastic/metal allows heat to escape rapidly, drawing high electricity constant loads and causing total hatch failure during outages.",
+                  sereDetail: "Double-walled premium thermal insulation reduces power draw by 70%. Easily connects directly to hybrid solar panels and standard batteries.",
+                  metricType: "energy",
+                  label: "Power & Running Costs"
+                },
+                {
+                  id: 3,
+                  title: "Hatch Yield Rate",
+                  subtitle: "Hatching success numbers",
+                  icon: TrendingUp,
+                  traditional: t('section.market.traditional.list4'),
+                  sere: t('section.market.SERE.list4'),
+                  traditionalDetail: "Fluctuating parameters and unstable heating lead to a low average hatch rate of 55-65%, meaning you lose 4 out of every 10 eggs.",
+                  sereDetail: "High-precision heat distribution and digital ventilation ensure a consistent 90%+ hatch rate, ensuring every fertile egg counts.",
+                  metricType: "yield",
+                  label: "Hatch Success Rate"
+                }
+              ];
+
+              const renderVisualWidget = (type: string, isSere: boolean) => {
+                if (type === 'climate') {
+                  if (isSere) {
+                    return (
+                      <div className="relative w-full h-28 bg-emerald-950/5 border border-emerald-500/20 rounded-2xl p-4 flex flex-col justify-between overflow-hidden shadow-inner">
+                        <div className="flex justify-between items-center z-10">
+                          <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">SERE ENVIRONMENT</span>
+                          <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-700 rounded text-[10px] font-bold animate-pulse-soft">37.8°C STABLE</span>
+                        </div>
+                        <div className="h-10 flex items-center justify-center relative">
+                          <svg className="w-full h-full stroke-emerald-500 fill-none" viewBox="0 0 200 40" preserveAspectRatio="none">
+                            <path
+                              d="M 0 20 Q 25 20 50 20 T 100 20 T 150 20 T 200 20"
+                              strokeWidth="2.5"
+                              strokeLinecap="round"
+                              className="stroke-emerald-500 drop-shadow-[0_0_6px_rgba(16,185,129,0.7)]"
+                            />
+                            <circle cx="100" cy="20" r="4" className="fill-emerald-400 animate-ping" />
+                            <circle cx="100" cy="20" r="2.5" className="fill-emerald-500" />
+                          </svg>
+                        </div>
+                        <div className="flex justify-between items-center text-[10px] font-bold text-emerald-700/80 z-10">
+                          <span>HUMIDITY: 60%</span>
+                          <span>TEMP: 37.8°C</span>
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="relative w-full h-28 bg-red-950/5 border border-red-500/10 rounded-2xl p-4 flex flex-col justify-between overflow-hidden shadow-inner">
+                        <div className="flex justify-between items-center z-10">
+                          <span className="text-[10px] font-black text-red-700 uppercase tracking-widest">TRADITIONAL TEMP</span>
+                          <span className="px-2 py-0.5 bg-red-500/10 text-red-600 rounded text-[10px] font-bold">39.5°C CRITICAL</span>
+                        </div>
+                        <div className="h-10 flex items-center justify-center relative">
+                          <svg className="w-full h-full stroke-red-400 fill-none" viewBox="0 0 200 40" preserveAspectRatio="none">
+                            <path
+                              d="M 0 25 L 25 10 L 50 35 L 75 5 L 100 30 L 125 15 L 150 38 L 175 8 L 200 28"
+                              strokeWidth="2"
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                            />
+                            <circle cx="75" cy="5" r="4" className="fill-red-500 animate-ping" />
+                            <circle cx="75" cy="5" r="2.5" className="fill-red-600" />
+                          </svg>
+                        </div>
+                        <div className="flex justify-between items-center text-[10px] font-bold text-red-700/60 z-10">
+                          <span>HUMIDITY: 40% (DRY)</span>
+                          <span>TEMP: 35.5 - 39.5°C</span>
+                        </div>
+                      </div>
+                    );
+                  }
+                }
+
+                if (type === 'effort') {
+                  if (isSere) {
+                    return (
+                      <div className="relative w-full h-28 bg-emerald-950/5 border border-emerald-500/20 rounded-2xl p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">AUTOMATED TIMELINE</span>
+                          <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-700 rounded text-[10px] font-bold">SET & FORGET</span>
+                        </div>
+                        <div className="grid grid-cols-3 gap-2 text-center text-[9px] font-bold mt-1">
+                          <div className="p-1 bg-emerald-500/5 rounded border border-emerald-500/15 flex flex-col items-center justify-center">
+                            <span className="material-symbols-outlined text-sm text-emerald-600 mb-0.5">published_with_changes</span>
+                            <span className="font-bold text-emerald-900">Auto-Turn</span>
+                            <span className="text-[7px] text-emerald-600/70">Every 2 Hours</span>
+                          </div>
+                          <div className="p-1 bg-emerald-500/5 rounded border border-emerald-500/15 flex flex-col items-center justify-center">
+                            <span className="material-symbols-outlined text-sm text-emerald-600 mb-0.5">water_drop</span>
+                            <span className="font-bold text-emerald-900">Auto-Humidity</span>
+                            <span className="text-[7px] text-emerald-600/70">Sensors Active</span>
+                          </div>
+                          <div className="p-1 bg-emerald-500/5 rounded border border-emerald-500/15 flex flex-col items-center justify-center">
+                            <span className="material-symbols-outlined text-sm text-emerald-600 mb-0.5">notifications_active</span>
+                            <span className="font-bold text-emerald-900">Smart Alerts</span>
+                            <span className="text-[7px] text-emerald-600/70">GSM Enabled</span>
+                          </div>
+                        </div>
+                        <div className="w-full bg-emerald-100 rounded-full h-1 mt-1 overflow-hidden">
+                          <div className="bg-emerald-500 h-full w-[95%] animate-pulse-soft"></div>
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="relative w-full h-28 bg-red-950/5 border border-red-500/10 rounded-2xl p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-red-700 uppercase tracking-widest">MANUAL CHORES</span>
+                          <span className="px-2 py-0.5 bg-red-500/10 text-red-600 rounded text-[10px] font-bold">24/7 ATTENTION</span>
+                        </div>
+                        <div className="flex flex-col gap-1 mt-1 text-[9px] font-bold text-red-800">
+                          <div className="flex items-center gap-1.5 bg-red-500/5 px-2 py-1 rounded">
+                            <span className="material-symbols-outlined text-xs text-red-500">lock_clock</span>
+                            <span>Wake up at 2 AM to check temperature manually</span>
+                          </div>
+                          <div className="flex items-center gap-1.5 bg-red-500/5 px-2 py-1 rounded">
+                            <span className="material-symbols-outlined text-xs text-red-500">rotate_right</span>
+                            <span>Manually turn all egg trays by hand 4x daily</span>
+                          </div>
+                        </div>
+                        <div className="w-full bg-red-100 rounded-full h-1 mt-1">
+                          <div className="bg-red-500 h-full w-[15%]"></div>
+                        </div>
+                      </div>
+                    );
+                  }
+                }
+
+                if (type === 'energy') {
+                  if (isSere) {
+                    return (
+                      <div className="relative w-full h-28 bg-emerald-950/5 border border-emerald-500/20 rounded-2xl p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">HYBRID POWER SETUP</span>
+                          <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-700 rounded text-[10px] font-bold">SOLAR COMPATIBLE</span>
+                        </div>
+                        <div className="flex items-center justify-around my-1">
+                          <div className="flex flex-col items-center">
+                            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                              <span className="material-symbols-outlined text-base">wb_sunny</span>
+                            </div>
+                            <span className="text-[8px] font-bold text-emerald-900 mt-1">Solar Inputs</span>
+                          </div>
+                          <div className="text-emerald-500 text-lg font-black animate-pulse-soft">→</div>
+                          <div className="flex flex-col items-center">
+                            <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center text-emerald-600">
+                              <span className="material-symbols-outlined text-base">battery_charging_full</span>
+                            </div>
+                            <span className="text-[8px] font-bold text-emerald-900 mt-1">Eco-Mode (40W)</span>
+                          </div>
+                        </div>
+                        <div className="text-[9px] font-bold text-emerald-800 text-center leading-tight">
+                          Double-walled insulation retains heat for up to 12 hours without grid power
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="relative w-full h-28 bg-red-950/5 border border-red-500/10 rounded-2xl p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-red-700 uppercase tracking-widest">POWER SYSTEM</span>
+                          <span className="px-2 py-0.5 bg-red-500/10 text-red-600 rounded text-[10px] font-bold">GRID DEPENDENT</span>
+                        </div>
+                        <div className="flex items-center justify-around my-1 opacity-70">
+                          <div className="flex flex-col items-center">
+                            <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-600">
+                              <span className="material-symbols-outlined text-base">bolt</span>
+                            </div>
+                            <span className="text-[8px] font-bold text-red-800 mt-1">High Draw (150W)</span>
+                          </div>
+                          <span className="text-red-500 text-lg font-black">✖</span>
+                          <div className="flex flex-col items-center">
+                            <div className="w-8 h-8 rounded-full bg-red-500/10 flex items-center justify-center text-red-600">
+                              <span className="material-symbols-outlined text-base">battery_alert</span>
+                            </div>
+                            <span className="text-[8px] font-bold text-red-800 mt-1">No Solar Option</span>
+                          </div>
+                        </div>
+                        <div className="text-[9px] font-bold text-red-700/80 text-center leading-tight">
+                          Metal or thin plastic leaks heat instantly, spoiling entire hatch in a power cut
+                        </div>
+                      </div>
+                    );
+                  }
+                }
+
+                if (type === 'yield') {
+                  if (isSere) {
+                    return (
+                      <div className="relative w-full h-28 bg-emerald-950/5 border border-emerald-500/20 rounded-2xl p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-emerald-700 uppercase tracking-widest">PROVEN HATCH RATE</span>
+                          <span className="px-2 py-0.5 bg-emerald-500/10 text-emerald-700 rounded text-[10px] font-bold">90%+ SUCCESS</span>
+                        </div>
+                        <div className="flex items-center gap-3 my-1">
+                          {/* Circular progress */}
+                          <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
+                            <svg className="w-full h-full transform -rotate-90">
+                              <circle cx="24" cy="24" r="20" stroke="#f0fdf4" strokeWidth="4" fill="transparent" />
+                              <circle cx="24" cy="24" r="20" stroke="#10b981" strokeWidth="4" fill="transparent"
+                                strokeDasharray={2 * Math.PI * 20}
+                                strokeDashoffset={2 * Math.PI * 20 * (1 - 0.92)}
+                                className="stroke-emerald-500"
+                              />
+                            </svg>
+                            <span className="absolute text-[10px] font-black text-emerald-900">92%</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1 items-center flex-1">
+                            {Array.from({ length: 10 }).map((_, i) => (
+                              <span key={i} className={`text-xs leading-none ${i < 9 ? 'text-amber-500' : 'text-slate-300'}`}>🥚</span>
+                            ))}
+                            <span className="text-[8px] font-bold text-emerald-800 block w-full mt-0.5">9 out of 10 eggs hatch healthy</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  } else {
+                    return (
+                      <div className="relative w-full h-28 bg-red-950/5 border border-red-500/10 rounded-2xl p-3 flex flex-col justify-between overflow-hidden shadow-inner">
+                        <div className="flex justify-between items-center">
+                          <span className="text-[10px] font-black text-red-700 uppercase tracking-widest">MARKET HATCH RATE</span>
+                          <span className="px-2 py-0.5 bg-red-500/10 text-red-600 rounded text-[10px] font-bold">~60% AVERAGE</span>
+                        </div>
+                        <div className="flex items-center gap-3 my-1">
+                          {/* Circular progress */}
+                          <div className="relative w-12 h-12 flex items-center justify-center shrink-0">
+                            <svg className="w-full h-full transform -rotate-90">
+                              <circle cx="24" cy="24" r="20" stroke="#fee2e2" strokeWidth="4" fill="transparent" />
+                              <circle cx="24" cy="24" r="20" stroke="#ef4444" strokeWidth="4" fill="transparent"
+                                strokeDasharray={2 * Math.PI * 20}
+                                strokeDashoffset={2 * Math.PI * 20 * (1 - 0.60)}
+                                className="stroke-red-500"
+                              />
+                            </svg>
+                            <span className="absolute text-[10px] font-black text-red-900">60%</span>
+                          </div>
+                          <div className="flex flex-wrap gap-1 items-center flex-1">
+                            {Array.from({ length: 10 }).map((_, i) => (
+                              <span key={i} className={`text-xs leading-none ${i < 6 ? 'text-amber-500' : 'text-red-500'}`}>{i < 6 ? '🥚' : '✖'}</span>
+                            ))}
+                            <span className="text-[8px] font-bold text-red-700 block w-full mt-0.5">4 out of 10 eggs fail to hatch</span>
+                          </div>
+                        </div>
+                      </div>
+                    );
+                  }
+                }
+
+                return null;
+              };
+
+              return (
+                <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 max-w-5xl mx-auto items-stretch">
+
+                  {/* Left Column: Feature Selectors */}
+                  <div className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 gap-3 scrollbar-none snap-x snap-mandatory">
+                    {comparisonFeatures.map((item, idx) => {
+                      const IconComponent = item.icon;
+                      const isActive = activeCompareTab === idx;
+                      return (
+                        <button
+                          key={item.id}
+                          onClick={() => setActiveCompareTab(idx)}
+                          className={`relative flex items-center gap-3 p-4 rounded-2xl border text-left transition-all duration-300 group shrink-0 snap-center lg:snap-align-none ${isActive
+                              ? 'border-emerald-600 bg-emerald-50/10 shadow-md shadow-emerald-500/5'
+                              : 'border-outline-variant hover:border-slate-300 bg-white hover:bg-slate-50/50'
+                            } w-[220px] lg:w-full`}
+                        >
+                          {/* Active green indicator line on the left border */}
+                          {isActive && (
+                            <motion.div
+                              layoutId="activeCompareIndicator"
+                              className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-600 rounded-l-2xl"
+                              transition={{ type: 'spring', stiffness: 300, damping: 30 }}
+                            />
+                          )}
+
+                          {/* Icon */}
+                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all shrink-0 ${isActive
+                              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/10'
+                              : 'bg-slate-50 text-slate-600 group-hover:bg-slate-100'
+                            }`}>
+                            <IconComponent size={18} />
+                          </div>
+
+                          {/* Text details */}
+                          <div className="flex-1 min-w-0">
+                            <span className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">0{idx + 1} / FEATURE</span>
+                            <h4 className={`text-xs font-bold tracking-tight leading-snug transition-colors ${isActive ? 'text-emerald-950' : 'text-slate-800'
+                              }`}>
+                              {item.title}
+                            </h4>
+                            <span className="block text-[10px] text-slate-500 font-medium truncate">
+                              {item.subtitle}
+                            </span>
+                          </div>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  {/* Right Column: Comparative Showcase Card */}
+                  <div className="relative bg-white rounded-3xl border border-outline-variant p-5 lg:p-7 flex flex-col justify-between overflow-hidden shadow-lg shadow-slate-100/50 min-h-[420px]">
+                    {/* Background ambient light */}
+                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -z-10" />
+                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl -z-10" />
+
+                    {/* Active Feature Tag */}
+                    <div className="text-center mb-6 border-b border-slate-100 pb-3 shrink-0">
+                      <span className="font-headline font-black text-[10px] text-slate-800 tracking-wider uppercase bg-slate-50 px-3 py-1 rounded-full border border-slate-200/60 inline-block">
+                        {comparisonFeatures[activeCompareTab].label}
+                      </span>
+                    </div>
+
+                    {/* Split Arena */}
+                    <div className="flex-1 flex flex-col justify-center relative">
+                      <AnimatePresence mode="wait">
+                        <motion.div
+                          key={activeCompareTab}
+                          initial={{ opacity: 0, y: 12 }}
+                          animate={{ opacity: 1, y: 0 }}
+                          exit={{ opacity: 0, y: -12 }}
+                          transition={{ duration: 0.25 }}
+                          className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch relative"
+                        >
+                          {/* Visual VS Badge in between (desktop only) */}
+                          <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-slate-100 text-slate-600 font-headline font-black text-[10px] items-center justify-center border-4 border-white shadow-md">
+                            VS
+                          </div>
+
+                          {/* Left: Traditional Machine (Problem) */}
+                          <div className="flex flex-col justify-between p-4 bg-red-50/10 border border-red-100/30 rounded-2xl text-left hover:bg-red-50/20 transition-all duration-300">
+                            <div>
+                              <div className="flex items-center gap-1.5 mb-2">
+                                <div className="w-5 h-5 rounded-full bg-red-100/60 text-red-600 flex items-center justify-center">
+                                  <X size={12} />
+                                </div>
+                                <span className="text-[9px] font-black text-red-800 uppercase tracking-widest">
+                                  {t('section.market.traditional')}
+                                </span>
+                              </div>
+
+                              <h5 className="text-sm font-bold text-red-950 mb-1.5 leading-snug">
+                                {comparisonFeatures[activeCompareTab].traditional}
+                              </h5>
+
+                              <p className="text-[11px] font-medium text-slate-500 leading-relaxed mb-4">
+                                {comparisonFeatures[activeCompareTab].traditionalDetail}
+                              </p>
+                            </div>
+
+                            {/* Visual Widget */}
+                            {renderVisualWidget(comparisonFeatures[activeCompareTab].metricType, false)}
+                          </div>
+
+                          {/* Right: SERE Smart Technology (Solution) */}
+                          <div className="flex flex-col justify-between p-4 bg-emerald-50/20 border border-emerald-500/20 rounded-2xl text-left hover:bg-emerald-50/30 transition-all duration-300 shadow-sm shadow-emerald-500/5">
+                            <div>
+                              <div className="flex items-center gap-1.5 mb-2">
+                                <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-inner">
+                                  <CheckCircle2 size={12} />
+                                </div>
+                                <span className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">
+                                  {t('section.market.SERE')}
+                                </span>
+                              </div>
+
+                              <h5 className="text-sm font-black text-emerald-950 mb-1.5 leading-snug">
+                                {comparisonFeatures[activeCompareTab].sere}
+                              </h5>
+
+                              <p className="text-[11px] font-bold text-slate-700 leading-relaxed mb-4">
+                                {comparisonFeatures[activeCompareTab].sereDetail}
+                              </p>
+                            </div>
+
+                            {/* Visual Widget */}
+                            {renderVisualWidget(comparisonFeatures[activeCompareTab].metricType, true)}
+                          </div>
+                        </motion.div>
+                      </AnimatePresence>
+                    </div>
+                  </div>
+                </div>
+              );
+            })()}
           </div>
         </SectionWrapper>
 
@@ -329,50 +898,116 @@ export default function Home() {
         <SectionWrapper className="w-full pt-10 md:pt-14 pb-20 md:pb-32 px-4 md:px-12 bg-surface" id="capacity">
           <div className="max-w-screen-2xl mx-auto">
             <div className="mb-12 md:mb-20 text-center">
-              <h2 className="font-headline text-3xl md:text-6xl font-extrabold text-on-surface tracking-tight mb-6">{t('section.infra.title')}</h2>
-              <p className="font-body text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto">{t('section.infra.subtitle')}</p>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 rounded-full font-label text-xs font-bold text-emerald-800 tracking-widest uppercase mb-4 border border-emerald-200/50">{t('hero.capacity')}</span>
+              <h2 className="font-headline text-3xl md:text-6xl font-black text-on-surface tracking-tight mb-6">{t('section.infra.title')}</h2>
+              <p className="font-body text-lg md:text-xl text-on-surface-variant max-w-2xl mx-auto font-medium">{t('section.infra.subtitle')}</p>
             </div>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-              {/* Option 120 */}
-              <div className="bg-primary/5 p-6 md:p-10 rounded-3xl border-2 border-primary/20 ambient-shadow flex flex-col h-full hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 relative overflow-hidden">
-                <div className="mb-8 md:mb-12">
-                  <span className="inline-block px-3 py-1 bg-primary/10 rounded-full font-label text-xs font-bold text-primary tracking-widest uppercase mb-4">{t('section.infra.120.title')}</span>
-                  <h3 className="font-headline text-4xl md:text-5xl font-extrabold text-on-surface">120<span className="text-lg md:text-xl font-medium text-on-surface-variant ml-2">{t('hero.eggs')}</span></h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 items-stretch max-w-6xl mx-auto">
+              {[
+                {
+                  id: "120",
+                  title: t('section.infra.120.title'),
+                  eggs: "120",
+                  desc: t('section.infra.120.desc'),
+                  badge: "SPECIALTY BREEDING",
+                  isFeatured: false,
+                  cta: 'preorder_120',
+                  specs: [
+                    "120 Chicken Eggs capacity",
+                    "80W Low Power (Solar Ready)",
+                    "Automatic Turning (Every 2h)",
+                    "Single Zone Thermal Control"
+                  ]
+                },
+                {
+                  id: "200",
+                  title: t('section.infra.200.title'),
+                  eggs: "200",
+                  desc: t('section.infra.200.desc'),
+                  badge: "MOST POPULAR",
+                  isFeatured: true,
+                  cta: 'preorder_200',
+                  specs: [
+                    "200 Chicken Eggs capacity",
+                    "120W Low Power (Solar Ready)",
+                    "Guaranteed 90% Hatch Rate",
+                    "Dual Zone Thermal Control"
+                  ]
+                },
+                {
+                  id: "500",
+                  title: t('section.infra.500.title'),
+                  eggs: "500",
+                  desc: t('section.infra.500.desc'),
+                  badge: "COMMERCIAL GROW",
+                  isFeatured: false,
+                  cta: 'inquire_500',
+                  specs: [
+                    "500 Chicken Eggs capacity",
+                    "250W Power (Solar Ready)",
+                    "Ultrasonic Auto-Humidity",
+                    "Smart API Data Logging"
+                  ]
+                }
+              ].map((item, idx) => (
+                <div
+                  key={idx}
+                  onClick={(e) => handleOpenWizard(e, `preorder_${item.id}`)}
+                  className={`group relative rounded-[2.5rem] border p-6 flex flex-col justify-between transition-all duration-500 cursor-pointer shadow-sm hover:shadow-2xl overflow-hidden hover:-translate-y-2 ${item.isFeatured
+                      ? "bg-slate-900 border-emerald-500/40 text-white shadow-emerald-950/20 scale-105 z-10"
+                      : "bg-white border-outline-variant text-on-surface hover:border-emerald-500/20"
+                    }`}
+                >
+                  {/* Card visual showcase */}
+                  <div className="relative rounded-[1.75rem] overflow-hidden aspect-[16/10] mb-6 border border-emerald-500/5 bg-slate-100">
+                    <img
+                      src="/media/sere-120.webp"
+                      alt={item.title}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
+                    />
+                    <div className={`absolute top-4 left-4 px-3 py-1 rounded-full text-[10px] font-black tracking-wider shadow-sm uppercase ${item.isFeatured ? "bg-emerald-500 text-slate-950" : "bg-slate-900 text-white"
+                      }`}>
+                      {item.badge}
+                    </div>
+                  </div>
+
+                  {/* Header Text */}
+                  <div className="mb-4">
+                    <h3 className={`font-headline font-black text-2xl mb-1 ${item.isFeatured ? "text-emerald-400" : "text-on-surface"}`}>
+                      {item.title}
+                    </h3>
+                    <div className="flex items-baseline gap-1 mb-3">
+                      <span className="text-4xl font-extrabold tracking-tight">{item.eggs}</span>
+                      <span className={`text-sm font-medium ${item.isFeatured ? "text-slate-400" : "text-on-surface-variant"}`}>{t('hero.eggs')}</span>
+                    </div>
+                    <p className={`text-sm font-medium leading-relaxed mb-6 ${item.isFeatured ? "text-slate-300" : "text-on-surface-variant"}`}>
+                      {item.desc}
+                    </p>
+                  </div>
+
+                  {/* Specs Bullets List */}
+                  <ul className="space-y-3 mb-20 text-left relative z-10 border-t pt-5 border-outline-variant/10">
+                    {item.specs.map((spec, sIdx) => (
+                      <li key={sIdx} className="flex items-center gap-2.5 text-xs font-semibold">
+                        <CheckCircle2 size={16} className={item.isFeatured ? "text-emerald-400 shrink-0" : "text-emerald-700 shrink-0"} />
+                        <span className={item.isFeatured ? "text-slate-200" : "text-on-surface-variant"}>{spec}</span>
+                      </li>
+                    ))}
+                  </ul>
+
+                  {/* Bottom Action Area with Circular arrow button */}
+                  <div className="mt-auto flex items-center justify-between pt-4 border-t border-outline-variant/10">
+                    <span className={`text-xs font-black tracking-widest uppercase ${item.isFeatured ? "text-emerald-400" : "text-primary"}`}>
+                      {item.id === "500" ? t('section.infra.inquire.cta') : t('hero.cta')}
+                    </span>
+                    <div className={`w-12 h-12 rounded-full flex items-center justify-center shadow-lg transition-all duration-300 group-hover:translate-x-1 group-hover:scale-105 ${item.isFeatured ? "bg-white text-slate-950 hover:bg-emerald-50" : "bg-emerald-700 text-white hover:bg-emerald-800"
+                      }`}>
+                      <ArrowRight size={20} className="transition-transform duration-300 group-hover:rotate-45" />
+                    </div>
+                  </div>
                 </div>
-                <p className="font-body text-sm md:text-base text-on-surface-variant mb-8 md:mb-12 flex-grow">
-                  {t('section.infra.120.desc')}
-                </p>
-                <a className="w-full text-center bg-primary text-on-primary font-label font-bold px-6 py-4 rounded-2xl hover:bg-primary-container hover:scale-[1.02] transition-all shadow-lg cursor-pointer" onClick={(e) => handleOpenWizard(e, 'preorder_120')}>
-                  {t('hero.cta')}
-                </a>
-              </div>
-              {/* Option 200 */}
-              <div className="bg-primary p-6 md:p-10 rounded-3xl ambient-shadow flex flex-col h-full relative overflow-hidden transform md:scale-105 z-10 text-on-primary opacity-90">
-                <div className="absolute inset-0 bg-black/10 z-0 pointer-events-none"></div>
-                <div className="mb-8 md:mb-12 relative z-10">
-                  <span className="inline-block px-3 py-1 bg-white/20 rounded-full font-label text-xs font-bold text-white tracking-widest uppercase mb-4">{t('section.infra.200.title')}</span>
-                  <h3 className="font-headline text-4xl md:text-5xl font-extrabold text-white">200<span className="text-lg md:text-xl font-medium text-white/80 ml-2">{t('hero.eggs')}</span></h3>
-                </div>
-                <p className="font-body text-sm md:text-base text-white/90 mb-8 md:mb-12 flex-grow relative z-10">
-                  {t('section.infra.200.desc')}
-                </p>
-                <a className="w-full text-center bg-white text-primary font-label font-bold px-6 py-4 rounded-2xl hover:bg-surface-container-low hover:scale-[1.02] transition-all relative z-10 shadow-lg cursor-pointer" onClick={(e) => handleOpenWizard(e, 'preorder_200')}>
-                  {t('hero.cta')}
-                </a>
-              </div>
-              {/* Option 500 */}
-              <div className="bg-surface-container-lowest p-6 md:p-10 rounded-3xl ghost-border ambient-shadow flex flex-col h-full hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300 opacity-90">
-                <div className="mb-8 md:mb-12">
-                  <span className="inline-block px-3 py-1 bg-surface-container-low rounded-full font-label text-xs font-bold text-primary tracking-widest uppercase mb-4">{t('section.infra.500.title')}</span>
-                  <h3 className="font-headline text-4xl md:text-5xl font-extrabold text-on-surface">500<span className="text-lg md:text-xl font-medium text-on-surface-variant ml-2">{t('hero.eggs')}</span></h3>
-                </div>
-                <p className="font-body text-sm md:text-base text-on-surface-variant mb-8 md:mb-12 flex-grow">
-                  {t('section.infra.500.desc')}
-                </p>
-                <a className="w-full text-center bg-surface-container-low text-primary font-label font-bold px-6 py-4 rounded-2xl hover:bg-primary hover:text-on-primary hover:scale-[1.02] transition-all border border-primary/20 cursor-pointer" onClick={(e) => handleOpenWizard(e, 'inquire_500')}>
-                  {t('section.infra.inquire.cta')}
-                </a>
-              </div>
+              ))}
             </div>
           </div>
         </SectionWrapper>
@@ -383,28 +1018,48 @@ export default function Home() {
 
           <div className="max-w-screen-xl mx-auto relative z-10">
             <div className="text-center mb-16">
-              <h2 className="font-headline text-3xl md:text-5xl font-black text-on-surface mb-4 tracking-tighter">{t('section.trust.title')}</h2>
-              <div className="w-16 h-1 bg-primary mx-auto rounded-full"></div>
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-100/40 border border-emerald-300/30 text-emerald-800 text-xs font-bold uppercase tracking-widest mb-4 shadow-sm backdrop-blur-sm rounded-full">
+                <span className="h-1.5 w-1.5 rounded-full bg-emerald-600 animate-pulse-soft"></span>
+                TRUST & COMPLIANCE
+              </span>
+              <h2 className="font-headline text-3xl md:text-5xl font-black text-on-surface mb-4 tracking-tight">{t('section.trust.title')}</h2>
+              <div className="w-16 h-1 bg-gradient-to-r from-emerald-500 to-green-600 mx-auto rounded-full"></div>
             </div>
 
             <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
               {[
-                { icon: Cpu, title: t('section.trust.feat1.title'), desc: t('section.trust.feat1.desc') },
-                { icon: Thermometer, title: t('section.trust.feat2.title'), desc: t('section.trust.feat2.desc') },
-                { icon: ShieldCheck, title: t('section.trust.feat3.title'), desc: t('section.trust.feat3.desc') }
-              ].map((feat, i) => (
-                <motion.div
-                  key={i}
-                  whileHover={{ y: -8, scale: 1.02 }}
-                  className="group p-8 bg-surface rounded-[2rem] border border-outline-variant/30 shadow-md hover:shadow-xl hover:shadow-primary/5 transition-all duration-500 flex flex-col items-center text-center relative"
-                >
-                  <div className="w-16 h-16 rounded-3xl flex items-center justify-center mb-6 bg-primary/10 text-primary group-hover:bg-primary group-hover:text-on-primary transition-all duration-500 shadow-sm group-hover:shadow-primary/20">
-                    <feat.icon size={32} strokeWidth={2} />
-                  </div>
-                  <h3 className="font-headline text-xl font-bold mb-3 text-on-surface tracking-tight">{feat.title}</h3>
-                  <p className="text-on-surface-variant text-sm font-medium leading-relaxed opacity-90 group-hover:opacity-100 transition-opacity">{feat.desc}</p>
-                </motion.div>
-              ))}
+                { icon: Cpu, title: t('section.trust.feat1.title'), desc: t('section.trust.feat1.desc'), index: "01" },
+                { icon: Thermometer, title: t('section.trust.feat2.title'), desc: t('section.trust.feat2.desc'), index: "02" },
+                { icon: ShieldCheck, title: t('section.trust.feat3.title'), desc: t('section.trust.feat3.desc'), index: "03" }
+              ].map((feat, i) => {
+                const IconComponent = feat.icon;
+                return (
+                  <motion.div
+                    key={i}
+                    whileHover={{ y: -8, scale: 1.02 }}
+                    className="group p-8 bg-white rounded-[2.25rem] border border-outline shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:shadow-[0_20px_40px_rgba(21,128,61,0.05)] hover:border-emerald-500/20 transition-all duration-500 flex flex-col justify-between relative overflow-hidden cursor-default"
+                  >
+                    {/* Background giant index number */}
+                    <div className="absolute top-2 right-4 text-emerald-500/5 font-headline font-black text-8xl pointer-events-none select-none transition-colors group-hover:text-emerald-500/10">
+                      {feat.index}
+                    </div>
+
+                    <div className="relative z-10 text-left">
+                      {/* Icon with glowing wrapper */}
+                      <div className="w-14 h-14 rounded-2xl flex items-center justify-center mb-6 bg-emerald-50 text-emerald-700 group-hover:bg-emerald-700 group-hover:text-white transition-all duration-500 shadow-inner">
+                        <IconComponent size={26} strokeWidth={2} className="group-hover:rotate-12 transition-transform duration-300" />
+                      </div>
+
+                      <h3 className="font-headline text-xl font-extrabold mb-3 text-slate-900 group-hover:text-primary transition-colors tracking-tight">
+                        {feat.title}
+                      </h3>
+                      <p className="text-on-surface-variant text-sm font-medium leading-relaxed">
+                        {feat.desc}
+                      </p>
+                    </div>
+                  </motion.div>
+                );
+              })}
             </div>
           </div>
         </SectionWrapper>
@@ -431,7 +1086,7 @@ export default function Home() {
                 {/* Vidhya Card */}
                 <motion.div whileHover={{ y: -8, scale: 1.02 }} className="group rounded-[2rem] overflow-hidden bg-surface-container-lowest border border-outline-variant/30 ambient-shadow flex flex-col relative transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30">
                   <div className="w-full aspect-square relative overflow-hidden bg-surface-container">
-                    <img src="/media/Team-Section/IMG_9667.JPG" alt="Vidhya Gaikwad" className="w-full h-full object-cover object-[80%_center] group-hover:scale-105 transition-transform duration-700" />
+                    <img src="/media/Team-Section/IMG_9667.JPG" alt="Vidhya Gaikwad" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" style={{ objectPosition: '80% 25%' }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100"></div>
                     <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
                       <div>
@@ -453,7 +1108,7 @@ export default function Home() {
                 {/* Aditya Card */}
                 <motion.div whileHover={{ y: -8, scale: 1.02 }} className="group rounded-[2rem] overflow-hidden bg-surface-container-lowest border border-outline-variant/30 ambient-shadow flex flex-col relative transition-all duration-500 hover:shadow-2xl hover:shadow-primary/10 hover:border-primary/30">
                   <div className="w-full aspect-square relative overflow-hidden bg-surface-container">
-                    <img src="/media/Team-Section/IMG_4234.PNG" alt="Aditya Magar" className="w-full h-full object-cover object-center group-hover:scale-105 transition-transform duration-700" />
+                    <img src="/media/Team-Section/IMG_4234.PNG" alt="Aditya Magar" className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" style={{ objectPosition: 'center 20%' }} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent opacity-90 transition-opacity duration-500 group-hover:opacity-100"></div>
                     <div className="absolute bottom-6 left-6 right-6 flex justify-between items-end">
                       <div>
@@ -484,37 +1139,195 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Machine Process */}
-        <SectionWrapper className="w-full pt-12 pb-24 px-6 md:px-12 bg-surface-container-lowest border-t border-outline-variant/20" id="machine-process">
-          <div className="max-w-screen-xl mx-auto">
+        <SectionWrapper className="w-full pt-20 pb-28 px-6 md:px-12 bg-surface border-y border-outline-variant/30 relative overflow-hidden" id="machine-process">
+          {/* Subtle background glows */}
+          <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[350px] h-[350px] bg-primary/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+          <div className="max-w-screen-xl mx-auto relative z-10">
             <div className="text-center mb-16">
-              <h2 className="font-headline text-4xl font-extrabold text-on-surface mb-4">{t('section.process.title')}</h2>
-              <p className="text-on-surface-variant text-lg">{t('section.process.subtitle')}</p>
+              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100/40 border border-emerald-300/30 text-emerald-800 text-xs font-bold uppercase tracking-[0.15em] mb-4 shadow-sm backdrop-blur-sm">
+                <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse-soft"></span>
+                STEP-BY-STEP WORKFLOW
+              </span>
+              <h2 className="font-headline text-3xl md:text-5xl font-black text-on-surface mb-4 tracking-tight">{t('section.process.title')}</h2>
+              <div className="w-16 h-1 bg-gradient-to-r from-emerald-500 to-green-600 mx-auto rounded-full"></div>
+              <p className="text-on-surface-variant font-medium text-lg mt-4 max-w-xl mx-auto">{t('section.process.subtitle')}</p>
             </div>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-              <div className="rounded-3xl overflow-hidden border border-outline-variant/30 aspect-[4/5] bg-surface flex flex-col relative group ambient-shadow hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300">
-                <video src="/media/Machine%20process/IMG_4243.MOV" poster="/loading image.PNG" controls className="w-full h-full object-cover"></video>
-                <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-md rounded-xl p-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-white font-bold text-sm tracking-wider uppercase">{t('section.process.loading')}</p>
+
+            <div className="grid lg:grid-cols-[1.1fr_1.9fr] gap-12 lg:gap-16 items-center max-w-5xl mx-auto">
+              {/* Left Column: Vertical Video Theater (App Demo style) */}
+              <div className="relative w-full max-w-sm mx-auto lg:max-w-none group/theater">
+                {/* Visual phone screen bezel framing */}
+                <div className="absolute -inset-4 bg-gradient-to-tr from-emerald-500/10 to-green-500/5 rounded-[3rem] blur-2xl opacity-75"></div>
+
+                <div className="relative rounded-[2.75rem] p-3 bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden aspect-[9/16] flex items-center justify-center">
+                  {/* Phone notch details */}
+                  <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-full z-20" />
+                  
+                  {/* Phase live diagnostic badge */}
+                  <span className="absolute top-6 left-6 z-20 bg-slate-950/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[8px] font-bold text-white uppercase tracking-widest border border-slate-800/60 shadow-sm flex items-center gap-1.5">
+                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                    PHASE {activeStep + 1} LIVE
+                  </span>
+
+                  <div className="w-full h-full rounded-[2.25rem] overflow-hidden relative bg-slate-950 flex items-center justify-center">
+                    {/* Metallic sheen reflect animation */}
+                    <div className="absolute inset-0 bg-gradient-to-tr from-white/0 via-white/5 to-white/0 pointer-events-none z-10 skew-x-12 translate-x-full group-hover/theater:translate-x-[-150%] transition-transform duration-1000"></div>
+
+                    <AnimatePresence mode="wait">
+                      {activeStep === 0 && (
+                        <motion.img
+                          key="step-image-0"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          src="/media/gallery-farmer-design.jpg"
+                          alt="Modular loading"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {activeStep === 1 && (
+                        <motion.img
+                          key="step-image-1"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          src="/media/gallery-healthy-hatch.jpg"
+                          alt="Incubation Climate"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {activeStep === 2 && (
+                        <motion.img
+                          key="step-image-2"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          src="/media/Machine%20process/IMG_3706.jpg"
+                          alt="Egg Candling"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                      {activeStep === 3 && (
+                        <motion.img
+                          key="step-image-3"
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
+                          exit={{ opacity: 0 }}
+                          transition={{ duration: 0.3 }}
+                          src="/media/Machine%20process/IMG_4238.jpg"
+                          alt="Hatching chicks yield"
+                          className="w-full h-full object-cover"
+                        />
+                      )}
+                    </AnimatePresence>
+                  </div>
                 </div>
               </div>
-              <div className="rounded-3xl overflow-hidden border border-outline-variant/30 aspect-[4/5] bg-surface flex flex-col relative group ambient-shadow hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300">
-                <video src="/media/Machine%20process/IMG_4242.MOV" controls className="w-full h-full object-cover"></video>
-                <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-md rounded-xl p-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-white font-bold text-sm tracking-wider uppercase">{t('section.process.incubation')}</p>
-                </div>
+
+              {/* Right Column: Process Interactive Steps Timeline */}
+              <div className="relative flex flex-col justify-center py-4">
+                {/* Vertical Timeline Guide Line */}
+                <div className="absolute left-7 top-6 bottom-6 w-[2px] bg-slate-200/60 pointer-events-none z-0"></div>
+
+                {[
+                  {
+                    id: 0,
+                    step: "01",
+                    title: t('section.process.loading'),
+                    desc: "Modular egg loading setup. Snaps in place safely to prevent any accidental dynamic shifting or eggs bumping during automatic rotation cycles.",
+                    icon: "layers",
+                    meta: { A: "Prep State", valA: "Ready", B: "Tray Type", valB: "Grid-Lock", C: "Secure Lock", valC: "OK" }
+                  },
+                  {
+                    id: 1,
+                    step: "02",
+                    title: t('section.process.incubation'),
+                    desc: "Precision climate incubation. Uses automated egg-rolling mechanics (mimicking natural hen movements) coupled with dynamic humidity sensors.",
+                    icon: "device_thermostat",
+                    meta: { A: "Target Temp", valA: "37.52°C", B: "Target RH", valB: "55.4%", C: "Roll Servo", valC: "ACTIVE" }
+                  },
+                  {
+                    id: 2,
+                    step: "03",
+                    title: t('section.process.candling'),
+                    desc: "Verifying growth. At regular intervals, integrated LED arrays candle the eggs to confirm embryo health, allowing early removal of unfertile batches.",
+                    icon: "highlight",
+                    meta: { A: "LED Array", valA: "Active", B: "Scan Log", valB: "Factory L.", C: "Growth Check", valC: "PASS" }
+                  },
+                  {
+                    id: 3,
+                    step: "04",
+                    title: t('section.process.hatching'),
+                    desc: "Yield stage emergence. In the final hatching stage, the chicks safely emerge in a temperature-controlled incubator, achieving consistent 90% rates.",
+                    icon: "egg_alt",
+                    meta: { A: "Cabinet Mode", valA: "Hatching", B: "Est. Yield", valB: "90%+", C: "Hatch Cycle", valC: "COMPLETED" }
+                  }
+                ].map((item) => {
+                  const isActive = activeStep === item.id;
+                  return (
+                    <div
+                      key={item.id}
+                      onClick={() => setActiveStep(item.id)}
+                      className={`group relative z-10 flex gap-6 p-5 sm:p-6 mb-4 last:mb-0 rounded-[1.75rem] border transition-all duration-550 cursor-pointer text-left ${isActive
+                          ? "bg-emerald-50/20 border-emerald-500/20 shadow-sm"
+                          : "bg-transparent border-transparent hover:bg-slate-50/50"
+                        }`}
+                    >
+                      {/* Step index dot */}
+                      <div className={`flex shrink-0 w-14 h-14 rounded-2xl items-center justify-center font-headline font-black text-lg transition-all duration-500 shadow-sm ${isActive
+                          ? "bg-emerald-700 text-white shadow-emerald-700/25 scale-105"
+                          : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                        }`}>
+                        {item.step}
+                      </div>
+
+                      {/* Content block */}
+                      <div className="space-y-1 self-center w-full">
+                        <h3 className={`font-headline font-extrabold text-lg transition-colors duration-305 ${isActive ? "text-primary" : "text-slate-900"
+                          }`}>
+                          {item.title}
+                        </h3>
+                        {/* Expanded details only for active step */}
+                        <AnimatePresence initial={false}>
+                          {isActive && (
+                            <motion.div
+                              initial={{ height: 0, opacity: 0 }}
+                              animate={{ height: "auto", opacity: 1 }}
+                              exit={{ height: 0, opacity: 0 }}
+                              transition={{ duration: 0.3 }}
+                              className="overflow-hidden mt-1.5"
+                            >
+                              <p className="text-xs sm:text-sm text-slate-500 font-medium leading-relaxed mb-3">
+                                {item.desc}
+                              </p>
+                              {/* Small Diagnostics Bar */}
+                              <div className="grid grid-cols-3 gap-2 border-t border-slate-200/50 pt-3">
+                                <div className="bg-slate-50 p-2 rounded-xl text-center border border-slate-100">
+                                  <span className="block text-[7px] font-bold text-slate-450 uppercase tracking-wider">{item.meta.A}</span>
+                                  <span className="text-[10px] font-bold text-slate-700">{item.meta.valA}</span>
+                                </div>
+                                <div className="bg-slate-50 p-2 rounded-xl text-center border border-slate-100">
+                                  <span className="block text-[7px] font-bold text-slate-450 uppercase tracking-wider">{item.meta.B}</span>
+                                  <span className="text-[10px] font-bold text-slate-700">{item.meta.valB}</span>
+                                </div>
+                                <div className="bg-slate-50 p-2 rounded-xl text-center border border-slate-100">
+                                  <span className="block text-[7px] font-bold text-slate-450 uppercase tracking-wider">{item.meta.C}</span>
+                                  <span className="text-[10px] font-black text-green-700 uppercase tracking-wide">{item.meta.valC}</span>
+                                </div>
+                              </div>
+                            </motion.div>
+                          )}
+                        </AnimatePresence>
+                      </div>
+                    </div>
+                  );
+                })}
               </div>
-              <div className="rounded-3xl overflow-hidden border border-outline-variant/30 aspect-[4/5] bg-surface flex flex-col relative group ambient-shadow hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300">
-                <video src="/media/Machine%20process/IMG_4246.MOV" poster="/media/Assets/Logo/incubation image.jpeg" controls className="w-full h-full object-cover"></video>
-                <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-md rounded-xl p-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-white font-bold text-sm tracking-wider uppercase">{t('section.process.candling')}</p>
-                </div>
-              </div>
-              <div className="rounded-3xl overflow-hidden border border-outline-variant/30 aspect-[4/5] bg-surface flex flex-col relative group ambient-shadow hover:-translate-y-2 hover:scale-[1.02] transition-all duration-300">
-                <img src="/media/Machine%20process/IMG_4238.jpg" alt="Machine Process Hatching" className="w-full h-full object-cover object-center" />
-                <div className="absolute bottom-4 left-4 right-4 bg-black/60 backdrop-blur-md rounded-xl p-3 text-center opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                  <p className="text-white font-bold text-sm tracking-wider uppercase">{t('section.process.hatching')}</p>
-                </div>
-              </div>
+
             </div>
           </div>
         </SectionWrapper>
