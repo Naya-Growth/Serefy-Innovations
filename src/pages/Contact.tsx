@@ -242,21 +242,34 @@ export default function Contact() {
               </button>
             </form>
           ) : (
-            <div className="relative w-full h-[520px] sm:h-[600px] lg:h-[700px] xl:h-[780px] overflow-hidden rounded-2xl bg-slate-50 border border-outline-variant/30 shadow-inner">
-              {iframeLoading && (
-                <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50/90 backdrop-blur-sm z-10">
-                  <div className="w-10 h-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin"></div>
-                  <p className="mt-4 text-xs font-black tracking-widest text-slate-500 uppercase animate-pulse">Loading Interest Form...</p>
-                </div>
-              )}
-              <iframe
-                src="https://docs.google.com/forms/d/e/1FAIpQLSdcX_rs6QBhksLLN83-0zjS8m7uByZ4fkHyjtMJHKw_UhDGfg/viewform?embedded=true"
-                className="w-full h-full border-0 rounded-2xl"
-                onLoad={() => setIframeLoading(false)}
-                title="Hatcher Interest Form"
-              >
-                Loading...
-              </iframe>
+            <div className="relative w-full h-[520px] sm:h-[600px] lg:h-[700px] xl:h-[780px] overflow-hidden rounded-2xl bg-slate-50 border border-outline-variant/30 shadow-inner flex flex-col">
+              <div className="bg-slate-100 p-4 border-b border-slate-200 text-center text-xs sm:text-sm font-semibold text-slate-600 flex items-center justify-between gap-4">
+                <span>Form not loading properly?</span>
+                <a
+                  href="https://docs.google.com/forms/d/e/1FAIpQLSdcX_rs6QBhksLLN83-0zjS8m7uByZ4fkHyjtMJHKw_UhDGfg/viewform"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-primary text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:brightness-110 transition-all shrink-0"
+                >
+                  Open in New Tab
+                </a>
+              </div>
+              <div className="relative flex-1 w-full overflow-hidden">
+                {iframeLoading && (
+                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50/90 backdrop-blur-sm z-10">
+                    <div className="w-10 h-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin"></div>
+                    <p className="mt-4 text-xs font-black tracking-widest text-slate-500 uppercase animate-pulse">Loading Interest Form...</p>
+                  </div>
+                )}
+                <iframe
+                  src="https://docs.google.com/forms/d/e/1FAIpQLSdcX_rs6QBhksLLN83-0zjS8m7uByZ4fkHyjtMJHKw_UhDGfg/viewform?embedded=true"
+                  className="w-full h-full border-0 rounded-2xl"
+                  onLoad={() => setIframeLoading(false)}
+                  title="Hatcher Interest Form"
+                >
+                  Loading...
+                </iframe>
+              </div>
             </div>
           )}
         </div>
