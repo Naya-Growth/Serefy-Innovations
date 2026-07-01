@@ -214,7 +214,10 @@ const translations: Record<Language, Record<string, string>> = {
     'share.text': "Check out Serefy Innovations!",
     'contact.phone.label': "Phone Number",
     'contact.email.label': "Email Address",
-    'contact.address.label': "Office Address"
+    'contact.address.label': "Office Address",
+    'contact.form.quickMessage': "Quick Message",
+    'contact.form.interestForm': "Interest Form",
+    'contact.form.interestTitle': "Hatcher Interest Form"
   },
   Hindi: {
     'hero.title': "भारत का सबसे कुशल और स्मार्ट अंडा इनक्यूबेटर।",
@@ -420,7 +423,10 @@ const translations: Record<Language, Record<string, string>> = {
     'share.text': "सेरेफी इनोवेशन देखें!",
     'contact.phone.label': "फ़ोन नंबर",
     'contact.email.label': "ईमेल पता",
-    'contact.address.label': "कार्यालय का पता"
+    'contact.address.label': "कार्यालय का पता",
+    'contact.form.quickMessage': "त्वरित संदेश",
+    'contact.form.interestForm': "रुचि पत्र (Interest Form)",
+    'contact.form.interestTitle': "इनक्यूबेटर रुचि पत्र"
   },
   Marathi: {
     'hero.title': "भारतातील सर्वात कार्यक्षम आणि स्मार्ट अंडी इनक्यूबेटर.",
@@ -626,7 +632,10 @@ const translations: Record<Language, Record<string, string>> = {
     'share.text': "सेरेफी इनोव्हेशन्स पहा!",
     'contact.phone.label': "फोन नंबर",
     'contact.email.label': "ईमेल पत्ता",
-    'contact.address.label': "कार्यालयाचा पत्ता"
+    'contact.address.label': "कार्यालयाचा पत्ता",
+    'contact.form.quickMessage': "त्वरित संदेश",
+    'contact.form.interestForm': "रुची अर्ज (Interest Form)",
+    'contact.form.interestTitle': "इनक्यूबेटर रुची अर्ज"
   }
 };
 
