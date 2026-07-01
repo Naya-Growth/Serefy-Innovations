@@ -137,7 +137,7 @@ jobs:
             fi
           fi
 
-          tar -czf - dist | timeout 180s ssh "${SSH_OPTS[@]}" "$REMOTE" serefy
+          tar -czf - dist nginx.conf | timeout 180s ssh "${SSH_OPTS[@]}" "$REMOTE" serefy
 
       - name: Verify public release
         run: |

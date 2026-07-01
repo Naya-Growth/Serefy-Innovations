@@ -214,7 +214,7 @@ async function main() {
 
   try {
     copyFileSync(join(root, "nginx.conf"), join(root, "dist", "nginx.conf"));
-    run("tar", ["-czf", archivePath, "-C", root, "dist"]);
+    run("tar", ["-czf", archivePath, "-C", root, "dist", "nginx.conf"]);
 
     const archiveStat = await stat(archivePath);
     if (archiveStat.size > maxArchiveBytes) {
