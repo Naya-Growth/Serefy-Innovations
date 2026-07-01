@@ -80,7 +80,9 @@ jobs:
           fi
 
       - name: Build site
-        run: npm run build
+        run: |
+          npm run build
+          cp nginx.conf dist/nginx.conf
 
       - name: Prepare static release marker
         env:

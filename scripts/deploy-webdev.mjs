@@ -1,4 +1,4 @@
-import { createReadStream, existsSync, readFileSync, rmSync } from "node:fs";
+import { createReadStream, existsSync, readFileSync, rmSync, copyFileSync } from "node:fs";
 import { mkdtemp, stat } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { dirname, basename, join, resolve } from "node:path";
@@ -213,6 +213,7 @@ async function main() {
   const archivePath = join(tempDir, "serefy-dist.tar.gz");
 
   try {
+    copyFileSync(join(root, "nginx.conf"), join(root, "dist", "nginx.conf"));
     run("tar", ["-czf", archivePath, "-C", root, "dist"]);
 
     const archiveStat = await stat(archivePath);
