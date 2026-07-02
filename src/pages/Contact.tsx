@@ -1,32 +1,13 @@
-import { useState, FormEvent, useEffect } from 'react';
-import { useSearchParams } from 'react-router-dom';
+import { useState, FormEvent } from 'react';
 import { useLanguage } from '../context/LanguageContext';
 import { siteConfig } from '../config/siteConfig';
 import { submitSERELead } from '../lib/naya-lead';
 
 export default function Contact() {
-  const [searchParams, setSearchParams] = useSearchParams();
-  const tabParam = searchParams.get('tab');
-
-  const [activeTab, setActiveTab] = useState<'message' | 'interest'>('message');
-  const [iframeLoading, setIframeLoading] = useState(true);
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
   const [submitError, setSubmitError] = useState('');
   const { t } = useLanguage();
-
-  useEffect(() => {
-    if (tabParam === 'interest') {
-      setActiveTab('interest');
-    } else {
-      setActiveTab('message');
-    }
-  }, [tabParam]);
-
-  const handleTabChange = (tab: 'message' | 'interest') => {
-    setActiveTab(tab);
-    setSearchParams({ tab });
-  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -149,129 +130,68 @@ export default function Contact() {
 
         {/* Form Column */}
         <div className="bg-surface p-5 sm:p-8 md:p-10 rounded-3xl shadow-xl border border-outline-variant/15 w-full max-w-xl mx-auto lg:mx-0 lg:max-w-none">
-          <h2 className="font-headline text-xl sm:text-2xl font-bold mb-6 text-center lg:text-left">
-            {activeTab === 'interest' ? t('contact.form.interestTitle') : t('contact.form.title')}
-          </h2>
-
-          {/* Premium Pill Tab Selector */}
-          <div className="flex bg-slate-100/80 border border-slate-200/50 p-1.5 rounded-2xl gap-1.5 mb-8 w-full max-w-md mx-auto">
-            <button
-              type="button"
-              onClick={() => handleTabChange('message')}
-              className={`flex-1 py-3 px-2 sm:px-4 text-xs sm:text-sm font-black rounded-xl transition-all duration-300 cursor-pointer ${
-                activeTab === 'message'
-                  ? 'bg-primary text-on-primary shadow-[0_4px_12px_rgba(21,128,61,0.15)] scale-[1.01]'
-                  : 'text-on-surface-variant hover:text-primary hover:bg-white/50'
-              }`}
-            >
-              {t('contact.form.quickMessage')}
-            </button>
-            <button
-              type="button"
-              onClick={() => handleTabChange('interest')}
-              className={`flex-1 py-3 px-2 sm:px-4 text-xs sm:text-sm font-black rounded-xl transition-all duration-300 cursor-pointer ${
-                activeTab === 'interest'
-                  ? 'bg-primary text-on-primary shadow-[0_4px_12px_rgba(21,128,61,0.15)] scale-[1.01]'
-                  : 'text-on-surface-variant hover:text-primary hover:bg-white/50'
-              }`}
-            >
-              {t('contact.form.interestForm')}
-            </button>
-          </div>
-
-          {activeTab === 'message' ? (
-            <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
-              <div>
-                <label htmlFor="name" className="block text-sm font-bold text-on-surface mb-2">{t('form.firstName')}</label>
-                <input
-                  type="text"
-                  id="name"
-                  name="name"
-                  required
-                  className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base"
-                  placeholder="Your name"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="email" className="block text-sm font-bold text-on-surface mb-2">{t('form.email')}</label>
-                <input
-                  type="email"
-                  id="email"
-                  name="email"
-                  required
-                  className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base"
-                  placeholder="you@example.com"
-                />
-              </div>
-
-              <div>
-                <label htmlFor="phone" className="block text-sm font-bold text-on-surface mb-2">{t('form.phone')}</label>
-                <input type="tel" id="phone" name="phone" className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="+91 98765 43210" />
-              </div>
-
-              <div>
-                <label htmlFor="message" className="block text-sm font-bold text-on-surface mb-2">{t('form.message')}</label>
-                <textarea
-                  id="message"
-                  name="message"
-                  rows={4}
-                  required
-                  className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none text-sm sm:text-base"
-                  placeholder="How can we help you?"
-                ></textarea>
-              </div>
-
-              <label className="flex items-start gap-3 rounded-2xl bg-surface-container-low px-4 py-3 text-left text-sm text-on-surface-variant">
-                <input className="mt-1 h-4 w-4 rounded border-outline-variant accent-primary" required type="checkbox" name="consent" />
-                <span>{t('form.consent')}</span>
-              </label>
-
-              {submitError ? (
-                <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
-                  {submitError}
-                </p>
-              ) : null}
-
-              <button
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary text-on-primary font-bold py-3.5 sm:py-4 rounded-2xl hover:brightness-110 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.01] transition-all duration-300 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base"
-              >
-                {loading ? t('contact.form.sending') : t('contact.form.submit')}
-              </button>
-            </form>
-          ) : (
-            <div className="relative w-full h-[520px] sm:h-[600px] lg:h-[700px] xl:h-[780px] overflow-hidden rounded-2xl bg-slate-50 border border-outline-variant/30 shadow-inner flex flex-col">
-              <div className="bg-slate-100 p-4 border-b border-slate-200 text-center text-xs sm:text-sm font-semibold text-slate-600 flex items-center justify-between gap-4">
-                <span>Form not loading properly?</span>
-                <a
-                  href="https://docs.google.com/forms/d/e/1FAIpQLSdcX_rs6QBhksLLN83-0zjS8m7uByZ4fkHyjtMJHKw_UhDGfg/viewform"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="bg-primary text-white px-3 py-1.5 rounded-lg text-xs font-bold hover:brightness-110 transition-all shrink-0"
-                >
-                  Open in New Tab
-                </a>
-              </div>
-              <div className="relative flex-1 w-full overflow-hidden">
-                {iframeLoading && (
-                  <div className="absolute inset-0 flex flex-col items-center justify-center bg-slate-50/90 backdrop-blur-sm z-10">
-                    <div className="w-10 h-10 border-4 border-slate-200 border-t-primary rounded-full animate-spin"></div>
-                    <p className="mt-4 text-xs font-black tracking-widest text-slate-500 uppercase animate-pulse">Loading Interest Form...</p>
-                  </div>
-                )}
-                <iframe
-                  src="https://docs.google.com/forms/d/e/1FAIpQLSdcX_rs6QBhksLLN83-0zjS8m7uByZ4fkHyjtMJHKw_UhDGfg/viewform?embedded=true"
-                  className="w-full h-full border-0 rounded-2xl"
-                  onLoad={() => setIframeLoading(false)}
-                  title="Hatcher Interest Form"
-                >
-                  Loading...
-                </iframe>
-              </div>
+          <h2 className="font-headline text-xl sm:text-2xl font-bold mb-6 sm:mb-8 text-center lg:text-left">{t('contact.form.title')}</h2>
+          <form onSubmit={handleSubmit} className="space-y-4 sm:space-y-5">
+            <div>
+              <label htmlFor="name" className="block text-sm font-bold text-on-surface mb-2">{t('form.firstName')}</label>
+              <input
+                type="text"
+                id="name"
+                name="name"
+                required
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base"
+                placeholder="Your name"
+              />
             </div>
-          )}
+
+            <div>
+              <label htmlFor="email" className="block text-sm font-bold text-on-surface mb-2">{t('form.email')}</label>
+              <input
+                type="email"
+                id="email"
+                name="email"
+                required
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all text-sm sm:text-base"
+                placeholder="you@example.com"
+              />
+            </div>
+
+            <div>
+              <label htmlFor="phone" className="block text-sm font-bold text-on-surface mb-2">{t('form.phone')}</label>
+              <input type="tel" id="phone" name="phone" className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all" placeholder="+91 98765 43210" />
+            </div>
+
+            <div>
+              <label htmlFor="message" className="block text-sm font-bold text-on-surface mb-2">{t('form.message')}</label>
+              <textarea
+                id="message"
+                name="message"
+                rows={4}
+                required
+                className="w-full bg-surface-container border border-outline-variant/40 rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary transition-all resize-none text-sm sm:text-base"
+                placeholder="How can we help you?"
+              ></textarea>
+            </div>
+
+            <label className="flex items-start gap-3 rounded-2xl bg-surface-container-low px-4 py-3 text-left text-sm text-on-surface-variant">
+              <input className="mt-1 h-4 w-4 rounded border-outline-variant accent-primary" required type="checkbox" name="consent" />
+              <span>{t('form.consent')}</span>
+            </label>
+
+            {submitError ? (
+              <p className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm font-semibold text-red-700">
+                {submitError}
+              </p>
+            ) : null}
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-primary text-on-primary font-bold py-3.5 sm:py-4 rounded-2xl hover:brightness-110 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.01] transition-all duration-300 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base"
+            >
+              {loading ? t('contact.form.sending') : t('contact.form.submit')}
+            </button>
+          </form>
         </div>
       </div>
     </div>
