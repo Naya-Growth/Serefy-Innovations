@@ -44,6 +44,18 @@ export default function Home() {
   const [progress, setProgress] = useState(0);
   const [isTabHovered, setIsTabHovered] = useState(false);
 
+  // Core product ticker representing the single active heating pulse temperature
+  const [activeTemp, setActiveTemp] = useState(37.5);
+
+
+
+  useEffect(() => {
+    const tempInterval = setInterval(() => {
+      setActiveTemp((prev) => (prev === 37.5 ? 37.6 : 37.5));
+    }, 4000);
+    return () => clearInterval(tempInterval);
+  }, []);
+
   useEffect(() => {
     if (isTabHovered) return;
 
@@ -136,7 +148,7 @@ export default function Home() {
     }
   };
 
-  const { t } = useLanguage();
+  const { t, language } = useLanguage();
   const heroCtaText = t('hero.cta');
   const heroCtaSplit = heroCtaText.match(/^(.+?)\s*(?:&|और|आणि)\s*(.+)$/u);
   const heroCtaAction = heroCtaSplit?.[1]?.trim() || heroCtaText;
@@ -146,107 +158,194 @@ export default function Home() {
     <div className="bg-surface text-on-surface font-body antialiased selection:bg-primary/20 flex flex-col min-h-screen">
       <main className="flex-grow">
         {/* 1. Hero Section */}
-        <section className="w-full pt-24 md:pt-28 pb-12 md:pb-20 px-6 md:px-12 max-w-screen-2xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-12 lg:gap-16 min-h-[calc(100vh-80px)]">
-          <motion.div
-            initial={{ opacity: 0, x: -30 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ duration: 0.8 }}
-            className="w-full lg:w-[55%] flex flex-col items-center lg:items-start text-center lg:text-left"
-          >
-            <div className="mb-4">
-              <AnimatedTags tags={t('hero.tags').split(',')} />
+        <section className="relative w-full pt-20 xs:pt-24 sm:pt-28 md:pt-32 lg:pt-36 pb-12 xs:pb-14 sm:pb-16 md:pb-20 lg:pb-24 px-3 xs:px-4 sm:px-6 md:px-8 lg:px-12 max-w-screen-2xl mx-auto flex flex-col lg:flex-row items-center justify-between gap-8 xs:gap-10 sm:gap-12 lg:gap-12 min-h-[75vh] xs:min-h-[80vh] sm:min-h-[85vh] bg-[#fbfbfa]">
+          
+          {/* Subtle noise/paper grain background texture overlay */}
+          <div className="absolute inset-0 opacity-[0.025] pointer-events-none -z-10 bg-repeat bg-center" style={{ backgroundImage: 'url("data:image/svg+xml,%3Csvg viewBox=\'0 0 200 200\' xmlns=\'http://www.w3.org/2000/svg\'%3E%3Cfilter id=\'noiseFilter\'%3E%3CfeTurbulence type=\'fractalNoise\' baseFrequency=\'0.85\' numOctaves=\'3\' stitchTiles=\'stitch\'/%3E%3C/filter%3E%3Crect width=\'100%25\' height=\'100%25\' filter=\'url(%23noiseFilter)\'/%3E%3C/svg%3E")' }}></div>
+
+          {/* Left Column: Editorial Layout */}
+          <div className="w-full lg:w-[48%] flex flex-col items-center lg:items-start text-center lg:text-left z-10 pr-0 lg:pr-8 order-2 lg:order-1">
+            
+            {/* Tagline Badge with accent dot */}
+            <div className="mb-3 xs:mb-4 sm:mb-5 flex items-center justify-center lg:justify-start gap-2 xs:gap-3">
+              <span className="inline-flex items-center gap-1.5 xs:gap-2 px-2.5 xs:px-3 sm:px-4 py-1 xs:py-1.5 rounded-full bg-emerald-50 border border-emerald-200/60 text-[8px] xs:text-[9px] sm:text-[10px] font-black uppercase tracking-[0.15em] xs:tracking-[0.2em] text-emerald-700">
+                <span className="h-1 xs:h-1.5 w-1 xs:w-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                {language === 'Hindi' ? 'भारत का अग्रणी कृषि नवाचार' : language === 'Marathi' ? 'भारतातील आघाडीचे कृषी संशोधन' : 'Leading Agricultural Innovation'}
+              </span>
             </div>
 
-            <h1 className="font-headline text-3xl sm:text-4xl md:text-5xl lg:text-[4rem] font-black text-on-surface tracking-tight leading-[1.1] mb-6">
-              {t('hero.title').split(' ').map((word, i) => (
-                <React.Fragment key={i}>
-                  {word === 'Efficient' || word === 'Smart' || word === 'कुशल' || word === 'स्मार्ट' || word === 'कार्यक्षम' ? (
-                    <span className="text-primary inline-block">
-                      {word}
-                    </span>
-                  ) : (
-                    word
-                  )}
-                  {' '}
-                </React.Fragment>
-              ))}
+            {/* Asymmetrical Bold Headline */}
+            <h1 className="font-headline text-2xl xs:text-3xl sm:text-4xl md:text-5xl lg:text-[3.85rem] font-black text-slate-900 tracking-tight leading-[1.1] xs:leading-[1.08] mb-4 xs:mb-5">
+              {language === 'Hindi' ? (
+                <>
+                  भारत का सबसे <span className="text-slate-900">कुशल</span><br />
+                  <span className="bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent">स्मार्ट अंडा इनक्यूबेटर।</span>
+                </>
+              ) : language === 'Marathi' ? (
+                <>
+                  भारतातील सर्वात <span className="text-slate-900">कार्यक्षम</span><br />
+                  <span className="bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent">स्मार्ट अंडी इनक्यूबेटर.</span>
+                </>
+              ) : (
+                <>
+                  India's Most Efficient<br />
+                  <span className="bg-gradient-to-r from-emerald-700 to-green-600 bg-clip-text text-transparent">Smart Egg Incubator.</span>
+                </>
+              )}
             </h1>
 
-            <p className="font-body text-base md:text-lg text-on-surface-variant max-w-xl leading-relaxed mb-8 font-medium whitespace-pre-line">
+            {/* Value Proposition with accent border */}
+            <p className="font-body text-[13px] xs:text-[14px] sm:text-[15px] md:text-[16px] lg:text-[17px] text-slate-500 max-w-xs xs:max-w-sm sm:max-w-md leading-[1.6] xs:leading-[1.7] mb-6 xs:mb-8 font-medium whitespace-pre-line lg:border-l-2 lg:border-emerald-200 lg:pl-5">
               {t('hero.tagline')}
             </p>
 
-            <div className="mb-10 flex w-full flex-col items-center gap-3 sm:w-auto lg:items-start">
-              <div className="flex w-full flex-col items-center gap-4 sm:w-auto sm:flex-row lg:items-start">
-                <div className="relative flex w-full max-w-[236px] justify-center pb-5 sm:w-auto sm:max-w-none sm:pb-0">
-                  <a
-                    className="group/heroCta relative flex w-full cursor-pointer items-center justify-center gap-3 overflow-hidden rounded-[1.35rem] bg-gradient-to-br from-emerald-700 via-green-600 to-emerald-800 px-5 py-3.5 text-center font-label text-sm font-black text-on-primary shadow-[0_18px_38px_rgba(21,128,61,0.24)] transition-all duration-300 hover:-translate-y-1 hover:scale-[1.02] hover:shadow-[0_22px_50px_rgba(21,128,61,0.32)] active:translate-y-0 active:scale-[0.99] sm:w-auto"
-                    onClick={(e) => handleOpenWizard(e, 'hero_cta')}
-                    aria-label={heroCtaText}
+            {/* Credential Strip — compact icon cards */}
+            <div className="mb-6 xs:mb-8 sm:mb-9 grid grid-cols-3 gap-2 xs:gap-2.5 sm:gap-3 w-full max-w-xs xs:max-w-sm sm:max-w-md">
+              <div className="flex flex-col items-center lg:items-start gap-1 xs:gap-1.5 px-2 xs:px-2.5 sm:px-3.5 py-2 xs:py-2.5 sm:py-3 rounded-lg xs:rounded-xl bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+                <span className="text-[8px] xs:text-[9px] font-black uppercase tracking-wider xs:tracking-widest text-slate-400">{language === 'Hindi' ? 'क्षमता' : language === 'Marathi' ? 'क्षमता' : 'Capacity'}</span>
+                <span className="text-[11px] xs:text-[12px] sm:text-[13px] font-black text-slate-800">120 • 200 • 500</span>
+              </div>
+              <div className="flex flex-col items-center lg:items-start gap-1 xs:gap-1.5 px-2 xs:px-2.5 sm:px-3.5 py-2 xs:py-2.5 sm:py-3 rounded-lg xs:rounded-xl bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+                <span className="text-[8px] xs:text-[9px] font-black uppercase tracking-wider xs:tracking-widest text-slate-400">{language === 'Hindi' ? 'प्रमाणित' : language === 'Marathi' ? 'प्रमाणित' : 'Certified'}</span>
+                <span className="text-[11px] xs:text-[12px] sm:text-[13px] font-black text-slate-800">Startup India</span>
+              </div>
+              <div className="flex flex-col items-center lg:items-start gap-1 xs:gap-1.5 px-2 xs:px-2.5 sm:px-3.5 py-2 xs:py-2.5 sm:py-3 rounded-lg xs:rounded-xl bg-white border border-slate-100 shadow-[0_2px_8px_rgba(0,0,0,0.03)]">
+                <span className="text-[8px] xs:text-[9px] font-black uppercase tracking-wider xs:tracking-widest text-slate-400">{language === 'Hindi' ? 'इनक्यूबेशन' : language === 'Marathi' ? 'इनक्यूबेशन' : 'Incubated'}</span>
+                <span className="text-[11px] xs:text-[12px] sm:text-[13px] font-black text-slate-800">AIC Mahindra</span>
+              </div>
+            </div>
+
+            {/* Premium CTA block */}
+            <div className="flex flex-col sm:flex-row items-center gap-3 xs:gap-4 sm:gap-5 w-full sm:w-auto">
+              <a
+                className="group/heroCta relative w-full sm:w-auto flex items-center justify-center gap-2 xs:gap-3 overflow-hidden px-5 xs:px-6 sm:px-8 py-3 xs:py-3.5 sm:py-4 bg-gradient-to-br from-emerald-700 via-green-600 to-emerald-800 text-white text-center font-black text-xs xs:text-sm tracking-wide rounded-lg xs:rounded-xl shadow-[0_12px_28px_rgba(21,128,61,0.2)] hover:shadow-[0_16px_36px_rgba(21,128,61,0.28)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
+                onClick={(e) => handleOpenWizard(e, 'hero_cta')}
+              >
+                <span className="pointer-events-none absolute inset-y-0 left-0 w-10 xs:w-12 sm:w-14 -translate-x-24 skew-x-[-16deg] bg-white/25 blur-sm animate-[hero-cta-sheen_3.8s_ease-in-out_infinite]" />
+                <span className="relative z-10">{heroCtaAction}</span>
+                <span className="relative z-10 flex h-5 xs:h-6 sm:h-7 w-5 xs:w-6 sm:w-7 items-center justify-center rounded-full bg-white/15 group-hover/heroCta:bg-white group-hover/heroCta:text-primary transition-colors">
+                  <ArrowRight size={12} xs:size={14} sm:size={15} />
+                </span>
+              </a>
+              <Link to="/technology" className="text-xs xs:text-sm font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-1 xs:gap-1.5 group">
+                <span className="border-b border-transparent group-hover:border-primary transition-colors">{t('tech.hero.cta')}</span> 
+                <ArrowRight size={12} xs:size={14} sm:size={15} className="group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+            
+            {/* Trust footer with checkmark */}
+            <div className="mt-6 xs:mt-8 sm:mt-9 flex items-center justify-center lg:justify-start gap-1.5 xs:gap-2 text-[10px] xs:text-xs font-semibold text-slate-400">
+              <CheckCircle2 size={12} xs:size={14} className="text-emerald-500 shrink-0" />
+              {language === 'Hindi' ? '500+ खेतों द्वारा सत्यापित तकनीक।' : language === 'Marathi' ? '५००+ पेक्षा जास्त शेतांवर सिद्ध तंत्रज्ञान.' : 'Proven technology deployed on 500+ farms across India.'}
+            </div>
+          </div>
+
+          {/* Right Column: Handcrafted Photo Composition */}
+          <div className="w-full lg:w-[48%] relative flex flex-col items-center lg:items-center justify-center mt-6 xs:mt-8 sm:mt-10 lg:mt-0 lg:-ml-8 select-none order-1 lg:order-2">
+            {/* Photo Composition Frame */}
+            <div className="relative w-full max-w-[320px] xs:max-w-[380px] sm:max-w-[420px] md:max-w-[460px] lg:max-w-[480px] aspect-[4/5] xs:aspect-[3/4] sm:aspect-square flex items-center justify-center">
+              
+              {/* Photo 1: The Farmer (Base Photograph in a classic paper frame) */}
+              <motion.div
+                initial={{ opacity: 0, x: 80, filter: "blur(8px)", rotate: -8 }}
+                animate={{ 
+                  opacity: 1, 
+                  x: 0, 
+                  filter: "blur(0px)", 
+                  rotate: -2,
+                }}
+                transition={{ 
+                  type: 'spring', 
+                  stiffness: 70, 
+                  damping: 16,
+                  delay: 0.2
+                }}
+                className="absolute left-[4%] top-[4%] w-[70%] xs:w-[72%] sm:w-[74%] aspect-[3/4] bg-white p-2 xs:p-2.5 sm:p-3 shadow-[0_12px_36px_rgba(15,23,42,0.06)] border border-slate-200/50 rounded-xs flex flex-col z-0"
+              >
+                <div className="w-full flex-grow overflow-hidden rounded-xs bg-slate-50">
+                  <img 
+                    alt="Happy Indian poultry farmer" 
+                    referrerPolicy="no-referrer" 
+                    className="w-full h-full object-cover grayscale-[15%] contrast-[102%]" 
+                    src="/media/indian-farmer-hero.png" 
+                  />
+                </div>
+                {/* Print caption */}
+                <div className="pt-1.5 xs:pt-2 sm:pt-2.5 text-left">
+                  <span className="font-mono text-[7px] xs:text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-wider block">
+                    {language === 'Hindi' ? 'चित्र १: ग्रामीण पोल्ट्री उद्यमी' : language === 'Marathi' ? 'चित्र १: ग्रामीण पोल्ट्री व्यावसायिक' : 'Fig. 1 — Rural poultry entrepreneurship.'}
+                  </span>
+                </div>
+              </motion.div>
+
+              {/* Photo 2: The Incubator (Signature animation inside, overlapping asymmetrically) */}
+              <motion.div
+                initial={{ opacity: 0, y: 80, filter: "blur(8px)", rotate: 6, scale: 0.97 }}
+                animate={{ 
+                  opacity: 1, 
+                  y: 0, 
+                  filter: "blur(0px)", 
+                  rotate: 1,
+                  scale: 1,
+                }}
+                transition={{ 
+                  type: 'spring', 
+                  stiffness: 65, 
+                  damping: 15,
+                  delay: 0.45
+                }}
+                className="absolute right-[4%] bottom-[4%] w-[54%] xs:w-[56%] sm:w-[58%] aspect-square bg-white p-2 xs:p-2.5 sm:p-3 shadow-[0_20px_45px_rgba(15,23,42,0.1)] border border-slate-200/80 rounded-xs flex flex-col z-10"
+              >
+                {/* Real photo wrapper with signature slow zoom */}
+                <div className="w-full flex-grow overflow-hidden rounded-xs bg-slate-50 relative">
+                  <motion.div
+                    animate={{ scale: [1, 1.025, 1] }}
+                    transition={{ duration: 18, repeat: Infinity, ease: "easeInOut" }}
+                    className="w-full h-full"
                   >
-                    <span className="pointer-events-none absolute inset-y-0 left-0 w-14 -translate-x-24 skew-x-[-16deg] bg-white/30 blur-sm animate-[hero-cta-sheen_3.8s_ease-in-out_infinite]" />
-                    <span className="relative z-10 whitespace-nowrap">{heroCtaAction}</span>
-                    <span className="relative z-10 flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-white/15 transition-colors duration-300 group-hover/heroCta:bg-white group-hover/heroCta:text-primary">
-                      <ArrowRight size={17} />
-                    </span>
-                  </a>
-                  {heroCtaOffer && (
-                    <span className="pointer-events-none absolute -bottom-1 right-1 z-20 inline-flex items-center gap-1.5 rounded-full bg-lime-300 px-3 py-1.5 text-[10px] font-black uppercase tracking-[0.16em] text-emerald-950 shadow-[0_12px_28px_rgba(132,204,22,0.34)] ring-[3px] ring-white animate-[hero-offer-float_2.9s_ease-in-out_infinite] sm:-right-5 sm:-top-3 sm:bottom-auto">
-                      <span className="h-1.5 w-1.5 rounded-full bg-emerald-700 shadow-[0_0_10px_rgba(21,128,61,0.7)]" />
-                      {heroCtaOffer}
-                    </span>
-                  )}
-                </div>
-                <Link to="/technology" className="flex w-full max-w-[236px] items-center justify-center gap-2.5 rounded-[1.15rem] border border-slate-200 bg-white px-5 py-3 font-label text-[13px] font-black text-slate-800 shadow-sm transition-all duration-300 hover:-translate-y-0.5 hover:scale-[1.015] hover:bg-slate-50 hover:shadow-md active:translate-y-0 active:scale-[0.99] sm:w-auto">
-                  {t('tech.hero.cta')} <ArrowRight size={18} />
-                </Link>
-              </div>
-            </div>
+                    <img 
+                      alt="Smart Egg Incubator Unit" 
+                      referrerPolicy="no-referrer" 
+                      className="w-full h-full object-cover" 
+                      src="/media/sere-120.webp" 
+                    />
+                  </motion.div>
 
-            <div className="w-full max-w-[332px] rounded-[1.65rem] border border-outline-variant/20 bg-surface-container/30 px-6 py-4 shadow-sm backdrop-blur-sm sm:max-w-[380px]">
-              <p className="mb-2 text-center text-[10px] font-black uppercase tracking-[0.2em] text-primary md:text-xs">{t('hero.capacity')}</p>
-              <div className="grid grid-cols-[1fr_auto_1fr_auto_1fr] items-center gap-x-4">
-                <div className="flex flex-col items-center group cursor-default">
-                  <span className="text-xl md:text-3xl font-black text-on-surface transition-colors group-hover:text-primary">120</span>
-                  <span className="text-[8px] md:text-[10px] text-on-surface-variant font-black uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{t('hero.eggs')}</span>
-                </div>
-                <div className="h-8 w-px self-center bg-outline-variant/30 md:h-10"></div>
-                <div className="flex flex-col items-center group cursor-default">
-                  <span className="text-xl md:text-3xl font-black text-on-surface transition-colors group-hover:text-primary">200</span>
-                  <span className="text-[8px] md:text-[10px] text-on-surface-variant font-black uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{t('hero.eggs')}</span>
-                </div>
-                <div className="h-8 w-px self-center bg-outline-variant/30 md:h-10"></div>
-                <div className="flex flex-col items-center group cursor-default">
-                  <span className="text-xl md:text-3xl font-black text-on-surface transition-colors group-hover:text-primary">500</span>
-                  <span className="text-[8px] md:text-[10px] text-on-surface-variant font-black uppercase tracking-widest opacity-60 group-hover:opacity-100 transition-opacity">{t('hero.eggs')}</span>
-                </div>
-              </div>
-            </div>
-          </motion.div>
+                  {/* Warm orange glow pulsing inside to show active heating (Signature Animation) */}
+                  <div className="absolute inset-0 bg-gradient-to-t from-amber-500/15 via-amber-500/5 to-transparent mix-blend-screen animate-pulse pointer-events-none" />
 
-          <motion.div
-            initial={{ opacity: 0, scale: 0.95 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.8, delay: 0.2 }}
-            className="w-full lg:w-[42%] relative group lg:-ml-12 mt-8 lg:mt-0"
-          >
-            <div className="absolute -inset-6 bg-primary/10 rounded-[3.5rem] blur-3xl opacity-50 transition-opacity group-hover:opacity-100"></div>
-            <div className="relative rounded-[2rem] overflow-hidden border-2 border-outline-variant/20 shadow-xl bg-surface-container transition-all duration-700 hover:scale-[1.02] aspect-square">
-              <img alt="Happy Indian poultry farmer" referrerPolicy="no-referrer" className="w-full h-full object-cover object-center" src="/media/indian-farmer-hero.png" />
+                  {/* Digital screen display - authentic brand detail */}
+                  <div className="absolute top-[8%] right-[8%] flex flex-col gap-1 items-end z-20">
+                    <div className="bg-black/90 px-1 xs:px-1.5 py-0.5 rounded border border-white/10 shadow-inner flex items-center justify-center min-w-[32px] xs:min-w-[38px] sm:min-w-[42px]">
+                      <span className="font-mono text-[7px] xs:text-[8px] font-black text-amber-500 tracking-wider">
+                        {activeTemp.toFixed(1)}°C
+                      </span>
+                    </div>
+                  </div>
+                </div>
+
+                {/* Print caption */}
+                <div className="pt-1.5 xs:pt-2 sm:pt-2.5 text-left">
+                  <span className="font-mono text-[7px] xs:text-[8px] sm:text-[9px] text-slate-400 font-bold uppercase tracking-wider block">
+                    {language === 'Hindi' ? 'चित्र २: सेरे १२० हॅचर युनिट' : language === 'Marathi' ? 'चित्र २: सेरे १२० हॅचर युनिट' : 'Fig. 2 — SERE-120 Hatcher unit.'}
+                  </span>
+                </div>
+              </motion.div>
+
             </div>
-          </motion.div>
+          </div>
         </section>
 
         {/* 2 & 3. Problem & Solution Overview */}
-        <SectionWrapper className="w-full py-20 md:py-28 px-4 md:px-12 bg-surface-container-low border-y border-outline-variant" id="problem-solution">
+        <SectionWrapper className="w-full py-12 xs:py-14 sm:py-16 md:py-20 lg:py-28 px-3 xs:px-4 sm:px-6 md:px-8 lg:px-12 bg-surface-container-low border-y border-outline-variant" id="problem-solution">
           <div className="max-w-screen-xl mx-auto">
             {/* Header Block */}
-            <div className="text-center mb-16 max-w-4xl mx-auto px-4">
-              <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-100/40 border border-emerald-300/30 text-emerald-800 text-xs font-black uppercase tracking-[0.15em] mb-4 shadow-sm backdrop-blur-sm">
-                <span className="h-2 w-2 rounded-full bg-emerald-600 animate-pulse-soft"></span>
+            <div className="text-center mb-10 xs:mb-12 sm:mb-14 md:mb-16 max-w-4xl mx-auto px-3 xs:px-4">
+              <span className="inline-flex items-center gap-1 xs:gap-1.5 px-2.5 xs:px-3.5 py-1 xs:py-1.5 rounded-full bg-emerald-100/40 border border-emerald-300/30 text-emerald-800 text-[10px] xs:text-xs font-black uppercase tracking-[0.12em] xs:tracking-[0.15em] mb-3 xs:mb-4 shadow-sm backdrop-blur-sm">
+                <span className="h-1.5 xs:h-2 w-1.5 xs:w-2 rounded-full bg-emerald-600 animate-pulse-soft"></span>
                 {t('section.solution.badge')}
               </span>
-              <h2 className="font-headline text-3xl md:text-5xl lg:text-[3.25rem] font-black text-on-surface mb-6 tracking-tight leading-[1.15]">
+              <h2 className="font-headline text-2xl xs:text-2.5xl sm:text-3xl md:text-4xl lg:text-[3.25rem] font-black text-on-surface mb-4 xs:mb-5 sm:mb-6 tracking-tight leading-[1.2] xs:leading-[1.15]">
                 {t('section.problem.allChallenges').split(' ').map((word, idx) => {
                   const isHighlight = word.toLowerCase().includes('challenge') || word.toLowerCase().includes('solution') || word.includes('समाधान') || word.includes('उपाय');
                   return (
@@ -256,26 +355,26 @@ export default function Home() {
                   );
                 })}
               </h2>
-              <div className="h-1 w-20 bg-gradient-to-r from-emerald-500 to-green-600 mx-auto rounded-full mb-6"></div>
-              <p className="text-base sm:text-lg md:text-xl text-on-surface-variant max-w-3xl mx-auto font-medium leading-relaxed">
+              <div className="h-0.5 xs:h-1 w-16 xs:w-20 bg-gradient-to-r from-emerald-500 to-green-600 mx-auto rounded-full mb-4 xs:mb-6"></div>
+              <p className="text-sm xs:text-base sm:text-lg md:text-xl text-on-surface-variant max-w-3xl mx-auto font-medium leading-relaxed">
                 {t('section.problem.allChallenges.desc')}
               </p>
             </div>
 
             {/* Content Stage (Grid) */}
-            <div className="grid lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+            <div className="grid lg:grid-cols-2 gap-8 xs:gap-10 sm:gap-12 lg:gap-16 items-center">
               {/* Left Side: Dynamic Media Player Stage */}
               <div
-                className="relative group max-w-xl mx-auto lg:max-w-none w-full"
+                className="relative group max-w-xl mx-auto lg:max-w-none w-full order-2 lg:order-1"
                 onMouseEnter={() => setIsTabHovered(true)}
                 onMouseLeave={() => setIsTabHovered(false)}
               >
                 {/* Background soft lighting */}
-                <div className="absolute -inset-6 bg-gradient-to-tr from-emerald-500/20 to-green-500/10 rounded-[3rem] blur-2xl opacity-75 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"></div>
+                <div className="absolute -inset-3 xs:-inset-4 sm:-inset-6 bg-gradient-to-tr from-emerald-500/20 to-green-500/10 rounded-[2rem] xs:rounded-[2.5rem] sm:rounded-[3rem] blur-xl xs:blur-2xl opacity-75 group-hover:opacity-100 group-hover:scale-105 transition-all duration-700"></div>
 
                 {/* Media screen */}
-                <div className="relative rounded-[2.5rem] p-3 bg-white/60 backdrop-blur-md border border-white/40 shadow-2xl overflow-hidden aspect-[4/3] flex items-center justify-center">
-                  <div className="w-full h-full rounded-[2rem] overflow-hidden relative bg-black flex items-center justify-center">
+                <div className="relative rounded-[1.5rem] xs:rounded-[2rem] sm:rounded-[2.5rem] p-2 xs:p-2.5 sm:p-3 bg-white/60 backdrop-blur-md border border-white/40 shadow-2xl overflow-hidden aspect-[4/3] flex items-center justify-center">
+                  <div className="w-full h-full rounded-[1.2rem] xs:rounded-[1.5rem] sm:rounded-[2rem] overflow-hidden relative bg-black flex items-center justify-center">
                     <AnimatePresence mode="wait">
                       {activeTab === 0 && (
                         <motion.img
@@ -318,28 +417,28 @@ export default function Home() {
                 </div>
 
                 {/* Floating dynamic status tags based on activeTab */}
-                <div className="hidden md:flex absolute top-[12%] -left-8 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-white/60 text-sm font-bold items-center gap-2.5 transition-all duration-300 hover:scale-105 hover:bg-white animate-float-slow">
-                  <span className="relative flex h-3.5 w-3.5">
+                <div className="hidden md:flex absolute top-[12%] -left-4 xs:-left-6 sm:-left-8 bg-white/90 backdrop-blur-md px-2.5 xs:px-3 sm:px-4 py-2 xs:py-2.5 sm:py-3 rounded-xl xs:rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-white/60 text-[11px] xs:text-xs sm:text-sm font-bold items-center gap-1.5 xs:gap-2 sm:gap-2.5 transition-all duration-300 hover:scale-105 hover:bg-white animate-float-slow">
+                  <span className="relative flex h-2.5 xs:h-3 sm:h-3.5 w-2.5 xs:w-3 sm:w-3.5">
                     <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
-                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-500"></span>
+                    <span className="relative inline-flex rounded-full h-2.5 xs:h-3 sm:h-3.5 w-2.5 xs:w-3 sm:w-3.5 bg-emerald-500"></span>
                   </span>
                   <span className="text-slate-800">
                     {activeTab === 0 ? t('section.solution.pointer1') : activeTab === 1 ? "0.01°C Accuracy" : "90% Hatch Rate"}
                   </span>
                 </div>
 
-                <div className="hidden md:flex absolute top-[58%] -right-8 bg-white/90 backdrop-blur-md px-4 py-3 rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-white/60 text-sm font-bold items-center gap-2.5 transition-all duration-300 hover:scale-105 hover:bg-white animate-float-medium">
-                  <span className="relative flex h-3.5 w-3.5">
-                    <span className="relative inline-flex rounded-full h-3.5 w-3.5 bg-emerald-600"></span>
+                <div className="hidden md:flex absolute top-[58%] -right-4 xs:-right-6 sm:-right-8 bg-white/90 backdrop-blur-md px-2.5 xs:px-3 sm:px-4 py-2 xs:py-2.5 sm:py-3 rounded-xl xs:rounded-2xl shadow-[0_8px_30px_rgba(0,0,0,0.08)] border border-white/60 text-[11px] xs:text-xs sm:text-sm font-bold items-center gap-1.5 xs:gap-2 sm:gap-2.5 transition-all duration-300 hover:scale-105 hover:bg-white animate-float-medium">
+                  <span className="relative flex h-2.5 xs:h-3 sm:h-3.5 w-2.5 xs:w-3 sm:w-3.5">
+                    <span className="relative inline-flex rounded-full h-2.5 xs:h-3 sm:h-3.5 w-2.5 xs:w-3 sm:w-3.5 bg-emerald-600"></span>
                   </span>
                   <span className="text-slate-800">
                     {activeTab === 0 ? "Solar Compatible" : activeTab === 1 ? t('section.solution.pointer1') : "Farmer Certified"}
                   </span>
                 </div>
 
-                <div className="absolute bottom-6 left-6 right-6 md:bottom-[8%] md:left-6 md:right-auto bg-gradient-to-r from-emerald-600 to-green-700 text-white px-5 py-3 rounded-2xl shadow-lg shadow-emerald-700/20 font-bold flex items-center justify-center md:justify-start gap-2.5 text-base hover:shadow-emerald-700/30 transition-all duration-300 hover:scale-[1.03] animate-float-delayed">
-                  <CheckCircle2 size={20} className="text-emerald-100 animate-pulse-soft" />
-                  <span>
+                <div className="absolute bottom-4 xs:bottom-5 sm:bottom-6 left-4 xs:left-5 sm:left-6 right-4 xs:right-5 sm:right-6 md:bottom-[8%] md:left-6 md:right-auto bg-gradient-to-r from-emerald-600 to-green-700 text-white px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 sm:py-3 rounded-xl xs:rounded-2xl shadow-lg shadow-emerald-700/20 font-bold flex items-center justify-center md:justify-start gap-1.5 xs:gap-2 sm:gap-2.5 text-xs xs:text-sm sm:text-base hover:shadow-emerald-700/30 transition-all duration-300 hover:scale-[1.03] animate-float-delayed">
+                  <CheckCircle2 size={14} xs:size={16} sm:size={18} md:size={20} className="text-emerald-100 animate-pulse-soft" />
+                  <span className="text-[10px] xs:text-xs sm:text-sm">
                     {activeTab === 0 ? t('section.solution.badge') : activeTab === 1 ? "Smart Inhouse API Tracking" : "High Hatch Yield Guaranteed"}
                   </span>
                 </div>
@@ -347,7 +446,7 @@ export default function Home() {
 
               {/* Right Side: Interactive Progress Cards */}
               <div
-                className="space-y-6"
+                className="space-y-4 xs:space-y-5 sm:space-y-6 order-1 lg:order-2"
                 onMouseEnter={() => setIsTabHovered(true)}
                 onMouseLeave={() => setIsTabHovered(false)}
               >
@@ -381,14 +480,14 @@ export default function Home() {
                     <div
                       key={card.id}
                       onClick={() => handleTabClick(card.id)}
-                      className={`group relative p-6 sm:p-7 rounded-3xl border transition-all duration-500 cursor-pointer overflow-hidden ${isActive
-                          ? "bg-gradient-to-br from-white via-white to-emerald-50/10 border-emerald-500/30 shadow-[0_16px_36px_rgba(21,128,61,0.08)] scale-[1.01]"
-                          : "bg-white/40 border-outline-variant hover:bg-white hover:border-emerald-500/10 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:scale-[1.005]"
+                      className={`group relative p-4 xs:p-5 sm:p-6 md:p-7 rounded-2xl xs:rounded-3xl border transition-all duration-500 cursor-pointer overflow-hidden ${isActive
+                        ? "bg-gradient-to-br from-white via-white to-emerald-50/10 border-emerald-500/30 shadow-[0_16px_36px_rgba(21,128,61,0.08)] scale-[1.01]"
+                        : "bg-white/40 border-outline-variant hover:bg-white hover:border-emerald-500/10 shadow-[0_4px_20px_rgba(0,0,0,0.01)] hover:scale-[1.005]"
                         }`}
                     >
                       {/* Active Progress Bar (Fills automatically) */}
                       {isActive && (
-                        <div className="absolute left-0 bottom-0 top-0 w-[4px] bg-slate-100">
+                        <div className="absolute left-0 bottom-0 top-0 w-[3px] xs:w-[4px] bg-slate-100">
                           <div
                             className="h-full bg-gradient-to-b from-emerald-500 to-green-600 transition-all duration-75 ease-linear"
                             style={{ height: `${progress}%` }}
@@ -396,17 +495,17 @@ export default function Home() {
                         </div>
                       )}
 
-                      <div className="flex gap-4 sm:gap-5 relative z-10 items-start">
+                      <div className="flex gap-3 xs:gap-4 sm:gap-5 relative z-10 items-start">
                         {/* Icon Badge */}
-                        <div className={`flex shrink-0 w-12 h-12 sm:w-14 sm:h-14 items-center justify-center rounded-2xl ${card.color} group-hover:scale-110 transition-transform duration-300 shadow-sm ${isActive ? "ring-2 ring-emerald-500/20" : ""}`}>
-                          <IconComponent size={24} className={`group-hover:rotate-12 transition-transform duration-300 ${isActive ? "animate-pulse" : ""}`} />
+                        <div className={`flex shrink-0 w-10 h-10 xs:w-11 xs:h-11 sm:w-12 sm:h-12 md:w-14 md:h-14 items-center justify-center rounded-xl xs:rounded-2xl ${card.color} group-hover:scale-110 transition-transform duration-300 shadow-sm ${isActive ? "ring-2 ring-emerald-500/20" : ""}`}>
+                          <IconComponent size={18} xs:size={20} sm:size={22} md:size={24} className={`group-hover:rotate-12 transition-transform duration-300 ${isActive ? "animate-pulse" : ""}`} />
                         </div>
 
-                        <div className="space-y-1.5">
-                          <h3 className={`font-headline font-extrabold text-lg sm:text-xl transition-colors duration-300 ${isActive ? "text-primary" : "text-slate-900"}`}>
+                        <div className="space-y-1 xs:space-y-1.5">
+                          <h3 className={`font-headline font-extrabold text-base xs:text-lg sm:text-xl transition-colors duration-300 ${isActive ? "text-primary" : "text-slate-900"}`}>
                             {card.title}
                           </h3>
-                          <p className={`text-sm sm:text-base transition-colors duration-300 font-medium leading-relaxed ${isActive ? "text-on-surface-variant" : "text-on-surface-variant/70"}`}>
+                          <p className={`text-xs xs:text-sm sm:text-base transition-colors duration-300 font-medium leading-relaxed ${isActive ? "text-on-surface-variant" : "text-on-surface-variant/70"}`}>
                             {card.desc}
                           </p>
                         </div>
@@ -420,17 +519,17 @@ export default function Home() {
         </SectionWrapper>
 
         {/* How to Use */}
-        <SectionWrapper className="w-full py-20 px-4 md:px-12 bg-surface-container-low border-b border-outline-variant/20 relative overflow-hidden" id="how-to-use">
+        <SectionWrapper className="w-full py-12 xs:py-14 sm:py-16 md:py-20 px-3 xs:px-4 sm:px-6 md:px-8 lg:px-12 bg-surface-container-low border-b border-outline-variant/20 relative overflow-hidden" id="how-to-use">
           <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full pointer-events-none opacity-40">
-            <div className="absolute top-0 left-1/4 w-96 h-96 bg-primary/5 rounded-full blur-[100px]"></div>
-            <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-primary/10 rounded-full blur-[100px]"></div>
+            <div className="absolute top-0 left-1/4 w-64 xs:w-80 sm:w-96 h-64 xs:h-80 sm:h-96 bg-primary/5 rounded-full blur-[80px] xs:blur-[100px]"></div>
+            <div className="absolute bottom-0 right-1/4 w-64 xs:w-80 sm:w-96 h-64 xs:h-80 sm:h-96 bg-primary/10 rounded-full blur-[80px] xs:blur-[100px]"></div>
           </div>
 
           <div className="max-w-screen-xl mx-auto text-center relative z-10">
-            <h2 className="font-headline text-3xl md:text-5xl font-black text-on-surface mb-4 tracking-tighter uppercase">{t('section.how.plugPlay')}</h2>
-            <p className="text-on-surface-variant font-bold mb-16 tracking-widest uppercase text-xs">{t('section.how.deployDesc')}</p>
+            <h2 className="font-headline text-2xl xs:text-2.5xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-on-surface mb-3 xs:mb-4 tracking-tighter uppercase">{t('section.how.plugPlay')}</h2>
+            <p className="text-on-surface-variant font-bold mb-10 xs:mb-12 sm:mb-14 md:mb-16 tracking-wider xs:tracking-widest uppercase text-[10px] xs:text-xs">{t('section.how.deployDesc')}</p>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-10">
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 xs:gap-5 sm:gap-6 md:gap-8 lg:gap-10">
               {[
                 { step: "1", title: t('section.how.step1.title'), desc: t('section.how.step1.desc'), icon: "electric_bolt" },
                 { step: "2", title: t('section.how.step2.title'), desc: t('section.how.step2.desc'), icon: "water_drop" },
@@ -438,17 +537,17 @@ export default function Home() {
               ].map((item, i) => (
                 <motion.div
                   key={i}
-                  whileHover={{ y: -10, scale: 1.02 }}
-                  className="p-10 bg-surface rounded-[2rem] border border-outline-variant/30 shadow-xl shadow-black/5 hover:shadow-primary/10 transition-all group relative overflow-hidden text-left"
+                  whileHover={{ y: -8, scale: 1.02 }}
+                  className="p-6 xs:p-7 sm:p-8 md:p-10 bg-surface rounded-[1.5rem] xs:rounded-[2rem] border border-outline-variant/30 shadow-xl shadow-black/5 hover:shadow-primary/10 transition-all group relative overflow-hidden text-left"
                 >
-                  <div className="absolute top-0 right-0 p-8 opacity-5 group-hover:opacity-10 transition-opacity">
-                    <span className="material-symbols-outlined text-8xl text-primary">{item.icon}</span>
+                  <div className="absolute top-0 right-0 p-4 xs:p-6 sm:p-8 opacity-5 group-hover:opacity-10 transition-opacity">
+                    <span className="material-symbols-outlined text-5xl xs:text-6xl sm:text-7xl md:text-8xl text-primary">{item.icon}</span>
                   </div>
-                  <div className="w-16 h-16 bg-primary text-on-primary rounded-3xl flex items-center justify-center mb-8 text-2xl font-black shadow-lg shadow-primary/30 group-hover:scale-110 transition-all">
+                  <div className="w-12 xs:w-14 sm:w-16 h-12 xs:h-14 sm:h-16 bg-primary text-on-primary rounded-2xl xs:rounded-3xl flex items-center justify-center mb-5 xs:mb-6 sm:mb-8 text-xl xs:text-2xl font-black shadow-lg shadow-primary/30 group-hover:scale-110 transition-all">
                     {item.step}
                   </div>
-                  <h3 className="font-headline font-black text-2xl mb-4 text-on-surface group-hover:text-primary transition-colors">{item.title}</h3>
-                  <p className="text-on-surface-variant font-medium leading-relaxed">{item.desc}</p>
+                  <h3 className="font-headline font-black text-lg xs:text-xl sm:text-2xl mb-3 xs:mb-4 text-on-surface group-hover:text-primary transition-colors">{item.title}</h3>
+                  <p className="text-on-surface-variant text-sm xs:text-base font-medium leading-relaxed">{item.desc}</p>
                 </motion.div>
               ))}
             </div>
@@ -456,18 +555,18 @@ export default function Home() {
         </SectionWrapper>
 
         {/* Market vs SERE Comparison */}
-        <SectionWrapper className="w-full pt-20 pb-16 px-4 md:px-12 bg-surface">
+        <SectionWrapper className="w-full pt-12 xs:pt-14 sm:pt-16 md:pt-20 pb-10 xs:pb-12 sm:pb-14 md:pb-16 px-3 xs:px-4 sm:px-6 md:px-8 lg:px-12 bg-surface">
           <div className="max-w-screen-xl mx-auto">
             {/* Title block */}
-            <div className="text-center mb-16 max-w-3xl mx-auto">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-red-50 rounded-full font-label text-xs font-bold text-red-700 tracking-widest uppercase mb-4 border border-red-200/50">
+            <div className="text-center mb-10 xs:mb-12 sm:mb-14 md:mb-16 max-w-3xl mx-auto px-3 xs:px-4">
+              <span className="inline-flex items-center gap-1 xs:gap-1.5 px-2.5 xs:px-3 py-0.5 xs:py-1 bg-red-50 rounded-full font-label text-[10px] xs:text-xs font-bold text-red-700 tracking-wider xs:tracking-widest uppercase mb-3 xs:mb-4 border border-red-200/50">
                 LIMITATION VS TECHNOLOGY
               </span>
-              <h2 className="font-headline text-3xl md:text-5xl font-black text-on-surface mb-4 tracking-tight leading-tight">
+              <h2 className="font-headline text-2xl xs:text-2.5xl sm:text-3xl md:text-4xl lg:text-5xl font-black text-on-surface mb-3 xs:mb-4 tracking-tight leading-tight">
                 {t('section.market.loseTitle')}
               </h2>
-              <div className="h-1 w-20 bg-gradient-to-r from-red-400 to-emerald-500 mx-auto rounded-full mb-6"></div>
-              <p className="text-on-surface-variant font-medium text-base sm:text-lg">{t('section.market.loseSubtitle')}</p>
+              <div className="h-0.5 xs:h-1 w-16 xs:w-20 bg-gradient-to-r from-red-400 to-emerald-500 mx-auto rounded-full mb-4 xs:mb-6"></div>
+              <p className="text-on-surface-variant font-medium text-sm xs:text-base sm:text-lg">{t('section.market.loseSubtitle')}</p>
             </div>
 
             {/* Interactive Battle Arena Dashboard */}
@@ -757,10 +856,10 @@ export default function Home() {
               };
 
               return (
-                <div className="grid grid-cols-1 lg:grid-cols-[280px_1fr] gap-8 max-w-5xl mx-auto items-stretch">
+                <div className="grid grid-cols-1 lg:grid-cols-[240px_1fr] xl:grid-cols-[280px_1fr] gap-6 xs:gap-8 max-w-5xl mx-auto items-stretch">
 
                   {/* Left Column: Feature Selectors */}
-                  <div className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 gap-3 scrollbar-none snap-x snap-mandatory">
+                  <div className="flex flex-row lg:flex-col overflow-x-auto lg:overflow-x-visible pb-2 lg:pb-0 gap-2 xs:gap-3 scrollbar-none snap-x snap-mandatory">
                     {comparisonFeatures.map((item, idx) => {
                       const IconComponent = item.icon;
                       const isActive = activeCompareTab === idx;
@@ -768,36 +867,36 @@ export default function Home() {
                         <button
                           key={item.id}
                           onClick={() => setActiveCompareTab(idx)}
-                          className={`relative flex items-center gap-3 p-4 rounded-2xl border text-left transition-all duration-300 group shrink-0 snap-center lg:snap-align-none ${isActive
-                              ? 'border-emerald-600 bg-emerald-50/10 shadow-md shadow-emerald-500/5'
-                              : 'border-outline-variant hover:border-slate-300 bg-white hover:bg-slate-50/50'
-                            } w-[220px] lg:w-full`}
+                          className={`relative flex items-center gap-2 xs:gap-3 p-3 xs:p-4 rounded-xl xs:rounded-2xl border text-left transition-all duration-300 group shrink-0 snap-center lg:snap-align-none ${isActive
+                            ? 'border-emerald-600 bg-emerald-50/10 shadow-md shadow-emerald-500/5'
+                            : 'border-outline-variant hover:border-slate-300 bg-white hover:bg-slate-50/50'
+                            } w-[180px] xs:w-[200px] sm:w-[220px] lg:w-full`}
                         >
                           {/* Active green indicator line on the left border */}
                           {isActive && (
                             <motion.div
                               layoutId="activeCompareIndicator"
-                              className="absolute left-0 top-0 bottom-0 w-1 bg-emerald-600 rounded-l-2xl"
+                              className="absolute left-0 top-0 bottom-0 w-0.5 xs:w-1 bg-emerald-600 rounded-l-xl xs:rounded-l-2xl"
                               transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                             />
                           )}
 
                           {/* Icon */}
-                          <div className={`w-9 h-9 rounded-xl flex items-center justify-center transition-all shrink-0 ${isActive
-                              ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/10'
-                              : 'bg-slate-50 text-slate-600 group-hover:bg-slate-100'
+                          <div className={`w-8 h-8 xs:w-9 xs:h-9 rounded-lg xs:rounded-xl flex items-center justify-center transition-all shrink-0 ${isActive
+                            ? 'bg-emerald-600 text-white shadow-md shadow-emerald-500/10'
+                            : 'bg-slate-50 text-slate-600 group-hover:bg-slate-100'
                             }`}>
-                            <IconComponent size={18} />
+                            <IconComponent size={16} xs:size={18} />
                           </div>
 
                           {/* Text details */}
                           <div className="flex-1 min-w-0">
-                            <span className="block text-[8px] font-black text-slate-400 uppercase tracking-widest mb-0.5">0{idx + 1} / FEATURE</span>
-                            <h4 className={`text-xs font-bold tracking-tight leading-snug transition-colors ${isActive ? 'text-emerald-950' : 'text-slate-800'
+                            <span className="block text-[7px] xs:text-[8px] font-black text-slate-400 uppercase tracking-wider xs:tracking-widest mb-0.5">0{idx + 1} / FEATURE</span>
+                            <h4 className={`text-[10px] xs:text-xs font-bold tracking-tight leading-snug transition-colors ${isActive ? 'text-emerald-950' : 'text-slate-800'
                               }`}>
                               {item.title}
                             </h4>
-                            <span className="block text-[10px] text-slate-500 font-medium truncate">
+                            <span className="block text-[9px] xs:text-[10px] text-slate-500 font-medium truncate">
                               {item.subtitle}
                             </span>
                           </div>
@@ -807,14 +906,14 @@ export default function Home() {
                   </div>
 
                   {/* Right Column: Comparative Showcase Card */}
-                  <div className="relative bg-white rounded-3xl border border-outline-variant p-5 lg:p-7 flex flex-col justify-between overflow-hidden shadow-lg shadow-slate-100/50 min-h-[420px]">
+                  <div className="relative bg-white rounded-2xl xs:rounded-3xl border border-outline-variant p-4 xs:p-5 sm:p-6 lg:p-7 flex flex-col justify-between overflow-hidden shadow-lg shadow-slate-100/50 min-h-[350px] xs:min-h-[380px] sm:min-h-[420px]">
                     {/* Background ambient light */}
-                    <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-500/5 rounded-full blur-3xl -z-10" />
-                    <div className="absolute bottom-0 left-0 w-64 h-64 bg-red-500/5 rounded-full blur-3xl -z-10" />
+                    <div className="absolute top-0 right-0 w-48 xs:w-56 sm:w-64 h-48 xs:h-56 sm:h-64 bg-emerald-500/5 rounded-full blur-2xl xs:blur-3xl -z-10" />
+                    <div className="absolute bottom-0 left-0 w-48 xs:w-56 sm:w-64 h-48 xs:h-56 sm:h-64 bg-red-500/5 rounded-full blur-2xl xs:blur-3xl -z-10" />
 
                     {/* Active Feature Tag */}
-                    <div className="text-center mb-6 border-b border-slate-100 pb-3 shrink-0">
-                      <span className="font-headline font-black text-[10px] text-slate-800 tracking-wider uppercase bg-slate-50 px-3 py-1 rounded-full border border-slate-200/60 inline-block">
+                    <div className="text-center mb-4 xs:mb-5 sm:mb-6 border-b border-slate-100 pb-2 xs:pb-3 shrink-0">
+                      <span className="font-headline font-black text-[9px] xs:text-[10px] text-slate-800 tracking-wider xs:tracking-widest uppercase bg-slate-50 px-2.5 xs:px-3 py-0.5 xs:py-1 rounded-full border border-slate-200/60 inline-block">
                         {comparisonFeatures[activeCompareTab].label}
                       </span>
                     </div>
@@ -828,30 +927,30 @@ export default function Home() {
                           animate={{ opacity: 1, y: 0 }}
                           exit={{ opacity: 0, y: -12 }}
                           transition={{ duration: 0.25 }}
-                          className="grid grid-cols-1 md:grid-cols-2 gap-8 items-stretch relative"
+                          className="grid grid-cols-1 md:grid-cols-2 gap-4 xs:gap-6 sm:gap-8 items-stretch relative"
                         >
                           {/* Visual VS Badge in between (desktop only) */}
-                          <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-9 h-9 rounded-full bg-slate-100 text-slate-600 font-headline font-black text-[10px] items-center justify-center border-4 border-white shadow-md">
+                          <div className="hidden md:flex absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 z-10 w-7 xs:w-8 sm:w-9 h-7 xs:h-8 sm:h-9 rounded-full bg-slate-100 text-slate-600 font-headline font-black text-[9px] xs:text-[10px] items-center justify-center border-3 xs:border-4 border-white shadow-md">
                             VS
                           </div>
 
                           {/* Left: Traditional Machine (Problem) */}
-                          <div className="flex flex-col justify-between p-4 bg-red-50/10 border border-red-100/30 rounded-2xl text-left hover:bg-red-50/20 transition-all duration-300">
+                          <div className="flex flex-col justify-between p-3 xs:p-4 bg-red-50/10 border border-red-100/30 rounded-xl xs:rounded-2xl text-left hover:bg-red-50/20 transition-all duration-300">
                             <div>
-                              <div className="flex items-center gap-1.5 mb-2">
-                                <div className="w-5 h-5 rounded-full bg-red-100/60 text-red-600 flex items-center justify-center">
-                                  <X size={12} />
+                              <div className="flex items-center gap-1 xs:gap-1.5 mb-1.5 xs:mb-2">
+                                <div className="w-4 h-4 xs:w-5 xs:h-5 rounded-full bg-red-100/60 text-red-600 flex items-center justify-center">
+                                  <X size={10} xs:size={12} />
                                 </div>
-                                <span className="text-[9px] font-black text-red-800 uppercase tracking-widest">
+                                <span className="text-[8px] xs:text-[9px] font-black text-red-800 uppercase tracking-wider xs:tracking-widest">
                                   {t('section.market.traditional')}
                                 </span>
                               </div>
 
-                              <h5 className="text-sm font-bold text-red-950 mb-1.5 leading-snug">
+                              <h5 className="text-xs xs:text-sm font-bold text-red-950 mb-1 xs:mb-1.5 leading-snug">
                                 {comparisonFeatures[activeCompareTab].traditional}
                               </h5>
 
-                              <p className="text-[11px] font-medium text-slate-500 leading-relaxed mb-4">
+                              <p className="text-[10px] xs:text-[11px] font-medium text-slate-500 leading-relaxed mb-3 xs:mb-4">
                                 {comparisonFeatures[activeCompareTab].traditionalDetail}
                               </p>
                             </div>
@@ -861,22 +960,22 @@ export default function Home() {
                           </div>
 
                           {/* Right: SERE Smart Technology (Solution) */}
-                          <div className="flex flex-col justify-between p-4 bg-emerald-50/20 border border-emerald-500/20 rounded-2xl text-left hover:bg-emerald-50/30 transition-all duration-300 shadow-sm shadow-emerald-500/5">
+                          <div className="flex flex-col justify-between p-3 xs:p-4 bg-emerald-50/20 border border-emerald-500/20 rounded-xl xs:rounded-2xl text-left hover:bg-emerald-50/30 transition-all duration-300 shadow-sm shadow-emerald-500/5">
                             <div>
-                              <div className="flex items-center gap-1.5 mb-2">
-                                <div className="w-5 h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-inner">
-                                  <CheckCircle2 size={12} />
+                              <div className="flex items-center gap-1 xs:gap-1.5 mb-1.5 xs:mb-2">
+                                <div className="w-4 h-4 xs:w-5 xs:h-5 rounded-full bg-emerald-100 text-emerald-700 flex items-center justify-center shadow-inner">
+                                  <CheckCircle2 size={10} xs:size={12} />
                                 </div>
-                                <span className="text-[9px] font-black text-emerald-800 uppercase tracking-widest">
+                                <span className="text-[8px] xs:text-[9px] font-black text-emerald-800 uppercase tracking-wider xs:tracking-widest">
                                   {t('section.market.SERE')}
                                 </span>
                               </div>
 
-                              <h5 className="text-sm font-black text-emerald-950 mb-1.5 leading-snug">
+                              <h5 className="text-xs xs:text-sm font-black text-emerald-950 mb-1 xs:mb-1.5 leading-snug">
                                 {comparisonFeatures[activeCompareTab].sere}
                               </h5>
 
-                              <p className="text-[11px] font-bold text-slate-700 leading-relaxed mb-4">
+                              <p className="text-[10px] xs:text-[11px] font-bold text-slate-700 leading-relaxed mb-3 xs:mb-4">
                                 {comparisonFeatures[activeCompareTab].sereDetail}
                               </p>
                             </div>
@@ -955,8 +1054,8 @@ export default function Home() {
                   key={idx}
                   onClick={(e) => handleOpenWizard(e, `preorder_${item.id}`)}
                   className={`group relative rounded-[2.5rem] border p-6 flex flex-col justify-between transition-all duration-500 cursor-pointer shadow-sm hover:shadow-2xl overflow-hidden hover:-translate-y-2 ${item.isFeatured
-                      ? "bg-slate-900 border-emerald-500/40 text-white shadow-emerald-950/20 scale-105 z-10"
-                      : "bg-white border-outline-variant text-on-surface hover:border-emerald-500/20"
+                    ? "bg-slate-900 border-emerald-500/40 text-white shadow-emerald-950/20 scale-105 z-10"
+                    : "bg-white border-outline-variant text-on-surface hover:border-emerald-500/20"
                     }`}
                 >
                   {/* Card visual showcase */}
@@ -1163,7 +1262,7 @@ export default function Home() {
                 <div className="relative rounded-[2.75rem] p-3 bg-slate-900 border border-slate-800 shadow-2xl overflow-hidden aspect-[9/16] flex items-center justify-center">
                   {/* Phone notch details */}
                   <div className="absolute top-3 left-1/2 -translate-x-1/2 w-24 h-4 bg-black rounded-full z-20" />
-                  
+
                   {/* Phase live diagnostic badge */}
                   <span className="absolute top-6 left-6 z-20 bg-slate-950/80 backdrop-blur-md px-2.5 py-1 rounded-full text-[8px] font-bold text-white uppercase tracking-widest border border-slate-800/60 shadow-sm flex items-center gap-1.5">
                     <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
@@ -1273,14 +1372,14 @@ export default function Home() {
                       key={item.id}
                       onClick={() => setActiveStep(item.id)}
                       className={`group relative z-10 flex gap-6 p-5 sm:p-6 mb-4 last:mb-0 rounded-[1.75rem] border transition-all duration-550 cursor-pointer text-left ${isActive
-                          ? "bg-emerald-50/20 border-emerald-500/20 shadow-sm"
-                          : "bg-transparent border-transparent hover:bg-slate-50/50"
+                        ? "bg-emerald-50/20 border-emerald-500/20 shadow-sm"
+                        : "bg-transparent border-transparent hover:bg-slate-50/50"
                         }`}
                     >
                       {/* Step index dot */}
                       <div className={`flex shrink-0 w-14 h-14 rounded-2xl items-center justify-center font-headline font-black text-lg transition-all duration-500 shadow-sm ${isActive
-                          ? "bg-emerald-700 text-white shadow-emerald-700/25 scale-105"
-                          : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
+                        ? "bg-emerald-700 text-white shadow-emerald-700/25 scale-105"
+                        : "bg-slate-100 text-slate-500 group-hover:bg-slate-200"
                         }`}>
                         {item.step}
                       </div>
