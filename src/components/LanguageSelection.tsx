@@ -48,7 +48,7 @@ export default function LanguageSelection({ isOpen, onClose }: LanguageSelection
                   animate={{ opacity: 1, scale: 1, y: 0 }}
                   exit={{ opacity: 0, scale: 0.95, y: 10 }}
                   transition={{ type: 'spring', stiffness: 350, damping: 28 }}
-                  className="bg-white w-full max-w-[340px] rounded-[1.75rem] p-5 shadow-[0_24px_50px_rgba(0,0,0,0.25)] border border-green-50/50 relative z-10 my-auto flex flex-col gap-4 overflow-hidden"
+                  className="bg-white w-full max-w-[320px] xs:max-w-[340px] rounded-[1.75rem] p-4 xs:p-5 shadow-[0_24px_50px_rgba(0,0,0,0.25)] border border-green-50/50 relative z-10 my-auto flex flex-col gap-3 xs:gap-4 overflow-hidden"
                 >
                   {/* Decorative Background Elements */}
                   <div className="absolute -top-24 -right-24 w-48 h-48 bg-green-500/5 rounded-full blur-3xl pointer-events-none" />
@@ -64,51 +64,51 @@ export default function LanguageSelection({ isOpen, onClose }: LanguageSelection
                   </button>
 
                   <div className="text-center">
-                    <div className="w-11 h-11 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-3 shadow-inner group/globe">
-                      <Globe className="text-green-700 w-5.5 h-5.5 transition-transform duration-500 group-hover/globe:rotate-12" />
+                    <div className="w-10 xs:w-11 h-10 xs:h-11 bg-green-50 rounded-2xl flex items-center justify-center mx-auto mb-2.5 xs:mb-3 shadow-inner group/globe">
+                      <Globe className="text-green-700 w-5 xs:w-5.5 h-5 xs:h-5.5 transition-transform duration-500 group-hover/globe:rotate-12" />
                     </div>
-                    <h2 className="font-headline text-lg font-black text-black tracking-tight">Choose Language</h2>
-                    <p className="text-black/50 text-[11px] mt-1.5 leading-relaxed max-w-[240px] mx-auto">
+                    <h2 className="font-headline text-base xs:text-lg font-black text-black tracking-tight">Choose Language</h2>
+                    <p className="text-black/50 text-[10px] xs:text-[11px] mt-1.5 leading-relaxed max-w-[220px] xs:max-w-[240px] mx-auto">
                       Customize your experience by selecting your preferred language.
                     </p>
                   </div>
 
-                  <div className="flex flex-col gap-2.5">
+                  <div className="flex flex-col gap-2 xs:gap-2.5">
                     {languages.map((lang) => (
                       <button
                         key={lang.name}
                         onClick={() => handleSelect(lang.name)}
-                        className={`w-full p-3 rounded-xl border transition-all duration-200 flex items-center justify-between group relative overflow-hidden active:scale-[0.99] cursor-pointer ${
+                        className={`w-full p-2.5 xs:p-3 rounded-xl border transition-all duration-200 flex items-center justify-between group relative overflow-hidden active:scale-[0.99] cursor-pointer ${
                           selectedLang === lang.name
                             ? 'border-green-600 bg-green-50/30'
                             : 'border-neutral-100 hover:border-green-200 hover:bg-green-50/30'
                         }`}
                       >
-                        <div className="flex items-center gap-3">
-                          <div className={`w-9 h-9 rounded-lg flex items-center justify-center font-black text-sm transition-colors ${
+                        <div className="flex items-center gap-2.5 xs:gap-3">
+                          <div className={`w-8 xs:w-9 h-8 xs:h-9 rounded-lg flex items-center justify-center font-black text-xs xs:text-sm transition-colors ${
                             selectedLang === lang.name ? 'bg-green-600 text-white' : 'bg-green-50 text-black/40 group-hover:bg-green-100 group-hover:text-green-600'
                           }`}>
                             {lang.native[0]}
                           </div>
                           <div className="text-left">
-                            <div className="text-[8px] font-black uppercase tracking-[0.1em] text-green-700/60">{lang.name}</div>
-                            <div className="text-sm font-black text-black leading-none mt-1">{lang.native}</div>
+                            <div className="text-[7px] xs:text-[8px] font-black uppercase tracking-[0.1em] text-green-700/60">{lang.name}</div>
+                            <div className="text-xs xs:text-sm font-black text-black leading-none mt-0.5 xs:mt-1">{lang.native}</div>
                           </div>
                         </div>
 
-                        <div className={`w-5 h-5 rounded-full border-2 flex items-center justify-center transition-all ${
+                        <div className={`w-4.5 xs:w-5 h-4.5 xs:h-5 rounded-full border-2 flex items-center justify-center transition-all ${
                           selectedLang === lang.name ? 'border-green-600 bg-green-600 text-white scale-105' : 'border-green-200 group-hover:border-green-300'
                         }`}>
-                          {selectedLang === lang.name && <Check size={10} strokeWidth={3} />}
+                          {selectedLang === lang.name && <Check size={9} xs:size={10} strokeWidth={3} />}
                         </div>
                       </button>
                     ))}
                   </div>
 
-                  <div className="mt-1 pt-3.5 border-t border-neutral-100">
+                  <div className="mt-1 pt-3 xs:pt-3.5 border-t border-neutral-100">
                     <button
                       onClick={onClose}
-                      className="w-full bg-black hover:bg-green-700 text-white py-3.5 rounded-xl font-bold text-xs shadow-xl active:scale-[0.98] transition-all duration-200 uppercase tracking-widest cursor-pointer"
+                      className="w-full bg-black hover:bg-green-700 text-white py-3 xs:py-3.5 rounded-xl font-bold text-[10px] xs:text-xs shadow-xl active:scale-[0.98] transition-all duration-200 uppercase tracking-widest cursor-pointer"
                     >
                       Continue / आगे बढ़ें
                     </button>

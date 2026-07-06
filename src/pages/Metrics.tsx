@@ -37,10 +37,10 @@ export default function Metrics() {
             </p>
           </div>
 
-          <div className="flex flex-col sm:flex-row gap-4 animate-in fade-in slide-in-from-right-8 duration-1000">
+          <div className="flex flex-col sm:flex-row gap-3 xs:gap-4 animate-in fade-in slide-in-from-right-8 duration-1000">
             <Link
               to="/contact"
-              className="bg-green-700 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-widest shadow-xl shadow-green-700/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 text-center flex items-center justify-center cursor-pointer"
+              className="bg-green-700 text-white px-4 xs:px-5 sm:px-6 md:px-8 py-2.5 xs:py-3 sm:py-3.5 md:py-4 rounded-xl xs:rounded-2xl font-black text-[9px] xs:text-[10px] sm:text-[11px] md:text-[11px] uppercase tracking-widest shadow-xl shadow-green-700/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 text-center flex items-center justify-center cursor-pointer"
             >
               Request a Demo
             </Link>
@@ -48,7 +48,7 @@ export default function Metrics() {
               href="/media/Competitors/sere%20innovations%20KIT%20pitch%20deck..pptx.pdf"
               target="_blank"
               rel="noopener noreferrer"
-              className="bg-green-950 text-white px-6 md:px-8 py-3.5 md:py-4 rounded-2xl font-black text-[10px] md:text-[11px] uppercase tracking-widest shadow-xl shadow-green-950/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 text-center flex items-center justify-center cursor-pointer"
+              className="bg-green-950 text-white px-4 xs:px-5 sm:px-6 md:px-8 py-2.5 xs:py-3 sm:py-3.5 md:py-4 rounded-xl xs:rounded-2xl font-black text-[9px] xs:text-[10px] sm:text-[11px] md:text-[11px] uppercase tracking-widest shadow-xl shadow-green-950/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 text-center flex items-center justify-center cursor-pointer"
             >
               Download Report
             </a>

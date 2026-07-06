@@ -4,6 +4,12 @@ import Home from './pages/Home';
 import Technology from './pages/Technology';
 import Metrics from './pages/Metrics';
 import Gallery from './pages/Gallery';
+import BlogListing from './pages/BlogListing';
+import BlogDetail from './pages/BlogDetail';
+import CategoryPage from './pages/CategoryPage';
+import AuthorPage from './pages/AuthorPage';
+import SearchPage from './pages/SearchPage';
+import Blog from './pages/Blog';
 import Contact from './pages/Contact';
 
 import { LanguageProvider } from './context/LanguageContext';
@@ -18,6 +24,11 @@ export default function App() {
             <Route path="technology" element={<Technology />} />
             <Route path="metrics" element={<Metrics />} />
             <Route path="gallery" element={<Gallery />} />
+            <Route path="blog" element={<BlogListing />} />
+            <Route path="blog/:id" element={<BlogDetail />} />
+            <Route path="blog/category/:category" element={<CategoryPage />} />
+            <Route path="blog/author/:authorSlug" element={<AuthorPage />} />
+            <Route path="blog/search" element={<SearchPage />} />
             <Route path="contact" element={<Contact />} />
           </Route>
         </Routes>
