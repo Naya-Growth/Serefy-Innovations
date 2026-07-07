@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, User, ArrowRight } from 'lucide-react';
+import { Calendar, User } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface ArticleCardProps {
@@ -16,8 +16,7 @@ interface ArticleCardProps {
 
 const PLACEHOLDER_IMG = 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?q=80&w=1000&auto=format&fit=crop';
 
-
-export default function ArticleCard({
+const ArticleCard: React.FC<ArticleCardProps> = ({
   id,
   title,
   excerpt,
@@ -26,7 +25,7 @@ export default function ArticleCard({
   publishDate,
   category,
   variant = 'default'
-}: ArticleCardProps) {
+}) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -50,6 +49,7 @@ export default function ArticleCard({
               alt={title}
               onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
@@ -62,21 +62,19 @@ export default function ArticleCard({
           </div>
 
           {/* Content */}
-          <div className="p-6 md:p-8">
-            <h2 className="font-headline text-xl md:text-2xl font-bold text-slate-900 mb-3 group-hover:text-emerald-700 transition-colors line-clamp-2">
+          <div className="absolute bottom-0 left-0 right-0 p-6 md:p-8">
+            <h2 className="font-headline text-2xl md:text-3xl font-bold text-white mb-3 group-hover:text-emerald-200 transition-colors">
               {title}
             </h2>
-            <p className="text-slate-600 mb-4 line-clamp-2 leading-relaxed">
+            <p className="text-white/80 line-clamp-2 md:line-clamp-3 mb-4 max-w-3xl">
               {excerpt}
             </p>
-
-            {/* Meta */}
-            <div className="flex items-center gap-4 text-sm text-slate-500">
-              <div className="flex items-center gap-2">
+            <div className="flex items-center gap-4 text-sm text-white/90">
+              <div className="flex items-center gap-1.5">
                 <User size={16} />
                 <span className="font-medium">{authorName}</span>
               </div>
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1.5">
                 <Calendar size={16} />
                 <span>{formatDate(publishDate)}</span>
               </div>
@@ -101,6 +99,7 @@ export default function ArticleCard({
               alt={title}
               onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              loading="lazy"
             />
           </div>
 
@@ -125,7 +124,7 @@ export default function ArticleCard({
 
   // Default variant
   return (
-    <Link to={`/blog/${id}`} className="group block">
+    <Link to={`/blog/${id}`} className="group block h-full">
       <motion.div
         whileHover={{ y: -4 }}
         className="h-full flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all duration-300"
@@ -137,6 +136,7 @@ export default function ArticleCard({
             alt={title}
             onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
           />
           <div className="absolute top-3 left-3">
             <span className="inline-block px-2.5 py-1 bg-white/90 backdrop-blur-sm text-emerald-700 text-[10px] font-bold uppercase tracking-wider rounded-full">
@@ -155,7 +155,7 @@ export default function ArticleCard({
           </p>
 
           {/* Meta */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-4 border-t border-slate-100 mt-auto">
             <div className="flex items-center gap-2 text-xs text-slate-500">
               <User size={14} />
               <span className="font-medium">{authorName}</span>
@@ -169,4 +169,6 @@ export default function ArticleCard({
       </motion.div>
     </Link>
   );
-}
+};
+
+export default ArticleCard;
