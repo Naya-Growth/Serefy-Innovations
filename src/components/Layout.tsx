@@ -57,7 +57,7 @@ export default function Layout() {
     setIsMenuOpen(false);
   }, [location.pathname]);
 
-  const navItems = ['Technology', 'Metrics', 'Gallery', 'Contact'];
+  const navItems = ['Technology', 'Metrics', 'Gallery', 'Blog', 'Contact'];
 
   return (
     <div className="min-h-screen flex flex-col bg-white selection:bg-green-500/10 overflow-x-hidden">
@@ -147,7 +147,7 @@ export default function Layout() {
                 exit={{ opacity: 0, height: 0, y: -20 }}
                 className="lg:hidden bg-white border-t border-green-100 overflow-hidden relative z-[50] shadow-2xl"
               >
-                <div className="flex flex-col p-4 xs:p-5 sm:p-6 gap-1 xs:gap-2">
+                <div className="flex flex-col p-3.5 xs:p-4 sm:p-5 md:p-6 gap-1 xs:gap-2">
                   {navItems.map((item) => {
                     const path = `/${item.toLowerCase()}`;
                     const isActive = location.pathname === path;
@@ -156,7 +156,7 @@ export default function Layout() {
                       <Link
                         key={item}
                         to={path}
-                        className={`transition-all font-black uppercase tracking-[0.15em] xs:tracking-[0.2em] text-xs xs:text-sm py-3 xs:py-4 border-b border-green-50 last:border-0 ${isActive ? 'text-green-700' : 'text-black/60'}`}
+                        className={`transition-all font-black uppercase tracking-[0.15em] xs:tracking-[0.2em] text-[11px] xs:text-xs sm:text-sm py-2.5 xs:py-3 sm:py-4 border-b border-green-50 last:border-0 ${isActive ? 'text-green-700' : 'text-black/60'}`}
                       >
                         {t(translationKey)}
                       </Link>
@@ -164,7 +164,7 @@ export default function Layout() {
                   })}
                   <Link
                     to="/contact"
-                    className="bg-black text-white px-4 xs:px-5 sm:px-6 py-3 xs:py-4 sm:py-5 rounded-2xl xs:rounded-3xl font-black text-center text-xs xs:text-sm mt-3 xs:mt-4 uppercase tracking-wider xs:tracking-widest hover:bg-green-700 hover:scale-[1.02] transition-all"
+                    className="bg-black text-white px-3.5 xs:px-4 sm:px-5 py-2.5 xs:py-3 sm:py-4 rounded-xl xs:rounded-2xl sm:rounded-3xl font-black text-center text-[11px] xs:text-xs sm:text-sm mt-2.5 xs:mt-3 sm:mt-4 uppercase tracking-wider xs:tracking-widest hover:bg-green-700 hover:scale-[1.02] transition-all"
                   >
                     {t('nav.getStarted')}
                   </Link>
@@ -242,6 +242,16 @@ export default function Layout() {
                   {siteConfig.brand.phone}
                 </a>
               </p>
+            </div>
+          </div>
+
+          <div className="md:col-span-3">
+            <h5 className="text-green-500 font-black uppercase text-[10px] xs:text-xs tracking-[0.3em] xs:tracking-[0.4em] mb-4 xs:mb-6 md:mb-8">Resources</h5>
+            <div className="flex flex-col gap-2 xs:gap-3">
+              <Link to="/blog" className="text-white/70 text-xs xs:text-sm font-medium hover:text-green-400 transition-colors">
+                Blog
+              </Link>
+              <span className="text-white/40 text-[10px] xs:text-xs italic">Coming soon</span>
             </div>
           </div>
         </div>

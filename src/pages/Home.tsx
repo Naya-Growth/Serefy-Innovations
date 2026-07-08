@@ -216,27 +216,42 @@ export default function Home() {
             </div>
 
             {/* Premium CTA block */}
-            <div className="flex flex-col sm:flex-row items-center gap-3 xs:gap-4 sm:gap-5 w-full sm:w-auto">
+            <div className="flex flex-col sm:flex-row items-center gap-2.5 xs:gap-3 sm:gap-5 w-full sm:w-auto">
               <a
-                className="group/heroCta relative w-full sm:w-auto flex items-center justify-center gap-2 xs:gap-3 overflow-hidden px-5 xs:px-6 sm:px-8 py-3 xs:py-3.5 sm:py-4 bg-gradient-to-br from-emerald-700 via-green-600 to-emerald-800 text-white text-center font-black text-xs xs:text-sm tracking-wide rounded-lg xs:rounded-xl shadow-[0_12px_28px_rgba(21,128,61,0.2)] hover:shadow-[0_16px_36px_rgba(21,128,61,0.28)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
+                className="group/heroCta relative w-full sm:w-auto flex items-center justify-center gap-1.5 xs:gap-2.5 sm:gap-3 overflow-hidden px-4 xs:px-5 sm:px-8 py-2.5 xs:py-3 sm:py-4 bg-gradient-to-br from-emerald-700 via-green-600 to-emerald-800 text-white text-center font-black text-[11px] xs:text-xs sm:text-sm tracking-wide rounded-lg xs:rounded-xl shadow-[0_12px_28px_rgba(21,128,61,0.2)] hover:shadow-[0_16px_36px_rgba(21,128,61,0.28)] hover:-translate-y-0.5 active:translate-y-0 transition-all duration-300 cursor-pointer"
                 onClick={(e) => handleOpenWizard(e, 'hero_cta')}
               >
-                <span className="pointer-events-none absolute inset-y-0 left-0 w-10 xs:w-12 sm:w-14 -translate-x-24 skew-x-[-16deg] bg-white/25 blur-sm animate-[hero-cta-sheen_3.8s_ease-in-out_infinite]" />
+                <span className="pointer-events-none absolute inset-y-0 left-0 w-8 xs:w-10 sm:w-14 -translate-x-24 skew-x-[-16deg] bg-white/25 blur-sm animate-[hero-cta-sheen_3.8s_ease-in-out_infinite]" />
                 <span className="relative z-10">{heroCtaAction}</span>
-                <span className="relative z-10 flex h-5 xs:h-6 sm:h-7 w-5 xs:w-6 sm:w-7 items-center justify-center rounded-full bg-white/15 group-hover/heroCta:bg-white group-hover/heroCta:text-primary transition-colors">
-                  <ArrowRight size={12} xs:size={14} sm:size={15} />
+                <span className="relative z-10 flex h-4 xs:h-5 sm:h-7 w-4 xs:w-5 sm:w-7 items-center justify-center rounded-full bg-white/15 group-hover/heroCta:bg-white group-hover/heroCta:text-primary transition-colors">
+                  <ArrowRight size={10} xs:size={12} sm:size={15} />
                 </span>
               </a>
-              <Link to="/technology" className="text-xs xs:text-sm font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-1 xs:gap-1.5 group">
+              <Link to="/technology" className="text-[11px] xs:text-xs sm:text-sm font-bold text-slate-500 hover:text-primary transition-colors flex items-center gap-1 xs:gap-1.5 group">
                 <span className="border-b border-transparent group-hover:border-primary transition-colors">{t('tech.hero.cta')}</span> 
-                <ArrowRight size={12} xs:size={14} sm:size={15} className="group-hover:translate-x-0.5 transition-transform" />
+                <ArrowRight size={10} xs:size={12} sm:size={15} className="group-hover:translate-x-0.5 transition-transform" />
               </Link>
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="mt-3 xs:mt-4 sm:mt-5 flex flex-wrap items-center justify-center lg:justify-start gap-1.5 xs:gap-2 sm:gap-3">
+              <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 px-2 xs:px-2.5 sm:px-3 py-0.75 xs:py-1 sm:py-1.5 rounded-full bg-emerald-50 border border-emerald-200/60">
+                <ShieldCheck size={8} xs:size={10} sm:size={12} className="text-emerald-600 shrink-0" />
+                <span className="text-[8px] xs:text-[9px] sm:text-[10px] font-bold text-emerald-700">{language === 'Hindi' ? '१ वर्ष वॉरंटी' : language === 'Marathi' ? '१ वर्ष वॉरंटी' : '1 Year Warranty'}</span>
+              </div>
+              <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 px-2 xs:px-2.5 sm:px-3 py-0.75 xs:py-1 sm:py-1.5 rounded-full bg-orange-50 border border-orange-200/60">
+                <span className="text-[8px] xs:text-[9px] sm:text-[10px] font-bold text-orange-700">{language === 'Hindi' ? 'भारत में निर्मित' : language === 'Marathi' ? 'भारतात बनवले' : 'Made in India'}</span>
+              </div>
+              <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 px-2 xs:px-2.5 sm:px-3 py-0.75 xs:py-1 sm:py-1.5 rounded-full bg-blue-50 border border-blue-200/60">
+                <Mail size={8} xs:size={10} sm:size={12} className="text-blue-600 shrink-0" />
+                <span className="text-[8px] xs:text-[9px] sm:text-[10px] font-bold text-blue-700">{language === 'Hindi' ? '२४/७ समर्थन' : language === 'Marathi' ? '२४/७ सपोर्ट' : '24/7 Support'}</span>
+              </div>
             </div>
             
             {/* Trust footer with checkmark */}
-            <div className="mt-6 xs:mt-8 sm:mt-9 flex items-center justify-center lg:justify-start gap-1.5 xs:gap-2 text-[10px] xs:text-xs font-semibold text-slate-400">
-              <CheckCircle2 size={12} xs:size={14} className="text-emerald-500 shrink-0" />
-              {language === 'Hindi' ? '500+ खेतों द्वारा सत्यापित तकनीक।' : language === 'Marathi' ? '५००+ पेक्षा जास्त शेतांवर सिद्ध तंत्रज्ञान.' : 'Proven technology deployed on 500+ farms across India.'}
+            <div className="mt-3 xs:mt-4 sm:mt-6 flex items-center justify-center lg:justify-start gap-1 xs:gap-1.5 sm:gap-2 text-[9px] xs:text-[10px] sm:text-xs font-semibold text-slate-400">
+              <CheckCircle2 size={10} xs:size={12} sm:size={14} className="text-emerald-500 shrink-0" />
+              <span className="text-center">{language === 'Hindi' ? '500+ खेतों द्वारा सत्यापित तकनीक।' : language === 'Marathi' ? '५००+ पेक्षा जास्त शेतांवर सिद्ध तंत्रज्ञान.' : 'Proven technology deployed on 500+ farms across India.'}</span>
             </div>
           </div>
 

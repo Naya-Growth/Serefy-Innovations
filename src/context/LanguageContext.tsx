@@ -12,7 +12,7 @@ interface LanguageContextType {
 const translations: Record<Language, Record<string, string>> = {
   English: {
     'hero.title': "India's Most Efficient & Smart Egg Incubator.",
-    'hero.tagline': "Bridging the gap with smart,\nprecision hatching technology.",
+    'hero.tagline': "Achieve 90% hatch rates with fully automated precision control. Zero manual effort, maximum yield.",
     'hero.cta': "Pre-order Now & Save 20%",
     'hero.capacity': "Capacity Options",
     'hero.eggs': "Eggs",
@@ -22,6 +22,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.technology': "Technology",
     'nav.metrics': "Metrics",
     'nav.gallery': "Gallery",
+    'nav.blog': "Blog",
     'nav.contact': "Contact",
     'nav.getStarted': "Get Started",
     'footer.partner': "Supported by",
@@ -221,7 +222,7 @@ const translations: Record<Language, Record<string, string>> = {
   },
   Hindi: {
     'hero.title': "भारत का सबसे कुशल और स्मार्ट अंडा इनक्यूबेटर।",
-    'hero.tagline': "किसानों और तकनीक के बीच की दूरी को कम करना। ग्रामीण उद्यमियों और छोटे पोल्ट्री किसानों के लिए निर्मित।",
+    'hero.tagline': "90% हैच दर प्राप्त करें पूर्ण स्वचालित नियंत्रण के साथ। शून्य मैनुअल प्रयास, अधिकतम उपज।",
     'hero.cta': "अभी प्री-ऑर्डर करें और 20% बचाएं",
     'hero.capacity': "क्षमता विकल्प",
     'hero.eggs': "अंडे",
@@ -231,6 +232,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.technology': "तकनीक",
     'nav.metrics': "मेट्रिक्स",
     'nav.gallery': "गैलरी",
+    'nav.blog': "ब्लॉग",
     'nav.contact': "संपर्क",
     'nav.getStarted': "शुरू करें",
     'footer.partner': "समर्थन",
@@ -430,7 +432,7 @@ const translations: Record<Language, Record<string, string>> = {
   },
   Marathi: {
     'hero.title': "भारतातील सर्वात कार्यक्षम आणि स्मार्ट अंडी इनक्यूबेटर.",
-    'hero.tagline': "शेतकरी आणि तंत्रज्ञान यांच्यातील दरी कमी करणे. ग्रामीण उद्योजक आणि लहान कुक्कुटपालन शेतकऱ्यांसाठी तयार केलेले.",
+    'hero.tagline': "पूर्ण स्वचालित नियंत्रणासह 90% हॅच दर साध्य करा. शून्य मॅन्युअल प्रयत्न, अधिकतम उत्पादन.",
     'hero.cta': "आता प्री-ऑर्डर करा आणि 20% वाचवा",
     'hero.capacity': "क्षमता पर्याय",
     'hero.eggs': "अंडी",
@@ -440,6 +442,7 @@ const translations: Record<Language, Record<string, string>> = {
     'nav.technology': "तंत्रज्ञान",
     'nav.metrics': "मेट्रिक्स",
     'nav.gallery': "गॅलरी",
+    'nav.blog': "ब्लॉग",
     'nav.contact': "संपर्क",
     'nav.getStarted': "सुरू करा",
     'footer.partner': "द्वारे समर्थित",

@@ -187,7 +187,7 @@ export default function Contact() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-primary text-on-primary font-bold py-3.5 sm:py-4 rounded-2xl hover:brightness-110 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.01] transition-all duration-300 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-sm sm:text-base"
+              className="w-full bg-primary text-on-primary font-bold py-3 xs:py-3.5 sm:py-4 rounded-xl xs:rounded-2xl hover:brightness-110 hover:shadow-lg hover:shadow-primary/20 hover:scale-[1.01] transition-all duration-300 active:scale-[0.99] disabled:opacity-50 flex items-center justify-center gap-2 cursor-pointer text-xs xs:text-sm sm:text-base"
             >
               {loading ? t('contact.form.sending') : t('contact.form.submit')}
             </button>

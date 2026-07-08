@@ -291,9 +291,9 @@ export default function Technology() {
             </p>
             <button
               onClick={() => showcaseRef.current?.scrollIntoView({ behavior: 'smooth' })}
-              className="bg-green-700 text-white px-8 sm:px-10 py-3.5 sm:py-4 rounded-2xl font-black text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center gap-3 shadow-xl shadow-green-700/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 cursor-pointer w-full sm:w-auto justify-center"
+              className="bg-green-700 text-white px-5 xs:px-6 sm:px-8 xs:sm:px-10 py-2.5 xs:py-3 sm:py-3.5 xs:sm:py-4 rounded-xl xs:rounded-2xl font-black text-[9px] xs:text-[10px] sm:text-[11px] uppercase tracking-widest flex items-center gap-2 xs:gap-3 shadow-xl shadow-green-700/20 hover:-translate-y-1 hover:scale-[1.02] transition-all active:scale-95 cursor-pointer w-full sm:w-auto justify-center"
             >
-              {t('tech.hero.cta')} <span className="material-symbols-outlined text-sm">arrow_forward</span>
+              {t('tech.hero.cta')} <span className="material-symbols-outlined text-xs xs:text-sm">arrow_forward</span>
             </button>
           </div>
 
@@ -529,9 +529,9 @@ export default function Technology() {
                               <button
                                 onClick={triggerRotationSim}
                                 disabled={isRotating}
-                                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all"
+                                className="w-full sm:w-auto px-4 xs:px-5 py-2.5 xs:py-3 rounded-lg xs:rounded-xl bg-amber-500 hover:bg-amber-600 disabled:bg-amber-300 text-white font-black text-[11px] xs:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 xs:gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all"
                               >
-                                <RotateCw size={14} className={isRotating ? "animate-spin" : ""} />
+                                <RotateCw size={12} xs:size={14} className={isRotating ? "animate-spin" : ""} />
                                 {isRotating ? content.simulating : content.simulateBtn}
                               </button>
                               <span className="block text-center text-[9px] font-bold text-slate-400 mt-2">
@@ -566,16 +566,16 @@ export default function Technology() {
                               <button
                                 onClick={triggerPowerSim}
                                 disabled={isPowerSwitching}
-                                className="w-full sm:w-auto px-5 py-3 rounded-xl bg-slate-800 hover:bg-slate-900 disabled:bg-slate-600 text-white font-black text-xs uppercase tracking-widest flex items-center justify-center gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all"
+                                className="w-full sm:w-auto px-4 xs:px-5 py-2.5 xs:py-3 rounded-lg xs:rounded-xl bg-slate-800 hover:bg-slate-900 disabled:bg-slate-600 text-white font-black text-[11px] xs:text-xs uppercase tracking-widest flex items-center justify-center gap-1.5 xs:gap-2 cursor-pointer shadow-md hover:shadow-lg transition-all"
                               >
                                 {isPowerSwitching ? (
                                   <>
-                                    <RefreshCw className="animate-spin" size={14} />
+                                    <RefreshCw className="animate-spin" size={12} xs:size={14} />
                                     {content.simulating}
                                   </>
                                 ) : (
                                   <>
-                                    <AlertTriangle size={14} />
+                                    <AlertTriangle size={12} xs:size={14} />
                                     {powerSource === 'grid' ? 'Simulate Power Cut' : 'Restore Grid Power'}
                                   </>
                                 )}
