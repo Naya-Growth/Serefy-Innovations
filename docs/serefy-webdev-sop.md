@@ -7,6 +7,7 @@ Read these first:
 - `docs/ops/README.md`
 - `docs/ops/intern-workflow.md`
 - `docs/ops/frontend-deploy.md`
+- `docs/ops/restricted-webdev-access.md`
 
 ## First-Time SSH Setup
 
@@ -42,6 +43,16 @@ ssh -n -T webdev serefy
 ```
 
 It should not open a shell. It should print `No deploy archive received`.
+
+Operators grant or revoke this restricted access with:
+
+```powershell
+pwsh ./scripts/grant-webdev-access.ps1 -PublicKeyFile ./.local/neeraj-serefy-webdev.pub
+pwsh ./scripts/revoke-webdev-access.ps1 -Match "neeraj-serefy-webdev-YYYYMMDD"
+```
+
+Do not give developers `nivi` SSH, database access, hosting-panel access, or
+GitHub secret access for this website deploy lane.
 
 ## Make The Website Live
 

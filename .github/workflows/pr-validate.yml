@@ -2,6 +2,10 @@ name: PR Validate
 
 on:
   pull_request:
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "scripts/*webdev-access.ps1"
   workflow_dispatch:
 
 jobs:

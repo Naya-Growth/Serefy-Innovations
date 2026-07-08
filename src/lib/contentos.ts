@@ -28,10 +28,10 @@ const mapPostToArticle = (post: any): Article => {
   const categories = Array.isArray(taxonomy.categories) ? taxonomy.categories : [];
   const tags = Array.isArray(taxonomy.tags) ? taxonomy.tags : [];
   
-  // Extract featured image from OpenGraph, fallback to placeholder
+  // Extract featured image from OpenGraph, fallback to the checked public cover.
   const featuredImage = post.seo?.social?.openGraph?.image || 
                         post.social?.openGraph?.image || 
-                        '/media/placeholder-blog.jpg';
+                        '/media/og-cover.jpg';
                         
   return {
     id: post.id,

@@ -16,6 +16,10 @@ The workflow deploys through the restricted `webdev` SSH user. It does not need 
 
 Manual workflow dispatch is also allowed from GitHub Actions if the CTO asks for it. Use `main` unless the CTO gives an exact commit SHA.
 
+Docs-only changes and restricted-access script changes are ignored by the
+production deploy workflow to preserve Actions minutes. Runtime, build, asset,
+workflow, and deploy-script changes still run the deployment workflow.
+
 ## Path 2: Direct Webdev Deploy
 
 Use this only when the CTO approves a fallback deploy.
@@ -77,6 +81,9 @@ Hard refresh if the browser looks old.
 ## VPS Health Check
 
 Interns do not need VPS access. The CTO or authorized operator will check VPS load, CPU steal, and container health when needed.
+
+Use `docs/ops/restricted-webdev-access.md` when granting or revoking a
+developer's `webdev` key.
 
 Stop deployment if the CTO says to pause.
 

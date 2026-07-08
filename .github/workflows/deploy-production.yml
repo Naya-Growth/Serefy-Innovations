@@ -3,6 +3,10 @@ name: Deploy Production
 on:
   push:
     branches: ["main"]
+    paths-ignore:
+      - "docs/**"
+      - "*.md"
+      - "scripts/*webdev-access.ps1"
   workflow_dispatch:
     inputs:
       ref:

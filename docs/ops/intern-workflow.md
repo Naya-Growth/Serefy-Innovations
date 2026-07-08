@@ -20,6 +20,13 @@ ssh -n -T webdev serefy
 
 Expected result: it should not open a server shell. It should say no deploy archive was received. That means restricted deploy access is working.
 
+If you do not have access yet, send only your public key line to the CTO:
+
+```bash
+ssh-keygen -t ed25519 -f ~/.ssh/serefy_webdev_ed25519 -N "" -C "your-name-serefy-webdev-YYYYMMDD"
+cat ~/.ssh/serefy_webdev_ed25519.pub
+```
+
 ## Make a Change
 
 ```bash
@@ -95,3 +102,4 @@ If `git stash pop` shows conflicts, stop and ask the CTO.
 - Do not force push.
 - Do not commit `.env`, private keys, credentials, `node_modules`, or build output.
 - Do not use `ssh nivi` or hosting panel access.
+- Do not ask for GitHub secrets or database access for website deployment.
