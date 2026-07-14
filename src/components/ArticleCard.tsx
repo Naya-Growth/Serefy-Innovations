@@ -44,40 +44,40 @@ export default function ArticleCard({
           className="relative overflow-hidden rounded-2xl bg-white shadow-lg hover:shadow-xl transition-all duration-300"
         >
           {/* Featured Image */}
-          <div className="relative aspect-[16/9] overflow-hidden">
+          <div className="relative aspect-[16/10] xs:aspect-[16/9] sm:aspect-[21/10] overflow-hidden bg-slate-100">
             <img
               src={featuredImage || PLACEHOLDER_IMG}
-              alt={title}
+              alt={title || 'Article image'}
               onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
             {/* Category Badge */}
-            <div className="absolute top-4 left-4">
-              <span className="inline-block px-3 py-1 bg-emerald-600 text-white text-xs font-bold uppercase tracking-wider rounded-full">
-                {category}
+            <div className="absolute top-2 left-2 xs:top-2.5 xs:left-2.5 sm:top-3 sm:left-3 md:top-4 md:left-4 z-10">
+              <span className="inline-block px-2 py-0.75 xs:px-2.5 xs:py-1 sm:px-3 sm:py-1 md:px-3.5 md:py-1.25 bg-emerald-600 text-white text-[9px] xs:text-[10px] sm:text-xs md:text-sm font-bold uppercase tracking-wider rounded-full shadow-md">
+                {category || 'Article'}
               </span>
             </div>
           </div>
 
           {/* Content */}
-          <div className="p-6 md:p-8">
-            <h2 className="font-headline text-xl md:text-2xl font-bold text-slate-900 mb-3 group-hover:text-emerald-700 transition-colors line-clamp-2">
-              {title}
+          <div className="p-3 xs:p-3.5 sm:p-4 md:p-5 lg:p-6">
+            <h2 className="font-headline text-sm xs:text-base sm:text-lg md:text-xl lg:text-2xl font-bold text-slate-900 mb-2 xs:mb-2.5 sm:mb-3 group-hover:text-emerald-700 transition-colors line-clamp-2 leading-tight">
+              {title || <span className="text-slate-400 italic">Untitled content draft</span>}
             </h2>
-            <p className="text-slate-600 mb-4 line-clamp-2 leading-relaxed">
-              {excerpt}
+            <p className="text-slate-600 text-[11px] xs:text-xs sm:text-sm md:text-base mb-2.5 xs:mb-3 sm:mb-4 line-clamp-2 leading-relaxed">
+              {excerpt || <span className="text-slate-400 italic">No summary available.</span>}
             </p>
 
             {/* Meta */}
-            <div className="flex items-center gap-4 text-sm text-slate-500">
-              <div className="flex items-center gap-2">
-                <User size={16} />
-                <span className="font-medium">{authorName}</span>
+            <div className="flex items-center gap-2 xs:gap-2.5 sm:gap-3 text-[9px] xs:text-[10px] sm:text-xs md:text-sm text-slate-500">
+              <div className="flex items-center gap-1 xs:gap-1.5">
+                <User size={10} xs:size={12} sm:size={14} />
+                <span className="font-medium truncate max-w-[80px] xs:max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">{authorName || <span className="text-slate-400 italic">Unknown</span>}</span>
               </div>
-              <div className="flex items-center gap-2">
-                <Calendar size={16} />
+              <div className="flex items-center gap-1 xs:gap-1.5">
+                <Calendar size={10} xs:size={12} sm:size={14} />
                 <span>{formatDate(publishDate)}</span>
               </div>
             </div>
@@ -92,30 +92,30 @@ export default function ArticleCard({
       <Link to={`/blog/${id}`} className="group block">
         <motion.div
           whileHover={{ x: 4 }}
-          className="flex gap-4 p-4 rounded-xl bg-white border border-slate-100 hover:border-emerald-200 hover:shadow-md transition-all duration-300"
+          className="flex gap-2.5 xs:gap-3 sm:gap-4 p-2.5 xs:p-3 sm:p-4 rounded-xl bg-white border border-slate-100 hover:border-emerald-200 hover:shadow-md transition-all duration-300"
         >
           {/* Thumbnail */}
-          <div className="relative w-24 h-24 flex-shrink-0 rounded-lg overflow-hidden">
+          <div className="relative w-14 h-14 xs:w-16 xs:h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 flex-shrink-0 rounded-lg overflow-hidden bg-slate-100">
             <img
               src={featuredImage || PLACEHOLDER_IMG}
-              alt={title}
+              alt={title || 'Article image'}
               onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
             />
           </div>
 
           {/* Content */}
-          <div className="flex-1 min-w-0">
-            <span className="inline-block text-xs font-bold text-emerald-700 uppercase tracking-wider mb-1">
-              {category}
+          <div className="flex-1 min-w-0 flex flex-col justify-center">
+            <span className="inline-block text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs font-bold text-emerald-700 uppercase tracking-wider mb-0.5 xs:mb-1">
+              {category || 'Article'}
             </span>
-            <h3 className="font-headline font-bold text-slate-900 mb-1 line-clamp-2 group-hover:text-emerald-700 transition-colors">
-              {title}
+            <h3 className="font-headline font-bold text-slate-900 mb-0.5 xs:mb-1 line-clamp-2 group-hover:text-emerald-700 transition-colors text-[11px] xs:text-xs sm:text-sm md:text-base leading-tight">
+              {title || <span className="text-slate-400 italic">Untitled content draft</span>}
             </h3>
-            <div className="flex items-center gap-3 text-xs text-slate-500">
-              <span>{formatDate(publishDate)}</span>
+            <div className="flex items-center gap-1 xs:gap-1.5 sm:gap-2 text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs text-slate-500">
+              <span className="truncate">{formatDate(publishDate)}</span>
               <span>•</span>
-              <span>{authorName}</span>
+              <span className="truncate max-w-[60px] xs:max-w-[70px] sm:max-w-[100px] md:max-w-[120px]">{authorName || <span className="text-slate-400 italic">Unknown</span>}</span>
             </div>
           </div>
         </motion.div>
@@ -131,37 +131,37 @@ export default function ArticleCard({
         className="h-full flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all duration-300"
       >
         {/* Image */}
-        <div className="relative aspect-[4/3] overflow-hidden bg-slate-100">
+        <div className="relative aspect-[4/3] xs:aspect-[16/9] sm:aspect-[16/9] overflow-hidden bg-slate-100">
           <img
             src={featuredImage || PLACEHOLDER_IMG}
-            alt={title}
+            alt={title || 'Article image'}
             onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
           />
-          <div className="absolute top-3 left-3">
-            <span className="inline-block px-2.5 py-1 bg-white/90 backdrop-blur-sm text-emerald-700 text-[10px] font-bold uppercase tracking-wider rounded-full">
-              {category}
+          <div className="absolute top-2 left-2 xs:top-2.5 xs:left-2.5 sm:top-3 sm:left-3 z-10">
+            <span className="inline-block px-1.5 py-0.5 xs:px-2 xs:py-0.75 sm:px-2.5 sm:py-1 bg-white/90 backdrop-blur-sm text-emerald-700 text-[8px] xs:text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm">
+              {category || 'Article'}
             </span>
           </div>
         </div>
 
         {/* Content */}
-        <div className="flex-1 p-5 flex flex-col">
-          <h3 className="font-headline font-bold text-slate-900 mb-2 line-clamp-2 group-hover:text-emerald-700 transition-colors">
-            {title}
+        <div className="flex-1 p-3 xs:p-3.5 sm:p-4 flex flex-col">
+          <h3 className="font-headline font-bold text-slate-900 mb-1 xs:mb-1.5 sm:mb-2 line-clamp-2 group-hover:text-emerald-700 transition-colors text-xs xs:text-sm sm:text-base leading-tight">
+            {title || <span className="text-slate-400 italic">Untitled content draft</span>}
           </h3>
-          <p className="text-slate-600 text-sm mb-4 line-clamp-3 flex-1 leading-relaxed">
-            {excerpt}
+          <p className="text-slate-600 text-[10px] xs:text-[11px] sm:text-xs mb-2 xs:mb-2.5 sm:mb-3 line-clamp-3 flex-1 leading-relaxed">
+            {excerpt || <span className="text-slate-400 italic">No summary available.</span>}
           </p>
 
           {/* Meta */}
-          <div className="flex items-center justify-between pt-4 border-t border-slate-100">
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <User size={14} />
-              <span className="font-medium">{authorName}</span>
+          <div className="flex items-center justify-between pt-2 xs:pt-2.5 sm:pt-3 border-t border-slate-100">
+            <div className="flex items-center gap-1 xs:gap-1.5 text-[8px] xs:text-[9px] sm:text-[10px] text-slate-500">
+              <User size={9} xs:size={11} sm:size={12} />
+              <span className="font-medium truncate max-w-[60px] xs:max-w-[70px] sm:max-w-[100px]">{authorName || <span className="text-slate-400 italic">Unknown</span>}</span>
             </div>
-            <div className="flex items-center gap-2 text-xs text-slate-500">
-              <Calendar size={14} />
+            <div className="flex items-center gap-1 xs:gap-1.5 text-[8px] xs:text-[9px] sm:text-[10px] text-slate-500">
+              <Calendar size={9} xs:size={11} sm:size={12} />
               <span>{formatDate(publishDate)}</span>
             </div>
           </div>
