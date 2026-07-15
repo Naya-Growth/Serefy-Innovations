@@ -20,11 +20,11 @@ export default function CategoryFilter({
   const categories = initialCategories || fetchedCategories;
 
   return (
-    <div className="w-full py-6 px-4 sm:px-6 lg:px-8 border-b border-emerald-100">
+    <div className="w-full py-4 xs:py-5 sm:py-6 px-3 xs:px-4 sm:px-6 lg:px-8 border-b border-emerald-100">
       <div className="max-w-7xl mx-auto">
-        <div className="flex items-center justify-between gap-4">
+        <div className="flex items-center justify-between gap-3 xs:gap-4">
           {/* Desktop Categories */}
-          <div className="hidden lg:flex items-center gap-3 flex-wrap">
+          <div className="hidden lg:flex items-center gap-2 xs:gap-3 flex-wrap">
             {isLoading && !initialCategories ? (
               <div className="flex gap-3">
                 {[1, 2, 3, 4, 5].map(i => (
@@ -36,7 +36,7 @@ export default function CategoryFilter({
                 <button
                   key={category}
                   onClick={() => setSelectedCategory(category)}
-                  className={`px-5 py-2 rounded-full text-sm font-semibold transition-colors ${
+                  className={`px-3 xs:px-4 sm:px-5 py-1.5 xs:py-2 rounded-full text-xs xs:text-sm font-semibold transition-colors ${
                     selectedCategory === category
                       ? 'bg-primary text-white'
                       : 'bg-white text-slate-600 border border-slate-200 hover:border-emerald-300'
@@ -51,10 +51,10 @@ export default function CategoryFilter({
           {/* Mobile Filter Toggle */}
           <button
             onClick={() => setIsFilterOpen(!isFilterOpen)}
-            className="lg:hidden flex items-center gap-2 px-5 py-2 rounded-full bg-white border border-slate-200 text-slate-700 font-semibold text-sm"
+            className="lg:hidden flex items-center gap-1.5 xs:gap-2 px-3 xs:px-4 sm:px-5 py-1.5 xs:py-2 rounded-full bg-white border border-slate-200 text-slate-700 font-semibold text-xs xs:text-sm"
           >
-            <Filter size={16} />
-            {selectedCategory}
+            <Filter size={14} />
+            <span className="truncate max-w-[100px] xs:max-w-[150px]">{selectedCategory}</span>
           </button>
         </div>
 
@@ -65,7 +65,7 @@ export default function CategoryFilter({
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: 'auto' }}
               exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden mt-4 flex flex-wrap gap-2 overflow-hidden"
+              className="lg:hidden mt-3 xs:mt-4 flex flex-wrap gap-1.5 xs:gap-2 overflow-hidden"
             >
               {categories.map((category) => (
                 <button
@@ -74,7 +74,7 @@ export default function CategoryFilter({
                     setSelectedCategory(category);
                     setIsFilterOpen(false);
                   }}
-                  className={`px-4 py-2 rounded-full text-sm font-semibold transition-colors ${
+                  className={`px-3 xs:px-4 py-1.5 xs:py-2 rounded-full text-xs xs:text-sm font-semibold transition-colors ${
                     selectedCategory === category
                       ? 'bg-primary text-white'
                       : 'bg-white border border-slate-200 text-slate-600 hover:bg-emerald-50'
