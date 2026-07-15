@@ -50,21 +50,21 @@ export default function BlogListing() {
   return (
     <div className="bg-surface text-on-surface font-body antialiased selection:bg-primary/20 min-h-screen">
       {/* Hero Section */}
-      <section className="w-full py-10 xs:py-12 sm:py-14 md:py-16 lg:py-24 xl:py-28 px-3 xs:px-4 sm:px-6 lg:px-8 bg-white text-center">
+      <section className="w-full py-8 xs:py-10 sm:py-12 md:py-14 lg:py-16 xl:py-20 px-3 xs:px-4 sm:px-6 lg:px-8 bg-white text-center">
         <div className="max-w-4xl mx-auto">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5 }}
           >
-            <span className="inline-block px-2 xs:px-2.5 sm:px-3 py-0.5 xs:py-0.75 sm:py-1 rounded-full bg-green-50 text-green-700 text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wider mb-3 xs:mb-4 sm:mb-6">
+            <span className="inline-block px-2 xs:px-2.5 sm:px-3 py-0.5 xs:py-0.75 sm:py-1 rounded-full bg-green-50 text-green-700 text-[8px] xs:text-[9px] sm:text-[10px] md:text-xs font-bold uppercase tracking-wider mb-2 xs:mb-3 sm:mb-4">
               SERE INSIGHTS
             </span>
-            <h1 className="font-headline text-xl xs:text-2xl sm:text-3xl md:text-4xl lg:text-5xl xl:text-6xl font-extrabold text-slate-900 mb-2 xs:mb-3 sm:mb-4 tracking-tight leading-[1.15]">
+            <h1 className="font-headline text-lg xs:text-xl sm:text-2xl md:text-3xl lg:text-4xl xl:text-5xl font-extrabold text-slate-900 mb-2 xs:mb-3 sm:mb-4 tracking-tight leading-[1.15]">
               Smart Poultry Farming<br />
               <span className="text-primary">Knowledge Hub</span>
             </h1>
-            <p className="text-xs xs:text-sm sm:text-base md:text-lg text-slate-500 max-w-2xl mx-auto mb-4 xs:mb-6 sm:mb-10">
+            <p className="text-xs xs:text-sm sm:text-base md:text-lg text-slate-500 max-w-2xl mx-auto mb-3 xs:mb-4 sm:mb-6">
               Expert insights, practical guides, and industry updates to help you succeed in modern poultry farming.
             </p>
 
@@ -77,19 +77,19 @@ export default function BlogListing() {
       </section>
 
       {/* Category Filter & Content Background Wrapper */}
-      <div className="bg-emerald-50/60 min-h-screen pb-16 xs:pb-20 sm:pb-24">
+      <div className="bg-emerald-50/60 min-h-screen pb-12 xs:pb-16 sm:pb-20">
         <CategoryFilter 
           selectedCategory={selectedCategory}
           setSelectedCategory={setSelectedCategory}
         />
 
         {/* Content */}
-        <section className="w-full py-8 xs:py-10 sm:py-12 px-3 xs:px-4 sm:px-6 lg:px-8">
+        <section className="w-full py-6 xs:py-8 sm:py-10 px-3 xs:px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
 
             {/* Featured Article */}
             {featuredArticle && (
-              <div className="mb-6 xs:mb-8 sm:mb-12">
+              <div className="mb-4 xs:mb-6 sm:mb-8">
                 <h3 className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-green-700 uppercase tracking-widest mb-2 xs:mb-3 sm:mb-4">FEATURED</h3>
                 <motion.div
                   initial={{ opacity: 0, y: 20 }}

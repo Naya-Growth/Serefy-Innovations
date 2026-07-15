@@ -48,7 +48,7 @@ export default function BlogDetail() {
     <div className="bg-white min-h-screen font-body text-slate-800 pt-20 flex flex-col selection:bg-primary/20">
       
       {/* Hero Section with Premium Gradient Accent */}
-      <section className="relative w-full overflow-hidden px-3 xs:px-4 sm:px-6 lg:px-8 pt-8 xs:pt-10 sm:pt-12 pb-6 xs:pb-8 sm:pb-10">
+      <section className="relative w-full overflow-hidden px-3 xs:px-4 sm:px-6 lg:px-8 pt-6 xs:pt-8 sm:pt-10 pb-4 xs:pb-6 sm:pb-8">
         {/* Subtle radial glow in the background */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-50/50 via-transparent to-transparent -z-10" />
 
@@ -108,14 +108,14 @@ export default function BlogDetail() {
       </section>
 
       {/* Featured Image */}
-      <section className="w-full max-w-4xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8 mb-4 xs:mb-6 sm:mb-8 relative z-10">
-        <div className="aspect-[16/9] xs:aspect-[16/9] sm:aspect-[2/1] w-full rounded-xl xs:rounded-2xl overflow-hidden bg-slate-100 shadow-xl shadow-slate-200/50 border border-slate-100">
+      <section className="w-full max-w-4xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8 mb-3 xs:mb-4 sm:mb-6 relative z-10">
+        <div className="aspect-[16/9] xs:aspect-[16/9] sm:aspect-[16/9] w-full rounded-xl xs:rounded-2xl overflow-hidden bg-slate-100 shadow-xl shadow-slate-200/50 border border-slate-100">
           <img src={article.featuredImage} alt={article.title || 'Article featured image'} className="w-full h-full object-cover hover:scale-105 transition-transform duration-700 ease-out" />
         </div>
       </section>
 
       {/* Article Content */}
-      <section className="w-full max-w-3xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8 mb-6 xs:mb-8 sm:mb-12 flex-1">
+      <section className="w-full max-w-3xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8 mb-4 xs:mb-6 sm:mb-8 flex-1">
         <div 
           className="prose prose-sm xs:prose-base sm:prose-lg prose-slate prose-emerald max-w-none prose-p:text-slate-700 prose-p:leading-[2.2] prose-p:tracking-[0.015em] prose-headings:font-headline prose-h2:text-2xl xs:prose-h2:text-3xl prose-h2:font-extrabold prose-h2:tracking-tight prose-h2:mb-4 xs:prose-h2:mb-6 prose-h2:mt-8 xs:prose-h2:mt-12 prose-h3:text-xl xs:prose-h3:text-2xl prose-h3:font-bold prose-a:text-primary hover:prose-a:text-emerald-800 prose-p:first-of-type:first-letter:text-5xl xs:prose-p:first-of-type:first-letter:text-7xl prose-p:first-of-type:first-letter:font-headline prose-p:first-of-type:first-letter:font-black prose-p:first-of-type:first-letter:text-primary prose-p:first-of-type:first-letter:mr-3 xs:prose-p:first-of-type:first-letter:mr-4 prose-p:first-of-type:first-letter:float-left prose-p:first-of-type:first-letter:leading-[0.8] prose-p:first-of-type:first-letter:pt-2"
           dangerouslySetInnerHTML={{ __html: article.content }}
@@ -133,9 +133,9 @@ export default function BlogDetail() {
       </section>
 
       {/* Related Articles */}
-      <section className="w-full bg-emerald-50/60 py-6 xs:py-8 sm:py-10 lg:py-12 px-3 xs:px-4 sm:px-6 lg:px-8 border-t border-emerald-100">
+      <section className="w-full bg-emerald-50/60 py-4 xs:py-6 sm:py-8 lg:py-10 px-3 xs:px-4 sm:px-6 lg:px-8 border-t border-emerald-100">
         <div className="max-w-7xl mx-auto">
-          <h2 className="font-headline text-xl xs:text-2xl sm:text-3xl font-bold text-slate-900 mb-4 xs:mb-6 sm:mb-10 text-center">Read Next</h2>
+          <h2 className="font-headline text-lg xs:text-xl sm:text-2xl font-bold text-slate-900 mb-3 xs:mb-4 sm:mb-6 text-center">Read Next</h2>
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6">
             {relatedArticles.map(relArticle => (
               <div key={relArticle.id}>
