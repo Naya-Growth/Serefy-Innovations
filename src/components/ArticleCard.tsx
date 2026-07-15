@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Calendar, User, ArrowRight } from 'lucide-react';
+import { Calendar, User } from 'lucide-react';
 import { motion } from 'motion/react';
 
 interface ArticleCardProps {
@@ -16,8 +16,7 @@ interface ArticleCardProps {
 
 const PLACEHOLDER_IMG = 'https://images.unsplash.com/photo-1516467508483-a7212febe31a?q=80&w=1000&auto=format&fit=crop';
 
-
-export default function ArticleCard({
+const ArticleCard: React.FC<ArticleCardProps> = ({
   id,
   title,
   excerpt,
@@ -26,7 +25,7 @@ export default function ArticleCard({
   publishDate,
   category,
   variant = 'default'
-}: ArticleCardProps) {
+}) => {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -50,6 +49,7 @@ export default function ArticleCard({
               alt={title || 'Article image'}
               onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+              loading="lazy"
             />
             <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/20 to-transparent" />
 
@@ -73,11 +73,11 @@ export default function ArticleCard({
             {/* Meta */}
             <div className="flex items-center gap-2 xs:gap-2.5 sm:gap-3 text-[9px] xs:text-[10px] sm:text-xs md:text-sm text-slate-500">
               <div className="flex items-center gap-1 xs:gap-1.5">
-                <User size={10} xs:size={12} sm:size={14} />
+                <User size={12} />
                 <span className="font-medium truncate max-w-[80px] xs:max-w-[100px] sm:max-w-[150px] md:max-w-[200px]">{authorName || 'Unknown'}</span>
               </div>
               <div className="flex items-center gap-1 xs:gap-1.5">
-                <Calendar size={10} xs:size={12} sm:size={14} />
+                <Calendar size={12} />
                 <span>{formatDate(publishDate)}</span>
               </div>
             </div>
@@ -101,6 +101,7 @@ export default function ArticleCard({
               alt={title || 'Article image'}
               onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
               className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+              loading="lazy"
             />
           </div>
 
@@ -125,7 +126,7 @@ export default function ArticleCard({
 
   // Default variant
   return (
-    <Link to={`/blog/${id}`} className="group block">
+    <Link to={`/blog/${id}`} className="group block h-full">
       <motion.div
         whileHover={{ y: -4 }}
         className="h-full flex flex-col overflow-hidden rounded-xl bg-white border border-slate-100 shadow-sm hover:shadow-lg hover:border-emerald-200 transition-all duration-300"
@@ -137,6 +138,7 @@ export default function ArticleCard({
             alt={title || 'Article image'}
             onError={(e) => { (e.target as HTMLImageElement).src = PLACEHOLDER_IMG; }}
             className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+            loading="lazy"
           />
           <div className="absolute top-2 left-2 xs:top-2.5 xs:left-2.5 sm:top-3 sm:left-3 z-10">
             <span className="inline-block px-1.5 py-0.5 xs:px-2 xs:py-0.75 sm:px-2.5 sm:py-1 bg-white/90 backdrop-blur-sm text-emerald-700 text-[8px] xs:text-[9px] sm:text-[10px] font-bold uppercase tracking-wider rounded-full shadow-sm whitespace-nowrap">
@@ -155,13 +157,13 @@ export default function ArticleCard({
           </p>
 
           {/* Meta */}
-          <div className="flex items-center justify-between pt-2 xs:pt-2.5 sm:pt-3 border-t border-slate-100">
+          <div className="flex items-center justify-between pt-2 xs:pt-2.5 sm:pt-3 border-t border-slate-100 mt-auto">
             <div className="flex items-center gap-1 xs:gap-1.5 text-[8px] xs:text-[9px] sm:text-[10px] text-slate-500">
-              <User size={9} xs:size={11} sm:size={12} />
+              <User size={11} />
               <span className="font-medium truncate max-w-[60px] xs:max-w-[70px] sm:max-w-[100px]">{authorName || 'Unknown'}</span>
             </div>
             <div className="flex items-center gap-1 xs:gap-1.5 text-[8px] xs:text-[9px] sm:text-[10px] text-slate-500">
-              <Calendar size={9} xs:size={11} sm:size={12} />
+              <Calendar size={11} />
               <span>{formatDate(publishDate)}</span>
             </div>
           </div>
@@ -169,4 +171,6 @@ export default function ArticleCard({
       </motion.div>
     </Link>
   );
-}
+};
+
+export default ArticleCard;

@@ -1,25 +1,110 @@
 import React, { useEffect } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { ArrowLeft, Share2, Twitter, Linkedin, Facebook, Link as LinkIcon, User, Calendar, Clock } from 'lucide-react';
-import { mockArticles } from '../data/blogData';
+import { ArrowLeft, Twitter, Linkedin, Link as LinkIcon, Calendar, Clock } from 'lucide-react';
 import NewsletterCTA from '../components/blog/NewsletterCTA';
 import ArticleCard from '../components/ArticleCard';
+import ContentOSRenderer from '../components/blog/ContentOSRenderer';
+import { usePost, usePosts } from '../hooks/useContentOS';
+import BlogSkeleton from '../components/blog/BlogSkeleton';
 
 export default function BlogDetail() {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   
-  const article = mockArticles.find(a => a.slug === id || a.id === id);
+  const { post: article, isLoading, error } = usePost(id);
   
+  // Use posts hook for related articles. 
+  // In a real scenario we could fetch more and filter out the current one, 
+  // but for simplicity we'll just fetch a few from the same category.
+  const { posts: relatedPosts, isLoading: isLoadingRelated } = usePosts({
+    category: article?.category !== 'Uncategorized' ? article?.category : undefined
+  });
+
   useEffect(() => {
     window.scrollTo(0, 0);
   }, [id]);
 
-  if (!article) {
+  // Inject SEO metadata
+  useEffect(() => {
+    if (article) {
+      // Set Title
+      const title = article.seo?.title || article.title;
+      document.title = `${title} | Serefy Innovations`;
+
+      // Helper to set meta tags
+      const setMetaTag = (name: string, content: string, property = false) => {
+        let element = document.querySelector(`meta[${property ? 'property' : 'name'}="${name}"]`);
+        if (!element) {
+          element = document.createElement('meta');
+          element.setAttribute(property ? 'property' : 'name', name);
+          document.head.appendChild(element);
+        }
+        element.setAttribute('content', content);
+      };
+
+      // Description
+      if (article.seo?.description || article.excerpt) {
+        setMetaTag('description', article.seo?.description || article.excerpt);
+      }
+
+      // Canonical
+      if (article.seo?.canonicalUrl) {
+        let link = document.querySelector('link[rel="canonical"]');
+        if (!link) {
+          link = document.createElement('link');
+          link.setAttribute('rel', 'canonical');
+          document.head.appendChild(link);
+        }
+        link.setAttribute('href', article.seo.canonicalUrl);
+      }
+
+      // OpenGraph
+      if (article.seo?.social?.openGraph) {
+        const og = article.seo.social.openGraph;
+        if (og.title) setMetaTag('og:title', og.title, true);
+        if (og.description) setMetaTag('og:description', og.description, true);
+        if (og.image) setMetaTag('og:image', og.image, true);
+      }
+      
+      // Twitter
+      setMetaTag('twitter:card', 'summary_large_image');
+      if (article.seo?.social?.twitter) {
+        const twitter = article.seo.social.twitter;
+        if (twitter.title || article.title) setMetaTag('twitter:title', twitter.title || article.title);
+        if (twitter.description || article.excerpt) setMetaTag('twitter:description', twitter.description || article.excerpt);
+        if (twitter.image || article.featuredImage) setMetaTag('twitter:image', twitter.image || article.featuredImage);
+      } else {
+        setMetaTag('twitter:title', title);
+        setMetaTag('twitter:description', article.seo?.description || article.excerpt);
+        setMetaTag('twitter:image', article.featuredImage);
+      }
+
+      // JSON-LD schema
+      if (article.seo?.schemaJsonLd) {
+        let script = document.querySelector('script[type="application/ld+json"]');
+        if (!script) {
+          script = document.createElement('script');
+          script.setAttribute('type', 'application/ld+json');
+          document.head.appendChild(script);
+        }
+        script.textContent = article.seo.schemaJsonLd;
+      }
+    }
+  }, [article]);
+
+  if (isLoading) {
+    return (
+      <div className="pt-28 pb-20 px-4 max-w-7xl mx-auto">
+        <BlogSkeleton />
+      </div>
+    );
+  }
+
+  if (error || !article) {
     return (
       <div className="min-h-[70vh] bg-emerald-50/60 flex flex-col items-center justify-center p-4 xs:p-6">
         <h1 className="text-2xl xs:text-3xl font-bold text-slate-900 mb-3 xs:mb-4">Article Not Found</h1>
-        <p className="text-slate-600 mb-6 xs:mb-8 text-sm xs:text-base">The article you are looking for does not exist.</p>
+        <p className="text-slate-600 mb-6 xs:mb-8 text-sm xs:text-base">The article you are looking for does not exist or failed to load.</p>
         <button
           onClick={() => navigate('/blog')}
           className="px-3 xs:px-4 sm:px-5 py-2 xs:py-2.5 rounded-full bg-primary text-white font-semibold hover:bg-emerald-800 transition-colors text-xs xs:text-sm"
@@ -30,14 +115,10 @@ export default function BlogDetail() {
     );
   }
 
-  const relatedArticles = mockArticles
-    .filter(a => a.id !== article.id && (a.category === article.category || a.tags.some(t => article.tags.includes(t))))
+  // Filter out the current article and take up to 3
+  const relatedArticles = relatedPosts
+    .filter(a => a.id !== article.id)
     .slice(0, 3);
-
-  if (relatedArticles.length < 3) {
-    const moreArticles = mockArticles.filter(a => a.id !== article.id && !relatedArticles.find(r => r.id === a.id));
-    relatedArticles.push(...moreArticles.slice(0, 3 - relatedArticles.length));
-  }
 
   const copyLink = () => {
     navigator.clipboard.writeText(window.location.href);
@@ -49,7 +130,6 @@ export default function BlogDetail() {
       
       {/* Hero Section with Premium Gradient Accent */}
       <section className="relative w-full overflow-hidden px-3 xs:px-4 sm:px-6 lg:px-8 pt-6 xs:pt-8 sm:pt-10 pb-4 xs:pb-6 sm:pb-8">
-        {/* Subtle radial glow in the background */}
         <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-4xl h-full bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-emerald-50/50 via-transparent to-transparent -z-10" />
 
         <div className="max-w-4xl mx-auto relative z-10">
@@ -75,8 +155,12 @@ export default function BlogDetail() {
           <div className="flex flex-wrap items-center justify-between gap-3 xs:gap-4 sm:gap-6 py-3 xs:py-4 sm:py-6 border-y border-slate-100">
             <div className="flex items-center gap-2.5 xs:gap-3 sm:gap-4">
               <Link to={`/blog/author/${article.author.slug}`} className="group relative">
-                <div className="w-9 xs:w-10 sm:w-12 lg:w-14 h-9 xs:h-10 sm:h-12 lg:h-14 rounded-full bg-emerald-100 flex items-center justify-center text-primary font-bold text-base xs:text-lg sm:text-xl border-2 xs:border-3 sm:border-4 border-white shadow-md group-hover:scale-105 transition-transform">
-                  {article.author.avatar || article.author.name.charAt(0)}
+                <div className="w-9 xs:w-10 sm:w-12 lg:w-14 h-9 xs:h-10 sm:h-12 lg:h-14 rounded-full bg-emerald-100 flex items-center justify-center text-primary font-bold text-base xs:text-lg sm:text-xl border-2 xs:border-3 sm:border-4 border-white shadow-md group-hover:scale-105 transition-transform overflow-hidden">
+                  {article.author.avatar ? (
+                    <img src={article.author.avatar} alt={article.author.name} className="w-full h-full object-cover" />
+                  ) : (
+                    article.author.name.charAt(0)
+                  )}
                 </div>
               </Link>
               <div>
@@ -116,10 +200,14 @@ export default function BlogDetail() {
 
       {/* Article Content */}
       <section className="w-full max-w-3xl mx-auto px-3 xs:px-4 sm:px-6 lg:px-8 mb-4 xs:mb-6 sm:mb-8 flex-1">
-        <div 
-          className="prose prose-sm xs:prose-base sm:prose-lg prose-slate prose-emerald max-w-none prose-p:text-slate-700 prose-p:leading-[2.2] prose-p:tracking-[0.015em] prose-headings:font-headline prose-h2:text-2xl xs:prose-h2:text-3xl prose-h2:font-extrabold prose-h2:tracking-tight prose-h2:mb-4 xs:prose-h2:mb-6 prose-h2:mt-8 xs:prose-h2:mt-12 prose-h3:text-xl xs:prose-h3:text-2xl prose-h3:font-bold prose-a:text-primary hover:prose-a:text-emerald-800 prose-p:first-of-type:first-letter:text-5xl xs:prose-p:first-of-type:first-letter:text-7xl prose-p:first-of-type:first-letter:font-headline prose-p:first-of-type:first-letter:font-black prose-p:first-of-type:first-letter:text-primary prose-p:first-of-type:first-letter:mr-3 xs:prose-p:first-of-type:first-letter:mr-4 prose-p:first-of-type:first-letter:float-left prose-p:first-of-type:first-letter:leading-[0.8] prose-p:first-of-type:first-letter:pt-2"
-          dangerouslySetInnerHTML={{ __html: article.content }}
-        />
+        {article.bodyBlocks && article.bodyBlocks.length > 0 ? (
+          <ContentOSRenderer blocks={article.bodyBlocks} />
+        ) : (
+          <div 
+            className="prose prose-sm xs:prose-base sm:prose-lg prose-slate prose-emerald max-w-none prose-p:text-slate-700 prose-p:leading-[2.2] prose-p:tracking-[0.015em] prose-headings:font-headline prose-h2:text-2xl xs:prose-h2:text-3xl prose-h2:font-extrabold prose-h2:tracking-tight prose-h2:mb-4 xs:prose-h2:mb-6 prose-h2:mt-8 xs:prose-h2:mt-12 prose-h3:text-xl xs:prose-h3:text-2xl prose-h3:font-bold prose-a:text-primary hover:prose-a:text-emerald-800 prose-p:first-of-type:first-letter:text-5xl xs:prose-p:first-of-type:first-letter:text-7xl prose-p:first-of-type:first-letter:font-headline prose-p:first-of-type:first-letter:font-black prose-p:first-of-type:first-letter:text-primary prose-p:first-of-type:first-letter:mr-3 xs:prose-p:first-of-type:first-letter:mr-4 prose-p:first-of-type:first-letter:float-left prose-p:first-of-type:first-letter:leading-[0.8] prose-p:first-of-type:first-letter:pt-2"
+            dangerouslySetInnerHTML={{ __html: article.content }}
+          />
+        )}
         
         {/* Tags */}
         <div className="mt-6 xs:mt-8 sm:mt-12 pt-4 xs:pt-6 sm:pt-8 border-t border-slate-100 flex flex-wrap gap-2 xs:gap-2.5 sm:gap-3 items-center">
@@ -136,10 +224,14 @@ export default function BlogDetail() {
       <section className="w-full bg-emerald-50/60 py-4 xs:py-6 sm:py-8 lg:py-10 px-3 xs:px-4 sm:px-6 lg:px-8 border-t border-emerald-100">
         <div className="max-w-7xl mx-auto">
           <h2 className="font-headline text-lg xs:text-xl sm:text-2xl font-bold text-slate-900 mb-3 xs:mb-4 sm:mb-6 text-center">Read Next</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6">
-            {relatedArticles.map(relArticle => (
-              <div key={relArticle.id}>
+          
+          {isLoadingRelated ? (
+            <BlogSkeleton />
+          ) : relatedArticles.length > 0 ? (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6">
+              {relatedArticles.map(relArticle => (
                 <ArticleCard 
+                  key={relArticle.id}
                   id={relArticle.slug}
                   title={relArticle.title}
                   excerpt={relArticle.excerpt}
@@ -148,9 +240,11 @@ export default function BlogDetail() {
                   publishDate={relArticle.publishDate}
                   category={relArticle.category}
                 />
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-slate-500">No related articles found.</p>
+          )}
         </div>
       </section>
 

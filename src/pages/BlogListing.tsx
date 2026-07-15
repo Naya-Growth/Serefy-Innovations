@@ -7,34 +7,29 @@ import Pagination from '../components/blog/Pagination';
 import NewsletterCTA from '../components/blog/NewsletterCTA';
 import BlogSkeleton from '../components/blog/BlogSkeleton';
 import EmptyState from '../components/blog/EmptyState';
-import { mockArticles, categoriesData } from '../data/blogData';
-
-
+import { usePosts } from '../hooks/useContentOS';
 
 export default function BlogListing() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('All');
-
   const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(false);
-  const articlesPerPage = 2; // Reduced to 2 so pagination buttons are visible with our 6 mock articles!
+  const articlesPerPage = 6;
 
+  // Whenever search query or category changes, reset to page 1
   useEffect(() => {
     setCurrentPage(1);
-    setIsLoading(true);
-    const timer = setTimeout(() => setIsLoading(false), 400);
-    return () => clearTimeout(timer);
   }, [searchQuery, selectedCategory]);
 
-  const filteredArticles = mockArticles.filter(article => {
-    const matchesSearch = article.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      article.excerpt.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesCategory = selectedCategory === 'All' || article.category === selectedCategory;
-    return matchesSearch && matchesCategory;
+  const { posts, isLoading, error } = usePosts({
+    q: searchQuery || undefined,
+    category: selectedCategory !== 'All' ? selectedCategory : undefined
   });
 
-  const featuredArticle = currentPage === 1 ? filteredArticles[0] : null;
-  const allRegularArticles = filteredArticles.slice(1);
+  const featuredArticle = currentPage === 1 && !searchQuery && selectedCategory === 'All' ? posts[0] : null;
+  
+  // If there's a featured article, regular articles are the rest. Otherwise, all are regular.
+  const allRegularArticles = featuredArticle ? posts.slice(1) : posts;
+  
   const totalPages = Math.max(1, Math.ceil(allRegularArticles.length / articlesPerPage));
   const safeCurrentPage = Math.min(currentPage, totalPages);
   
@@ -87,67 +82,75 @@ export default function BlogListing() {
         <section className="w-full py-6 xs:py-8 sm:py-10 px-3 xs:px-4 sm:px-6 lg:px-8">
           <div className="max-w-7xl mx-auto">
 
-            {/* Featured Article */}
-            {featuredArticle && (
-              <div className="mb-4 xs:mb-6 sm:mb-8">
-                <h3 className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-green-700 uppercase tracking-widest mb-2 xs:mb-3 sm:mb-4">FEATURED</h3>
-                <motion.div
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.5 }}
-                >
-                  <ArticleCard 
-                    id={featuredArticle.slug}
-                    title={featuredArticle.title}
-                    excerpt={featuredArticle.excerpt}
-                    featuredImage={featuredArticle.featuredImage}
-                    authorName={featuredArticle.author.name}
-                    publishDate={featuredArticle.publishDate}
-                    category={featuredArticle.category}
-                    variant="featured" 
-                  />
-                </motion.div>
-              </div>
+            {error && (
+              <EmptyState message="Failed to load articles. Please try again later." />
             )}
 
-            {/* Articles Grid */}
-            {isLoading ? (
-              <BlogSkeleton />
-            ) : regularArticles.length > 0 ? (
+            {!error && (
               <>
-                <h3 className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-slate-700 uppercase tracking-widest mb-2 xs:mb-3 sm:mb-4">LATEST ARTICLES</h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6">
-                  {regularArticles.map((article, index) => (
+                {/* Featured Article */}
+                {featuredArticle && !isLoading && (
+                  <div className="mb-4 xs:mb-6 sm:mb-8">
+                    <h3 className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-green-700 uppercase tracking-widest mb-2 xs:mb-3 sm:mb-4">FEATURED</h3>
                     <motion.div
-                      key={article.id}
                       initial={{ opacity: 0, y: 20 }}
                       whileInView={{ opacity: 1, y: 0 }}
                       viewport={{ once: true }}
-                      transition={{ duration: 0.5, delay: index * 0.1 }}
+                      transition={{ duration: 0.5 }}
                     >
                       <ArticleCard 
-                        id={article.slug}
-                        title={article.title}
-                        excerpt={article.excerpt}
-                        featuredImage={article.featuredImage}
-                        authorName={article.author.name}
-                        publishDate={article.publishDate}
-                        category={article.category}
+                        id={featuredArticle.slug}
+                        title={featuredArticle.title}
+                        excerpt={featuredArticle.excerpt}
+                        featuredImage={featuredArticle.featuredImage}
+                        authorName={featuredArticle.author.name}
+                        publishDate={featuredArticle.publishDate}
+                        category={featuredArticle.category}
+                        variant="featured" 
                       />
                     </motion.div>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <EmptyState message="No articles found matching your criteria." />
-            )}
+                  </div>
+                )}
 
-            <Pagination 
-              currentPage={safeCurrentPage}
-              totalPages={totalPages}
-              onPageChange={handlePageChange}
-            />
+                {/* Articles Grid */}
+                {isLoading ? (
+                  <BlogSkeleton />
+                ) : regularArticles.length > 0 ? (
+                  <>
+                    <h3 className="text-[9px] xs:text-[10px] sm:text-xs font-bold text-slate-700 uppercase tracking-widest mb-2 xs:mb-3 sm:mb-4">LATEST ARTICLES</h3>
+                    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 xs:gap-4 sm:gap-6">
+                      {regularArticles.map((article, index) => (
+                        <motion.div
+                          key={article.id}
+                          initial={{ opacity: 0, y: 20 }}
+                          whileInView={{ opacity: 1, y: 0 }}
+                          viewport={{ once: true }}
+                          transition={{ duration: 0.5, delay: index * 0.1 }}
+                        >
+                          <ArticleCard 
+                            id={article.slug}
+                            title={article.title}
+                            excerpt={article.excerpt}
+                            featuredImage={article.featuredImage}
+                            authorName={article.author.name}
+                            publishDate={article.publishDate}
+                            category={article.category}
+                          />
+                        </motion.div>
+                      ))}
+                    </div>
+                  </>
+                ) : (
+                  <EmptyState message="No articles found matching your criteria." />
+                )}
+
+                <Pagination 
+                  currentPage={safeCurrentPage}
+                  totalPages={totalPages}
+                  onPageChange={handlePageChange}
+                />
+              </>
+            )}
 
           </div>
         </section>
